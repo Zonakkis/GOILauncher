@@ -28,18 +28,6 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        // Token: 0x17000002 RID: 2
-        // (get) Token: 0x06000031 RID: 49 RVA: 0x00003537 File Offset: 0x00001737
-        public string Greeting
-        {
-            get
-            {
-                return "Welcome to Avalonia!";
-            }
-        }
-
-        // Token: 0x17000003 RID: 3
-        // (get) Token: 0x06000032 RID: 50 RVA: 0x0000353E File Offset: 0x0000173E
         public bool IsLoading
         {
             get
@@ -48,8 +36,6 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        // Token: 0x17000004 RID: 4
-        // (get) Token: 0x06000033 RID: 51 RVA: 0x0000353E File Offset: 0x0000173E
         public bool IsReady
         {
             get
@@ -58,9 +44,6 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        // Token: 0x17000005 RID: 5
-        // (get) Token: 0x06000034 RID: 52 RVA: 0x00003541 File Offset: 0x00001741
-        // (set) Token: 0x06000035 RID: 53 RVA: 0x00003549 File Offset: 0x00001749
         public bool IsPaneOpen
         {
             get

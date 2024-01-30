@@ -1,6 +1,17 @@
-﻿using System;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Controls.Shapes;
+using Avalonia.Platform.Storage;
+using GOI地图管理器.Helpers;
+using GOI地图管理器.Models;
+using ReactiveUI;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,5 +19,78 @@ namespace GOI地图管理器.ViewModels
 {
     internal class SettingViewModel : ViewModelBase
     {
+        public SettingViewModel()
+        {
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            {
+                setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+            }
+            else
+            {
+                setting = new Setting();
+            }
+            SelectPath = ReactiveCommand.Create<int>(SelectFolder);
+        }
+
+        public ReactiveCommand<int, Unit> SelectPath { get; }
+
+        private Setting setting;
+
+        public Setting Setting
+        {
+            get => setting;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref this.setting, value, "Setting");
+            }
+        }
+
+        public string GamePath
+        {
+            get => Setting.gamePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.gamePath, value,"GamePath");
+                Setting.Save();
+            }
+        }
+
+
+
+        private async void SelectFolder(int option)
+        {
+            var dialog = new FolderPickerOpenOptions
+            {
+                AllowMultiple = false
+            };
+
+            switch (option)
+            {
+                case 1:
+                    dialog.Title = "选择游戏路径";
+                    break;
+                case 2:
+                    dialog.Title = "选择下载路径";
+                    break;
+            }
+
+
+            var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
+
+            if (folder.Count > 0)
+            {
+                switch (option)
+                {
+                    case 1:
+                        string path = folder[0].Path.ToString();
+                        GamePath = path.Substring(8, path.Length - 8);
+                        Trace.WriteLine(GamePath);
+                        return;
+                    case 2:
+                        //dialog.Title = "选择下载路径";
+                        return;
+                }
+            }
+        }
     }
 }

@@ -43,9 +43,4 @@
       <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
     </Reference>
   </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
 </Project>

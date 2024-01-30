@@ -2,12 +2,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GOI地图管理器.ViewModels"
+			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="GOI地图管理器.Views.SettingView">
+             x:Class="GOI地图管理器.Views.SettingView"
+             x:DataType="vm:SettingViewModel">
 	<StackPanel Orientation="Vertical" Margin="10,10">
 		<Expander CornerRadius="20" Header="游戏" HorizontalAlignment="Stretch">
 			<StackPanel Orientation="Vertical">
-				<TextBlock Text="游戏路径："/>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="游戏路径："/>
+					<TextBlock Text="{Binding GamePath}"/>
+					<Button Content="选择" Command="{Binding SelectPath}">
+						<Button.CommandParameter>
+							<sys:Int32>1</sys:Int32>
+						</Button.CommandParameter>
+					</Button>
+					
+				</StackPanel>
 			</StackPanel>
 		</Expander>
 	</StackPanel>

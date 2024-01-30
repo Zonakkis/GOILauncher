@@ -14,21 +14,18 @@ namespace GOI地图管理器.ViewModels
 {
     internal class MapViewModel : ViewModelBase
     {
+        
         public MapViewModel()
         {
             this.Maps = new ObservableCollection<Map>();
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
-            LCFile file = new LCFile();
-            file.GetThumbnailUrl(100, 200, 100, true, "png");
             this.GetMaps();
         }
         public async void GetMaps()
         {
             LCQuery<LCObject> query = new LCQuery<LCObject>("Maps");
             query.OrderByAscending("Name");
-            ReadOnlyCollection<LCObject> readOnlyCollection = await query.Find();
-            ReadOnlyCollection<LCObject> maps = readOnlyCollection;
-            readOnlyCollection = null;
+            ReadOnlyCollection<LCObject> maps = await query.Find();
             foreach (LCObject map in maps)
             {
                 LCFile file = new LCFile("Preview.png", new Uri((string)map["Preview"]));
@@ -85,5 +82,7 @@ namespace GOI地图管理器.ViewModels
         }
 
         private Map _selectedMap;
+
+
     }
 }
