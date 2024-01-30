@@ -1,5 +1,4 @@
-﻿using GOI地图管理器.Helpers;
-using GOI地图管理器.Models;
+﻿using GOI地图管理器.Models;
 using LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
@@ -35,9 +34,8 @@ namespace GOI地图管理器.ViewModels
                 LCFile file = new LCFile("Preview.png", new Uri((string)map["Preview"]));
                 string url = file.GetThumbnailUrl(720, 480, 100, false, "png");
                 Trace.WriteLine(url);
-                this.Maps.Add(new Map((string)map["Name"], (string)map["Author"], (string)map["Size"], ImageHelper.LoadFromWeb(url)));
+                this.Maps.Add(new Map((string)map["Name"], (string)map["Author"], (string)map["Size"], url));
             }
-            IEnumerator<LCObject> enumerator = null;
         }
         public void OnSelectedListItemChanged(Map value)
         {

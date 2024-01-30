@@ -28,7 +28,7 @@
 			<StackPanel Background="White">
 				<Button Content="←" Command="{Binding ChangePane}">
 				</Button>
-				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" Background="White">
+				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" Background="White" CornerRadius="5">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Label}"  />

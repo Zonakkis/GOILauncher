@@ -18,6 +18,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
     <PackageReference Include="Avalonia" Version="11.0.7" />
     <PackageReference Include="Avalonia.Desktop" Version="11.0.7" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.7" />
@@ -41,5 +42,10 @@
     <Reference Include="Storage.Standard">
       <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>
