@@ -28,14 +28,21 @@ namespace GOI地图管理器.ViewModels
             ReadOnlyCollection<LCObject> maps = await query.Find();
             foreach (LCObject map in maps)
             {
-                LCFile file = new LCFile("Preview.png", new Uri((string)map["Preview"]));
-                string url = file.GetThumbnailUrl(720, 480, 100, false, "png");
-                Trace.WriteLine(url);
-                this.Maps.Add(new Map((string)map["Name"], (string)map["Author"], (string)map["Size"], url));
+                this.Maps.Add(new Map(map));
             }
         }
+
+        public void Download()
+        {
+
+        }
+
         public void OnSelectedListItemChanged(Map value)
         {
+            if(!value.IsLoaded)
+            {
+                value.Load();
+            }
             this.IsSelected = true;
             this.CurrentMap = value;
         }
