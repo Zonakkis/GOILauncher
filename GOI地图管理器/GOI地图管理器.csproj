@@ -9,8 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\goi.ico" />
   </ItemGroup>
 
 
@@ -22,5 +25,21 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.7" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.7" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Common">
+      <HintPath>..\Packages\LeanCloud\Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LC.Newtonsoft.Json">
+      <HintPath>..\Packages\LeanCloud\LC.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage">
+      <HintPath>..\Packages\LeanCloud\Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage.Standard">
+      <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

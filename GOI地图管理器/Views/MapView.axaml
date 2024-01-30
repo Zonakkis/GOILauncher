@@ -1,0 +1,46 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GOI地图管理器.ViewModels"
+             xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GOI地图管理器.Views.MapView"
+             x:DataType="vm:MapViewModel"
+             FontSize="20">
+
+	<Design.DataContext>
+		<!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+		<vm:MapViewModel/>
+	</Design.DataContext>
+	<Grid ColumnDefinitions="400,*">
+		<StackPanel Grid.Column="0" Orientation="Vertical">
+			<Grid ColumnDefinitions="*,auto">
+				<TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10"/>
+				<Button Grid.Column="1" Content="搜索"/>
+			</Grid>
+			<ListBox Grid.Column="0" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="20" >
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+
+						<TextBlock Text="{Binding Name}"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+
+
+		<Grid Grid.Column="1" RowDefinitions="auto,auto,auto,auto" IsVisible="{Binding IsSelected}">
+			<Image Grid.Row="0" Source="{Binding CurrentMap.Preview^}" Margin="0,-1,0,0" HorizontalAlignment="Center"/>
+			<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
+			<Grid Grid.Row="2" RowDefinitions="auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="作者："/>
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMap.Author}"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="大小："/>
+				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
+			</Grid>
+			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center"/>
+		</Grid>
+	</Grid>
+</UserControl>
