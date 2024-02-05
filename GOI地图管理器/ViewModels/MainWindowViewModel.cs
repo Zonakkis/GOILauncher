@@ -1,30 +1,39 @@
-﻿using ReactiveUI;
+﻿using GOI地图管理器.Helpers;
+using GOI地图管理器.Models;
+using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 
 namespace GOI地图管理器.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public MainWindowViewModel()
+        {
+
+        }
         public void ChangePane()
         {
-            this.IsPaneOpen = !this.IsPaneOpen;
-            Trace.WriteLine(this.IsPaneOpen);
+            IsPaneOpen = !IsPaneOpen;
+            Trace.WriteLine(IsPaneOpen);
         }
         public void OnSelectedListItemChanged(ListItemTemplate value)
         {
-            this.CurrentPage = value.View;
+            CurrentPage = value.View;
+            CurrentPage.OnSelectedViewModelChanged();
+
         }
         public string Description
         {
             get
             {
-                return this._description;
+                return _description;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._description, value, "Description");
+                this.RaiseAndSetIfChanged(ref _description, value, "Description");
             }
         }
 
@@ -48,26 +57,23 @@ namespace GOI地图管理器.ViewModels
         {
             get
             {
-                return this._isPaneOpen;
+                return _isPaneOpen;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._isPaneOpen, value, "IsPaneOpen");
+                this.RaiseAndSetIfChanged(ref _isPaneOpen, value, "IsPaneOpen");
             }
         }
 
-        // Token: 0x17000006 RID: 6
-        // (get) Token: 0x06000036 RID: 54 RVA: 0x0000355E File Offset: 0x0000175E
-        // (set) Token: 0x06000037 RID: 55 RVA: 0x00003566 File Offset: 0x00001766
         public ViewModelBase CurrentPage
         {
             get
             {
-                return this._currentPage;
+                return _currentPage;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._currentPage, value, "CurrentPage");
+                this.RaiseAndSetIfChanged(ref _currentPage, value, "CurrentPage");
             }
         }
 
@@ -75,12 +81,12 @@ namespace GOI地图管理器.ViewModels
         {
             get
             {
-                return this._selectedListItem;
+                return _selectedListItem;
             }
             set
             {
-                this.OnSelectedListItemChanged(value);
-                this.RaiseAndSetIfChanged(ref this._selectedListItem, value, "SelectedListItem");
+                OnSelectedListItemChanged(value);
+                this.RaiseAndSetIfChanged(ref _selectedListItem, value, "SelectedListItem");
             }
         }
 
@@ -99,15 +105,17 @@ namespace GOI地图管理器.ViewModels
         private ViewModelBase _currentPage = new GameViewModel();
 
         private ListItemTemplate? _selectedListItem;
+
+        
     }
 
     public class ListItemTemplate
     {
         public ListItemTemplate(Type type, string name)
         {
-            this.ModelType = type;
-            this.Label = name;
-            this.View = (ViewModelBase)Activator.CreateInstance(this.ModelType);
+            ModelType = type;
+            Label = name;
+            View = (ViewModelBase)Activator.CreateInstance(ModelType);
         }
 
         public string Label { get; }

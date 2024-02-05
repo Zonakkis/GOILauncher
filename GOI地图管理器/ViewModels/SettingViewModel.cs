@@ -21,29 +21,20 @@ namespace GOI地图管理器.ViewModels
     {
         public SettingViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+                Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
             }
             else
             {
-                setting = new Setting();
+                Setting = new Setting();
             }
-            SelectPath = ReactiveCommand.Create<int>(SelectFolder);
+            SelectPathCommand = ReactiveCommand.Create<int>(SelectFolder);
         }
 
-        public ReactiveCommand<int, Unit> SelectPath { get; }
+        public ReactiveCommand<int, Unit> SelectPathCommand { get; }
 
-        private Setting setting;
 
-        public Setting Setting
-        {
-            get => setting;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref this.setting, value, "Setting");
-            }
-        }
 
         public string GamePath
         {
@@ -54,7 +45,6 @@ namespace GOI地图管理器.ViewModels
                 Setting.Save();
             }
         }
-
 
 
         private async void SelectFolder(int option)
@@ -84,13 +74,21 @@ namespace GOI地图管理器.ViewModels
                     case 1:
                         string path = folder[0].Path.ToString();
                         GamePath = path.Substring(8, path.Length - 8);
-                        Trace.WriteLine(GamePath);
+                        Trace.WriteLine(Setting.GamePath);
                         return;
                     case 2:
                         //dialog.Title = "选择下载路径";
                         return;
                 }
             }
+        }
+
+        public Setting setting;
+
+        public Setting Setting
+        {
+            get => setting;
+            set => this.RaiseAndSetIfChanged(ref setting, value, "Setting");
         }
     }
 }

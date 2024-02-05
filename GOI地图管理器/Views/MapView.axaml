@@ -31,7 +31,7 @@
 		</StackPanel>
 
 
-		<Grid Grid.Column="1" RowDefinitions="auto,auto,auto,auto" IsVisible="{Binding IsSelected}">
+		<Grid Grid.Column="1" RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelected}">
 			<Image Grid.Row="0" asyncImageLoader:ImageLoader.Source="{Binding CurrentMap.Preview}" Margin="0,-1,0,0" HorizontalAlignment="Center"/>
 			<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
 			<Grid Grid.Row="2" RowDefinitions="auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
@@ -40,7 +40,8 @@
 				<TextBlock Grid.Row="1" Grid.Column="0" Text="大小："/>
 				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
 			</Grid>
-			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5"/>
+			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}"/>
+			<TextBlock Grid.Row="4" Text="未选择游戏目录，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedNoteHide}" Margin="0,10"/>
 		</Grid>
 	</Grid>
 </UserControl>

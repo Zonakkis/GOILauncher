@@ -13,7 +13,7 @@
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="游戏路径："/>
 					<TextBlock Text="{Binding GamePath}"/>
-					<Button Content="选择" Command="{Binding SelectPath}">
+					<Button Content="选择" Command="{Binding SelectPathCommand}">
 						<Button.CommandParameter>
 							<sys:Int32>1</sys:Int32>
 						</Button.CommandParameter>

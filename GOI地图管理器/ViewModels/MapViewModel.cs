@@ -1,4 +1,5 @@
-﻿using GOI地图管理器.Models;
+﻿using GOI地图管理器.Helpers;
+using GOI地图管理器.Models;
 using LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
@@ -6,7 +7,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,9 +21,31 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            this.Maps = new ObservableCollection<Map>();
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            {
+                //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+            }
+            else
+            {
+                //Setting = new Setting();
+                GamePath = "未选择";
+            }
+            Maps = new ObservableCollection<Map>();
+            var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
+                                                x => x.Length > 3);
+            isDownloadValid.Subscribe(x => UnSelectedNoteHide = x);
+            DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
-            this.GetMaps();
+            GetMaps();
+        }
+
+        public override void OnSelectedViewModelChanged()
+        {
+            if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            {
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+            }
         }
         public async void GetMaps()
         {
@@ -34,7 +60,7 @@ namespace GOI地图管理器.ViewModels
 
         public void Download()
         {
-
+            Trace.WriteLine(1);
         }
 
         public void OnSelectedListItemChanged(Map value)
@@ -73,7 +99,6 @@ namespace GOI地图管理器.ViewModels
         }
 
         private bool _isSelected;
-
         public ObservableCollection<Map> Maps { get; }
         public Map SelectedMap
         {
@@ -90,6 +115,40 @@ namespace GOI地图管理器.ViewModels
 
         private Map _selectedMap;
 
+        public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
+
+
+
+        private bool unSelectedNoteHide;
+
+        public bool UnSelectedNoteHide
+        {
+            get => unSelectedNoteHide; set
+            {
+                this.RaiseAndSetIfChanged(ref unSelectedNoteHide, value, "UnSelectedNoteHide");
+            }
+        }
+
+        //public Setting setting;
+        //public Setting Setting
+        //{
+        //    get => setting;
+        //    set
+        //    {
+        //        this.RaiseAndSetIfChanged(ref setting, value,"Setting");
+        //    }
+        //}
+
+        public string gamePath;
+
+        public string GamePath
+        {
+            get => gamePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref gamePath, value,"GamePath");
+            }
+        }
 
     }
 }
