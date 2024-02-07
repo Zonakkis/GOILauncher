@@ -5,6 +5,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Platform.Storage;
 using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
+using GOI地图管理器.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -73,8 +74,21 @@ namespace GOI地图管理器.ViewModels
                 {
                     case 1:
                         string path = folder[0].Path.ToString();
-                        GamePath = path.Substring(8, path.Length - 8);
-                        Trace.WriteLine(Setting.GamePath);
+                        path = path.Substring(8, path.Length - 8);
+                        if (File.Exists($"{path}/GettingOverIt.exe"))
+                        {
+                            GamePath = path.Substring(8, path.Length - 8);
+                            Trace.WriteLine(Setting.GamePath);
+                        }
+                        else
+                        {
+                            var messageBox = new MessageBoxWindow();
+                            var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
+                            messageBoxWindowViewModel.Message = "未找到Getting Over It.exe，请确保选择了正确的路径。";
+                            messageBox.DataContext = messageBoxWindowViewModel;
+                            //messageBox.Width = auto
+                            await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
+                        }
                         return;
                     case 2:
                         //dialog.Title = "选择下载路径";
