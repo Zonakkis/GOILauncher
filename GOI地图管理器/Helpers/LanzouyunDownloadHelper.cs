@@ -8,14 +8,42 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOI地图管理器.Helpers
 {
     internal class LanzouyunDownloadHelper
     {
-        public static async Task<string> GetDirectURL(string LanzouyunURL)
+
+        public static void Download(string url,string path)
+        {
+
+            WebClient webClient = new WebClient();
+            webClient.Credentials = CredentialCache.DefaultCredentials;
+            //webClient.DownloadFileCompleted += DownloadFileCallback;
+            webClient.DownloadProgressChanged += delegate (object s, DownloadProgressChangedEventArgs e)
+            {
+                //PercentageDownloaded = (float)e.ProgressPercentage;
+                //Downloading = true;
+            };
+            webClient.DownloadFileAsync(new Uri(url), path);
+
+            //using (HttpClient httpClient = new HttpClient())
+            //{
+            //    using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
+            //    {
+            //        using(var download = await response.Content.ReadAsStreamAsync())
+            //        {
+            //            await download.CopyToAsync(new FileStream(path,FileMode.Create),104857600);
+            //        }
+            //    }
+            //}
+        }
+
+        public static Task<string> GetDirectURL(string LanzouyunURL)
         {
             //string url1;
             //string url2;
@@ -71,53 +99,58 @@ namespace GOI地图管理器.Helpers
 
             //string text = new HttpClient().DownloadString(LanzouURL).Split(new string[] { "src=" }, StringSplitOptions.RemoveEmptyEntries)[2].Substring(1, 108);
 
+            using (var webClient = new WebClient())
+            {
+                string htmlSource = webClient.DownloadString(LanzouyunURL).Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
+                string url = "https://wwn.lanzouv.com" + htmlSource;
+                Trace.WriteLine(url);
+                string sign = webClient.DownloadString(url).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                Trace.WriteLine(sign);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://wwn.lanzouv.com/ajaxm.php");
+                httpWebRequest.Method = "POST";
+                httpWebRequest.Accept = "application/json, text/javascript, */*";
+                httpWebRequest.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
+                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                httpWebRequest.Referer = url;
+                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
+                string content = "action=downprocess&sign=" + sign + "&ves=1";
+                byte[] bytes = Encoding.UTF8.GetBytes(content);
+                httpWebRequest.GetRequestStream().Write(bytes, 0, bytes.Length);
+                using (Stream responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream())
+                {
+                    using (StreamReader streamReader = new StreamReader(responseStream, Encoding.GetEncoding("UTF-8")))
+                    {
+                        string responseString = streamReader.ReadToEnd().Replace("\\/", "/");
+                        Trace.WriteLine(responseString);
+                        LanzouResponse response = JsonConvert.DeserializeObject<LanzouResponse>(responseString);
+                        HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create($"{response.dom}/file/{response.url}");
+                        httpWebRequest2.Method = "HEAD";
+                        httpWebRequest2.AllowAutoRedirect = false;
+                        httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
+                        WebResponse webResponse = httpWebRequest2.GetResponse();
+                        string[] allKeys = webResponse.Headers.AllKeys;
+                        string directURL = webResponse.Headers.Get("Location")!;
+                        Trace.WriteLine(directURL);
+                        return Task.FromResult(directURL!);
+                    }
+                } 
+            }
+        }
 
 
-
-
-
-
-
-
-
-
-
-            string text = new WebClient().DownloadString(LanzouyunURL).Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
-            string text2 = "https://wwn.lanzouv.com" + text;
-            Trace.WriteLine(text2);
-            string text3 = new WebClient().DownloadString(text2).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
-            Trace.WriteLine(text3);
-            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://wwn.lanzouv.com/ajaxm.php");
-            httpWebRequest.Method = "POST";
-            httpWebRequest.Accept = "application/json, text/javascript, */*";
-            httpWebRequest.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-            httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-            httpWebRequest.Referer = text2;
-            httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
-            string text5 = "action=downprocess&sign=" + text3 + "&ves=1";
-            byte[] bytes = Encoding.UTF8.GetBytes(text5);
-            httpWebRequest.GetRequestStream().Write(bytes, 0, bytes.Length);
-            Stream responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream();
-            StreamReader streamReader = new StreamReader(responseStream, Encoding.GetEncoding("UTF-8"));
-            string text6 = streamReader.ReadToEnd().Replace("\\/", "/");
-
-            Trace.WriteLine(text6);
-            LanzouResponse response = JsonConvert.DeserializeObject<LanzouResponse>(text6);
-            string text7 = text6.Split(new string[] { "url\":\"" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "\",\"inf" }, StringSplitOptions.RemoveEmptyEntries)[0];
-            Trace.WriteLine(text7);
-            HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create($"{response.dom}/file/{response.url}");
+        public static int GetFileSize(string url)
+        {
+            HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest2.Method = "HEAD";
             httpWebRequest2.AllowAutoRedirect = false;
-            httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-            WebResponse webResponse = httpWebRequest2.GetResponse();
-            string[] allKeys = webResponse.Headers.AllKeys;
-            string text8 = webResponse.Headers.Get("Location");
-            responseStream.Close();
-            streamReader.Close();
-            Trace.WriteLine(text8);
-            return text8;
+            using (WebResponse webResponse = httpWebRequest2.GetResponse())
+            {
+                string contentLength = webResponse.Headers.Get("Content-Length");
+                return Convert.ToInt32(contentLength);
+            }
         }
     }
+
 
 
     public class LanzouResponse

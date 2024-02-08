@@ -81,7 +81,7 @@ namespace GOI地图管理器.ViewModels
         {
             get
             {
-                return _selectedListItem;
+                return _selectedListItem!;
             }
             set
             {
@@ -115,7 +115,7 @@ namespace GOI地图管理器.ViewModels
         {
             ModelType = type;
             Label = name;
-            View = (ViewModelBase)Activator.CreateInstance(ModelType);
+            View = (ViewModelBase)Activator.CreateInstance(ModelType)!;
         }
 
         public string Label { get; }

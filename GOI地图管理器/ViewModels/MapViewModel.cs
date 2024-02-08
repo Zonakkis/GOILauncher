@@ -1,4 +1,5 @@
-﻿using GOI地图管理器.Helpers;
+﻿using Downloader;
+using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
 using LeanCloud;
 using LeanCloud.Storage;
@@ -11,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +32,10 @@ namespace GOI地图管理器.ViewModels
             {
                 //Setting = new Setting();
                 GamePath = "未选择";
+            }
+            if (!Directory.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Download"))
+            {
+                Directory.CreateDirectory($"{System.AppDomain.CurrentDomain.BaseDirectory}Download");
             }
             Maps = new ObservableCollection<Map>();
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
@@ -58,14 +64,42 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        public void Download()
+        public async void Download()
         {
-            Trace.WriteLine(SelectedMap.MapObject["DownloadURL"]);
-            List<object> urls = SelectedMap.MapObject["DownloadURL"] as List<object>;
-            foreach (var url in urls)
+            List<object> urls = SelectedMap!.MapObject!["DownloadURL"] as List<object>;
+            Map map = SelectedMap;
+            var downloadOpt = new DownloadConfiguration()
             {
-                Trace.WriteLine(LanzouyunDownloadHelper.GetDirectURL($"https://{(string)url}").Result);
+                ChunkCount = 16, // file parts to download, the default value is 1
+                ParallelDownload = true // download parts of the file as parallel or not. The default value is false
+            };
+            var downloader = new DownloadService(downloadOpt);
+            downloader.DownloadStarted += SelectedMap.OnDownloadStarted;
+            downloader.DownloadProgressChanged += SelectedMap.OnDownloadProgressChanged;
+            //downloader.DownloadFileCompleted += SelectedMap.OnDownloadCompleted;
+            if (urls.Count == 1)
+            {
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[0]}");
+                SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
+                await downloader.DownloadFileTaskAsync(directUrl, $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip");
             }
+            else
+            {
+                List<string> directUrls = new List<string>();
+                for (int i = 0; i < urls.Count; i++)
+                {
+                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[i]}");
+                    directUrls.Add(directUrl);
+                    //Trace.WriteLine(directUrl);
+                    SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
+                    //LanzouyunDownloadHelper.Download(directurl, $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
+                }
+                for (int i = 0; i < directUrls.Count; i++)
+                {
+                    await downloader.DownloadFileTaskAsync(directUrls[i], $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
+                }
+            }
+            map.IsDownloading = false;
         }
 
         public void OnSelectedListItemChanged(Map value)

@@ -59,7 +59,7 @@ namespace GOI地图管理器.ViewModels
         string GetModpackVersion(string gamepath)
         {
             Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            if (assembly.GetType("Map1") != null)
+            if (assembly.GetType("Map") != null)
             {
                 return "已安装";
             }
@@ -90,7 +90,7 @@ namespace GOI地图管理器.ViewModels
             Type type = assembly.GetType("GOILevelImporter.ModInfo");
             if (type != null)
             {
-                return (string)type.GetProperty("FULLVERSION").GetValue(typeof(string), null);
+                return (string)type.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
             }
             else
             {

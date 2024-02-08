@@ -25,7 +25,10 @@
 				<ListBox Grid.Column="0" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="5" >
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding Name}"/>
+							<Grid ColumnDefinitions="auto,*">
+								<TextBlock Grid.Column="0" Text="{Binding Name}"/>
+								<ProgressBar Grid.Column="1" Value="{Binding DownloadPercentage}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" ShowProgressText="True"/>
+							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
@@ -42,7 +45,7 @@
 					<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
 				</Grid>
 				<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}"/>
-				<TextBlock Grid.Row="4" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedGamePathNoteHide}" Margin="0,10"/>
+				<TextBlock Grid.Row="4" Foreground="Red" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedGamePathNoteHide}" Margin="0,10"/>
 			</Grid>
 
 		</Grid>
