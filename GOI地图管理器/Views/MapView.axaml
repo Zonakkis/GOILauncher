@@ -41,7 +41,7 @@
 				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
 			</Grid>
 			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}"/>
-			<TextBlock Grid.Row="4" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedNoteHide}" Margin="0,10"/>
+			<TextBlock Grid.Row="4" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedGamePathNoteHide}" Margin="0,10"/>
 		</Grid>
 	</Grid>
 </UserControl>

@@ -34,7 +34,7 @@ namespace GOI地图管理器.ViewModels
             Maps = new ObservableCollection<Map>();
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
-            isDownloadValid.Subscribe(x => UnSelectedNoteHide = x);
+            isDownloadValid.Subscribe(x => UnSelectedGamePathNoteHide = x);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             GetMaps();
@@ -119,13 +119,14 @@ namespace GOI地图管理器.ViewModels
 
 
 
-        private bool unSelectedNoteHide;
+        private bool unSelectedGamePathNoteHide;
 
-        public bool UnSelectedNoteHide
+        public bool UnSelectedGamePathNoteHide
         {
-            get => unSelectedNoteHide; set
+            get => unSelectedGamePathNoteHide;
+            set
             {
-                this.RaiseAndSetIfChanged(ref unSelectedNoteHide, value, "UnSelectedNoteHide");
+                this.RaiseAndSetIfChanged(ref unSelectedGamePathNoteHide, value, "UnSelectedGamePathNoteHide");
             }
         }
 

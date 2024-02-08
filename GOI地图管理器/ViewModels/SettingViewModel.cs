@@ -77,7 +77,7 @@ namespace GOI地图管理器.ViewModels
                         path = path.Substring(8, path.Length - 8);
                         if (File.Exists($"{path}/GettingOverIt.exe"))
                         {
-                            GamePath = path.Substring(8, path.Length - 8);
+                            GamePath = path;
                             Trace.WriteLine(Setting.GamePath);
                         }
                         else
@@ -86,7 +86,6 @@ namespace GOI地图管理器.ViewModels
                             var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
                             messageBoxWindowViewModel.Message = "未找到Getting Over It.exe，请确保选择了正确的路径。";
                             messageBox.DataContext = messageBoxWindowViewModel;
-                            //messageBox.Width = auto
                             await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
                         }
                         return;
