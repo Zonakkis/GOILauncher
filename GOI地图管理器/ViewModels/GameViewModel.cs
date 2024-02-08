@@ -87,19 +87,10 @@ namespace GOI地图管理器.ViewModels
         string GetLevelLoaderVersion(string gamepath)
         {
             Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            //BindingFlags flags = BindingFlags.Static | BindingFlags.Public;
-            try
+            Type type = assembly.GetType("GOILevelImporter.ModInfo");
+            if (type != null)
             {
-                
-                return (string)assembly.GetType("GOILevelImporter.ModInfo").GetProperty("FULLVERSION").GetValue(typeof(string), null);  
-            }
-            catch
-            {
-                return "未安装";
-            }
-            if (assembly.GetType("ModInfo") != null)
-            {
-                return "已安装";
+                return (string)type.GetProperty("FULLVERSION").GetValue(typeof(string), null);
             }
             else
             {

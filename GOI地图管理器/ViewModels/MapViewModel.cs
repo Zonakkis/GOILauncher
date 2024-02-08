@@ -60,7 +60,12 @@ namespace GOI地图管理器.ViewModels
 
         public void Download()
         {
-            Trace.WriteLine(1);
+            Trace.WriteLine(SelectedMap.MapObject["DownloadURL"]);
+            List<object> urls = SelectedMap.MapObject["DownloadURL"] as List<object>;
+            foreach (var url in urls)
+            {
+                Trace.WriteLine(LanzouyunDownloadHelper.GetDirectURL($"https://{(string)url}").Result);
+            }
         }
 
         public void OnSelectedListItemChanged(Map value)
