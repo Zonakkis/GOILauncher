@@ -74,7 +74,7 @@ namespace GOI地图管理器.ViewModels
         public async void Download()
         {
             Map map = SelectedMap;
-            map.Downloadable = false;
+            map.Downloadable= false;
             List<object> urls = map!.MapObject!["DownloadURL"] as List<object>;
             var downloadOpt = new DownloadConfiguration()
             {

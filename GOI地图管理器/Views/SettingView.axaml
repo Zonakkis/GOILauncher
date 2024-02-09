@@ -10,7 +10,7 @@
 			 FontSize="16">
 	<StackPanel Orientation="Vertical" Margin="10,10">
 		<Expander CornerRadius="20" Header="游戏" HorizontalAlignment="Stretch">
-			<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,auto,*">
+			<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,auto,*">
 				<TextBlock Grid.Row="0" Grid.Column="0" Text="游戏路径："/>
 				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GamePath}"/>
 				<Button Grid.Row="0" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,-5,0,0">
@@ -25,7 +25,13 @@
 						<sys:Int32>2</sys:Int32>
 					</Button.CommandParameter>
 				</Button>
-				
+				<TextBlock Grid.Row="2" Grid.Column="0" Text="Steam路径：" Margin="0,10"/>
+				<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SteamPath}" Margin="0,10"/>
+				<Button Grid.Row="2" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,0,0,0">
+					<Button.CommandParameter>
+						<sys:Int32>3</sys:Int32>
+					</Button.CommandParameter>
+				</Button>
 			</Grid>
 		</Expander>
 	</StackPanel>

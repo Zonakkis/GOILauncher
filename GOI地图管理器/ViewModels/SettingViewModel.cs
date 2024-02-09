@@ -47,6 +47,9 @@ namespace GOI地图管理器.ViewModels
                 case 2:
                     dialog.Title = "选择地图路径";
                     break;
+                case 3:
+                    dialog.Title = "选择Steam路径";
+                    break;
             }
 
 
@@ -54,10 +57,11 @@ namespace GOI地图管理器.ViewModels
 
             if (folder.Count > 0)
             {
+                string path;
                 switch (option)
                 {
                     case 1:
-                        string path = folder[0].Path.ToString();
+                        path = folder[0].Path.ToString();
                         path = path.Substring(8, path.Length - 8);
                         if (File.Exists($"{path}/GettingOverIt.exe"))
                         {
@@ -68,13 +72,31 @@ namespace GOI地图管理器.ViewModels
                         {
                             var messageBox = new MessageBoxWindow();
                             var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
-                            messageBoxWindowViewModel.Message = "未找到Getting Over It.exe，请确保选择了正确的路径。";
+                            messageBoxWindowViewModel.Message = "没有找到GettingOverIt.exe，是不是找错路径了喵。";
                             messageBox.DataContext = messageBoxWindowViewModel;
                             await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
                         }
                         return;
                     case 2:
-                        //dialog.Title = "选择下载路径";
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        LevelPath = path;
+                        return;
+                    case 3:
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        if (File.Exists($"{path}/steam.exe"))
+                        {
+                            SteamPath = path;
+                        }
+                        else
+                        {
+                            var messageBox = new MessageBoxWindow();
+                            var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
+                            messageBoxWindowViewModel.Message = "没有找到steam.exe，是不是找错路径了喵。";
+                            messageBox.DataContext = messageBoxWindowViewModel;
+                            await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
+                        }
                         return;
                 }
             }
@@ -99,7 +121,15 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-
+        public string SteamPath
+        {
+            get => Setting.steamPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.steamPath, value, "SteamPath");
+                Setting.Save();
+            }
+        }
 
         public Setting setting;
 
