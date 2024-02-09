@@ -17,21 +17,14 @@ namespace GOI地图管理器.Models
         public Setting()
         {
             gamePath = "未选择";
+            levelPath = "未选择（选择游戏路径后自动选择，也可手动更改）";
         }
 
 
 
 
         public string gamePath;
-
-        public string GamePath 
-        {
-            get => gamePath;
-            set
-            {
-                gamePath = value;
-            }
-        }
+        public string levelPath;
 
         public void Save()
         {

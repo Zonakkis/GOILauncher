@@ -23,10 +23,10 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
                 //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
             }
             else
             {
@@ -50,7 +50,7 @@ namespace GOI地图管理器.ViewModels
         {
             if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
             }
         }
         public async void GetMaps()

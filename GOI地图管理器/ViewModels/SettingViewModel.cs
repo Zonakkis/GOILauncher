@@ -24,7 +24,7 @@ namespace GOI地图管理器.ViewModels
         {
             if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
+                Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
             }
             else
             {
@@ -32,22 +32,6 @@ namespace GOI地图管理器.ViewModels
             }
             SelectPathCommand = ReactiveCommand.Create<int>(SelectFolder);
         }
-
-        public ReactiveCommand<int, Unit> SelectPathCommand { get; }
-
-
-
-        public string GamePath
-        {
-            get => Setting.gamePath;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref Setting.gamePath, value,"GamePath");
-                Setting.Save();
-            }
-        }
-
-
         private async void SelectFolder(int option)
         {
             var dialog = new FolderPickerOpenOptions
@@ -61,7 +45,7 @@ namespace GOI地图管理器.ViewModels
                     dialog.Title = "选择游戏路径";
                     break;
                 case 2:
-                    dialog.Title = "选择下载路径";
+                    dialog.Title = "选择地图路径";
                     break;
             }
 
@@ -78,7 +62,7 @@ namespace GOI地图管理器.ViewModels
                         if (File.Exists($"{path}/GettingOverIt.exe"))
                         {
                             GamePath = path;
-                            Trace.WriteLine(Setting.GamePath);
+                            LevelPath = $"{path}/Levels/";
                         }
                         else
                         {
@@ -95,6 +79,27 @@ namespace GOI地图管理器.ViewModels
                 }
             }
         }
+        public ReactiveCommand<int, Unit> SelectPathCommand { get; }
+        public string GamePath
+        {
+            get => Setting.gamePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.gamePath, value,"GamePath");
+                Setting.Save();
+            }
+        }
+        public string LevelPath
+        {
+            get => Setting.levelPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.levelPath, value, "LevelPath");
+                Setting.Save();
+            }
+        }
+
+
 
         public Setting setting;
 

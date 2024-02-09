@@ -12,7 +12,7 @@ namespace GOI地图管理器.ViewModels
     {
         public MainWindowViewModel()
         {
-
+            SelectedListItem = Items[0];
         }
         public void ChangePane()
         {
@@ -21,8 +21,8 @@ namespace GOI地图管理器.ViewModels
         }
         public void OnSelectedListItemChanged(ListItemTemplate value)
         {
+            value.View.OnSelectedViewModelChanged();
             CurrentPage = value.View;
-            CurrentPage.OnSelectedViewModelChanged();
 
         }
         public string Description

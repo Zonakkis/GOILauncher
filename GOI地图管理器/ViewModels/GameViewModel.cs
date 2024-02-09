@@ -16,10 +16,10 @@ namespace GOI地图管理器.ViewModels
     {
         public GameViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
                 //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
                 UnSelectedGamePathNoteHide = true;
                 GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
                 ModpackVersion = GetModpackVersion(GamePath);
@@ -36,8 +36,8 @@ namespace GOI地图管理器.ViewModels
         {
             if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
-                Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
+                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
+                //Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
                 GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length); 
                 ModpackVersion = GetModpackVersion(GamePath);
                 LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
@@ -59,7 +59,7 @@ namespace GOI地图管理器.ViewModels
         string GetModpackVersion(string gamepath)
         {
             Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            if (assembly.GetType("Map") != null)
+            if (assembly.GetType("JsonConvertEx") != null)
             {
                 return "已安装";
             }
