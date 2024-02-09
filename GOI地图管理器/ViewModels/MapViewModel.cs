@@ -1,6 +1,9 @@
-﻿using Downloader;
+﻿using Avalonia.Markup.Xaml.Templates;
+using Downloader;
 using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
+using Ionic.Zip;
+using Ionic.Zlib;
 using LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
@@ -26,7 +29,9 @@ namespace GOI地图管理器.ViewModels
             if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
                 //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
+                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+                GamePath = setting.gamePath;
+                LevelPath = setting.levelPath;
             }
             else
             {
@@ -50,7 +55,9 @@ namespace GOI地图管理器.ViewModels
         {
             if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").gamePath;
+                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+                GamePath = setting.gamePath;
+                LevelPath = setting.levelPath;
             }
         }
         public async void GetMaps()
@@ -66,22 +73,33 @@ namespace GOI地图管理器.ViewModels
 
         public async void Download()
         {
-            List<object> urls = SelectedMap!.MapObject!["DownloadURL"] as List<object>;
             Map map = SelectedMap;
+            map.Downloadable = false;
+            List<object> urls = map!.MapObject!["DownloadURL"] as List<object>;
             var downloadOpt = new DownloadConfiguration()
             {
                 ChunkCount = 16, // file parts to download, the default value is 1
                 ParallelDownload = true // download parts of the file as parallel or not. The default value is false
             };
             var downloader = new DownloadService(downloadOpt);
-            downloader.DownloadStarted += SelectedMap.OnDownloadStarted;
-            downloader.DownloadProgressChanged += SelectedMap.OnDownloadProgressChanged;
-            //downloader.DownloadFileCompleted += SelectedMap.OnDownloadCompleted;
-            if (urls.Count == 1)
+            downloader.DownloadStarted += map.OnDownloadStarted;
+            downloader.DownloadProgressChanged += map.OnDownloadProgressChanged;
+            downloader.DownloadFileCompleted += map.OnDownloadCompleted;
+            if (urls!.Count == 1)
             {
                 string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[0]}");
                 SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
-                await downloader.DownloadFileTaskAsync(directUrl, $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip");
+                string fileName = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip";
+                await downloader.DownloadFileTaskAsync(directUrl, fileName);
+                map.Status = "解压中";
+                using (ZipFile zip = new ZipFile(fileName))
+                {
+                    zip.ExtractProgress += map.OnExtractProgressChanged;
+                    foreach (ZipEntry entry in zip)
+                    {
+                        await Task.Run(() => entry.Extract(LevelPath));
+                    }
+                }
             }
             else
             {
@@ -98,18 +116,45 @@ namespace GOI地图管理器.ViewModels
                 {
                     await downloader.DownloadFileTaskAsync(directUrls[i], $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
                 }
+                map.Status = "解压中";
+                string realZip = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip";
+                List<string> zipFiles = Directory.GetFiles($"{System.AppDomain.CurrentDomain.BaseDirectory}Download", $"*{map.Name}.zip.*").ToList();
+                using (Stream zipStream = File.OpenWrite(realZip))
+                {
+                    for (int i = 0; i < zipFiles.Count; i++)
+                    {
+                        using (Stream stream = File.OpenRead(zipFiles[i]))
+                        {
+                            stream.CopyTo(zipStream);
+                        }
+                        File.Delete(zipFiles[i]);
+                    }
+                }
+                using (ZipFile zip = ZipFile.Read(realZip))
+                {
+                    zip.ExtractProgress += map.OnExtractProgressChanged;
+                    foreach (ZipEntry entry in zip)
+                    {
+                        await Task.Run(() => entry.Extract(LevelPath));
+                    }
+                }
             }
             map.IsDownloading = false;
         }
 
-        public void OnSelectedListItemChanged(Map value)
+        public void OnSelectedMapChanged(Map value)
         {
             if(!value.IsLoaded)
             {
                 value.Load();
             }
             this.IsSelected = true;
+            if(File.Exists($"{LevelPath}/{value.Name}.scene"))
+            {
+                value.Downloadable = false;
+            }
             this.CurrentMap = value;
+            
         }
 
         public Map CurrentMap
@@ -147,7 +192,7 @@ namespace GOI地图管理器.ViewModels
             }
             set
             {
-                this.OnSelectedListItemChanged(value);
+                this.OnSelectedMapChanged(value);
                 this.RaiseAndSetIfChanged(ref this._selectedMap, value, "SelectedMap");
             }
         }
@@ -190,5 +235,6 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
+        public string LevelPath { get; set; }
     }
 }

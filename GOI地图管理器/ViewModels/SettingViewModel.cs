@@ -62,7 +62,7 @@ namespace GOI地图管理器.ViewModels
                         if (File.Exists($"{path}/GettingOverIt.exe"))
                         {
                             GamePath = path;
-                            LevelPath = $"{path}/Levels/";
+                            LevelPath = $"{path}/Levels";
                         }
                         else
                         {
