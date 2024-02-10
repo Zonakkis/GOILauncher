@@ -26,26 +26,14 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            gamePath = "未选择";
+            if (!Directory.Exists($"{directory}Download"))
             {
-                //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = setting.gamePath;
-                LevelPath = setting.levelPath;
-            }
-            else
-            {
-                //Setting = new Setting();
-                GamePath = "未选择";
-            }
-            if (!Directory.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Download"))
-            {
-                Directory.CreateDirectory($"{System.AppDomain.CurrentDomain.BaseDirectory}Download");
+                Directory.CreateDirectory($"{directory}Download");
             }
             Maps = new ObservableCollection<Map>();
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
-            isDownloadValid.Subscribe(x => UnSelectedGamePathNoteHide = x);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             GetMaps();
@@ -53,12 +41,16 @@ namespace GOI地图管理器.ViewModels
 
         public override void OnSelectedViewModelChanged()
         {
-            if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            GamePath = Setting.Instance.gamePath;
+        }
+        public void OnSelectedMapChanged(Map value)
+        {
+            if (!value.IsLoaded)
             {
-                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = setting.gamePath;
-                LevelPath = setting.levelPath;
+                value.Load();
             }
+            this.IsSelected = true;
+            this.CurrentMap = value;
         }
         public async void GetMaps()
         {
@@ -70,7 +62,6 @@ namespace GOI地图管理器.ViewModels
                 this.Maps.Add(new Map(map));
             }
         }
-
         public async void Download()
         {
             Map map = SelectedMap;
@@ -89,17 +80,10 @@ namespace GOI地图管理器.ViewModels
             {
                 string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[0]}");
                 SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
-                string fileName = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip";
+                string fileName = $"{directory}Download/{map.Name}.zip";
                 await downloader.DownloadFileTaskAsync(directUrl, fileName);
                 map.Status = "解压中";
-                using (ZipFile zip = new ZipFile(fileName))
-                {
-                    zip.ExtractProgress += map.OnExtractProgressChanged;
-                    foreach (ZipEntry entry in zip)
-                    {
-                        await Task.Run(() => entry.Extract(LevelPath));
-                    }
-                }
+                await ZipHelper.ExtractMap(fileName, LevelPath, map);
             }
             else
             {
@@ -110,53 +94,23 @@ namespace GOI地图管理器.ViewModels
                     directUrls.Add(directUrl);
                     //Trace.WriteLine(directUrl);
                     SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
-                    //LanzouyunDownloadHelper.Download(directurl, $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
+                    //LanzouyunDownloadHelper.Download(directurl, $"{directory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
                 }
                 for (int i = 0; i < directUrls.Count; i++)
                 {
-                    await downloader.DownloadFileTaskAsync(directUrls[i], $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
+                    await downloader.DownloadFileTaskAsync(directUrls[i], $"{directory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
                 }
+                map.Status = "合并中";
+                await ZipHelper.CombineZipSegment($"{directory}Download", $"{directory}Download/{map.Name}.zip", $"*{map.Name}.zip.*");
                 map.Status = "解压中";
-                string realZip = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download/{map.Name}.zip";
-                List<string> zipFiles = Directory.GetFiles($"{System.AppDomain.CurrentDomain.BaseDirectory}Download", $"*{map.Name}.zip.*").ToList();
-                using (Stream zipStream = File.OpenWrite(realZip))
-                {
-                    for (int i = 0; i < zipFiles.Count; i++)
-                    {
-                        using (Stream stream = File.OpenRead(zipFiles[i]))
-                        {
-                            stream.CopyTo(zipStream);
-                        }
-                        File.Delete(zipFiles[i]);
-                    }
-                }
-                using (ZipFile zip = ZipFile.Read(realZip))
-                {
-                    zip.ExtractProgress += map.OnExtractProgressChanged;
-                    foreach (ZipEntry entry in zip)
-                    {
-                        await Task.Run(() => entry.Extract(LevelPath));
-                    }
-                }
+                await ZipHelper.ExtractMap($"{directory}Download/{map.Name}.zip", LevelPath, map);
+                
             }
             map.IsDownloading = false;
+            map.Downloaded = true;
         }
 
-        public void OnSelectedMapChanged(Map value)
-        {
-            if(!value.IsLoaded)
-            {
-                value.Load();
-            }
-            this.IsSelected = true;
-            if(File.Exists($"{LevelPath}/{value.Name}.scene"))
-            {
-                value.Downloadable = false;
-            }
-            this.CurrentMap = value;
-            
-        }
-
+        private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
         public Map CurrentMap
         {
             get
@@ -198,43 +152,35 @@ namespace GOI地图管理器.ViewModels
         }
 
         private Map _selectedMap;
-
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
 
-
-
-        private bool unSelectedGamePathNoteHide;
-
-        public bool UnSelectedGamePathNoteHide
+        private bool selectedGamePathNoteHide;
+        public bool SelectedGamePathNoteHide
         {
-            get => unSelectedGamePathNoteHide;
+            get => selectedGamePathNoteHide;
             set
             {
-                this.RaiseAndSetIfChanged(ref unSelectedGamePathNoteHide, value, "UnSelectedGamePathNoteHide");
+                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "UnSelectedGamePathNoteHide");
             }
         }
 
-        //public Setting setting;
-        //public Setting Setting
-        //{
-        //    get => setting;
-        //    set
-        //    {
-        //        this.RaiseAndSetIfChanged(ref setting, value,"Setting");
-        //    }
-        //}
-
         public string gamePath;
-
         public string GamePath
         {
             get => gamePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref gamePath, value,"GamePath");
+                if (gamePath != value)
+                {
+                    this.RaiseAndSetIfChanged(ref gamePath, value, "GamePath");
+                    SelectedGamePathNoteHide = true; 
+                    foreach (var map in Maps)
+                    {
+                        map.CheckWhetherExisted();
+                    }
+                }
             }
         }
-
-        public string LevelPath { get; set; }
+        public string LevelPath { get => Setting.Instance.levelPath; }
     }
 }

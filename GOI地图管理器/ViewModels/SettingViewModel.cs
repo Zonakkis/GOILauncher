@@ -22,14 +22,6 @@ namespace GOI地图管理器.ViewModels
     {
         public SettingViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
-            {
-                Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-            }
-            else
-            {
-                Setting = new Setting();
-            }
             SelectPathCommand = ReactiveCommand.Create<int>(SelectFolder);
         }
         private async void SelectFolder(int option)
@@ -104,39 +96,30 @@ namespace GOI地图管理器.ViewModels
         public ReactiveCommand<int, Unit> SelectPathCommand { get; }
         public string GamePath
         {
-            get => Setting.gamePath;
+            get => Setting.Instance.gamePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.gamePath, value,"GamePath");
-                Setting.Save();
+                this.RaiseAndSetIfChanged(ref Setting.Instance.gamePath, value,"GamePath");
+                Setting.Instance.Save();
             }
         }
         public string LevelPath
         {
-            get => Setting.levelPath;
+            get => Setting.Instance.levelPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.levelPath, value, "LevelPath");
-                Setting.Save();
+                this.RaiseAndSetIfChanged(ref Setting.Instance.levelPath, value, "LevelPath");
+                Setting.Instance.Save();
             }
         }
-
         public string SteamPath
         {
-            get => Setting.steamPath;
+            get => Setting.Instance.steamPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.steamPath, value, "SteamPath");
-                Setting.Save();
+                this.RaiseAndSetIfChanged(ref Setting.Instance.steamPath, value, "SteamPath");
+                Setting.Instance.Save();
             }
-        }
-
-        public Setting setting;
-
-        public Setting Setting
-        {
-            get => setting;
-            set => this.RaiseAndSetIfChanged(ref setting, value, "Setting");
         }
     }
 }

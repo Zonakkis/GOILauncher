@@ -2,12 +2,14 @@
 using Avalonia.Media.Imaging;
 using Downloader;
 using Ionic.Zip;
+using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,26 +22,19 @@ namespace GOI地图管理器.Models
         public Map(LCObject map)
         {
             MapObject = map;
-            this.Name = (string)MapObject["Name"];
+            Name = (string)MapObject["Name"];
             IsLoaded = false;
             Downloadable = true;
         }
-
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
-
         {
-
             if (PropertyChanged != null)
-
             {
-
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-
             }
 
         }
-
         public void Load()
         {
             this.Author = (string)MapObject["Author"];
@@ -49,6 +44,14 @@ namespace GOI地图管理器.Models
             IsLoaded = true;
         }
 
+        public void CheckWhetherExisted()
+        {
+            if (Setting.Instance.levelPath != "未选择（选择游戏路径后自动选择，也可手动更改）" && File.Exists($"{Setting.Instance.levelPath}/{Name}.scene"))
+            {
+                Downloaded = true;
+                Downloadable = false;
+            }
+        }
         public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
         {
             //DownloadSize += eventArgs.TotalBytesToReceive;
@@ -60,8 +63,6 @@ namespace GOI地图管理器.Models
         {
             //Trace.WriteLine(eventArgs.ActiveChunks);
         }
-
-        
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
@@ -72,7 +73,6 @@ namespace GOI地图管理器.Models
             ReceivedSize += SingleFileSize;
 
         }
-
         public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
         {
             if (eventArgs.TotalBytesToTransfer == 0)
@@ -83,23 +83,28 @@ namespace GOI地图管理器.Models
             ProgressPercentage = Convert.ToInt32((float)eventArgs.BytesTransferred / eventArgs.TotalBytesToTransfer * 100f);
             Trace.WriteLine(ProgressPercentage);
         }
-
-
         public LCObject MapObject { get; set; }
         public string Name { get; set; }
-
         public string Author { get; set; }
-
         public string Size { get; set; }
-
         public string Preview { get; set; }
-
         public bool IsLoaded { get; set; }
+
+        private bool downloaded;
+        public bool Downloaded { 
+            get => downloaded;
+            set
+            {
+                downloaded = value;
+                NotifyPropertyChanged("Downloaded");
+            }
+        }
 
         public bool isDownloading;
         public bool IsDownloading
         {
-            get => isDownloading; set
+            get => isDownloading; 
+            set
             {
                 isDownloading = value;
                 NotifyPropertyChanged("IsDownloading");
@@ -112,16 +117,19 @@ namespace GOI地图管理器.Models
         public int progressPercentage;
         public int ProgressPercentage
         {
-            get => progressPercentage;  set
+            get => progressPercentage; 
+            set
             {
                 progressPercentage = value;
                 NotifyPropertyChanged("ProgressPercentage");
             }
         }
+
         public string status;
         public string Status
         {
-            get => status; set
+            get => status; 
+            set
             {
                 status = value;
                 NotifyPropertyChanged("Status");
@@ -131,7 +139,8 @@ namespace GOI地图管理器.Models
         public bool downloadable;
         public bool Downloadable
         {
-            get => downloadable; set
+            get => downloadable; 
+            set
             {
                 downloadable = value;
                 NotifyPropertyChanged("Downloadable");

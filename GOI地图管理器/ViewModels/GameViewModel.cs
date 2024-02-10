@@ -19,39 +19,20 @@ namespace GOI地图管理器.ViewModels
         {
             if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = setting.gamePath;
-                SteamPath = (setting.steamPath[0] != '未') ? setting.steamPath : "未选择";
-                UnSelectedGamePathNoteHide = true;
-                GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
-                ModpackVersion = GetModpackVersion(GamePath);
-                LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
-                Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
+                Setting.Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+                GamePath = Setting.Instance.gamePath;
+                //Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
             }
             else
             {
-                //Setting = new Setting();
-                GamePath = "未选择";
-                SteamPath = "未选择";
+                gamePath = "未选择";
             }
             LaunchCommand = ReactiveCommand.Create<int>(LaunchGOI);
         }
         public override void OnSelectedViewModelChanged()
         {
-            if (SteamPath == "未选择" && GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
-            {
-                Setting setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = setting.gamePath;
-                SteamPath = (setting.steamPath[0] != '未') ? setting.steamPath : "未选择";
-                //Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
-                UnSelectedGamePathNoteHide = true;
-                GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length); 
-                ModpackVersion = GetModpackVersion(GamePath);
-                LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
-            }
+            GamePath = Setting.Instance.gamePath;
         }
-
         string GetGameVersion(long exeSize)
         {
             switch(exeSize)
@@ -62,7 +43,6 @@ namespace GOI地图管理器.ViewModels
                     return "未知版本";
             }
         }
-
         string GetModpackVersion(string gamepath)
         {
             Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
@@ -90,7 +70,6 @@ namespace GOI地图管理器.ViewModels
             //}
 
         }
-
         string GetLevelLoaderVersion(string gamepath)
         {
             Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
@@ -104,37 +83,50 @@ namespace GOI地图管理器.ViewModels
                 return "未安装";
             }
         }
-
         public void LaunchGOI(int para)
         {
             switch(para)
             {
                 case 1:
                     Process.Start($"{GamePath}/GettingOverIt.exe");
-                    break;
+                    return;
                 case 2:
-                    if (SteamPath != "未选择")
+                    if (SteamPath != "未选择（需要通过Steam启动游戏时才选择，否则可不选）")
                     {
                         Process.Start($"{SteamPath}/steam.exe","steam://rungameid/240720");
                     }
-                    break;
+                    return;
             }
         }
-        public string GamePath;
-        public string SteamPath;
 
-        private bool unSelectedGamePathNoteHide;
-
-        public bool UnSelectedGamePathNoteHide
+        public string gamePath;
+        public string GamePath
         {
-            get => unSelectedGamePathNoteHide; set
+            get => gamePath;
+            set
             {
-                this.RaiseAndSetIfChanged(ref unSelectedGamePathNoteHide, value, "UnSelectedNoteHide");
+                if (gamePath != value)
+                {
+                    this.RaiseAndSetIfChanged(ref gamePath, value, "GamePath");
+                    SelectedGamePathNoteHide = true;
+                    GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
+                    ModpackVersion = GetModpackVersion(GamePath);
+                    LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
+                }
+            }
+        }
+        public string SteamPath { get => Setting.Instance.steamPath; }
+
+        private bool selectedGamePathNoteHide;
+        public bool SelectedGamePathNoteHide
+        {
+            get => selectedGamePathNoteHide; set
+            {
+                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "UnSelectedNoteHide");
             }
         }
 
         string gameVersion;
-
         public string GameVersion
         {
             get => gameVersion; set
@@ -144,7 +136,6 @@ namespace GOI地图管理器.ViewModels
         }
 
         string modpackVersion;
-
         public string ModpackVersion
         {
             get => modpackVersion; set
@@ -154,7 +145,6 @@ namespace GOI地图管理器.ViewModels
         }
 
         string levelLoaderVersion;
-
         public string LevelLoaderVersion
         {
             get => levelLoaderVersion; set
