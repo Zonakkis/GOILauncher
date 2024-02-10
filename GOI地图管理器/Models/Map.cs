@@ -39,11 +39,19 @@ namespace GOI地图管理器.Models
         {
             this.Author = (string)MapObject["Author"];
             this.Size = (string)MapObject["Size"];
-            LCFile file = new LCFile("Preview.png", new Uri((string)MapObject["Preview"]));
+            object obj = MapObject["Preview"];
+            LCFile file;
+            if ((string)obj != "") 
+            {
+                file = new LCFile("Preview.png", new Uri((string)obj));
+            }
+            else
+            {
+                file = new LCFile("Preview.png", new Uri("http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"));
+            }
             this.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
             IsLoaded = true;
         }
-
         public void CheckWhetherExisted()
         {
             if (Setting.Instance.levelPath != "未选择（选择游戏路径后自动选择，也可手动更改）" && File.Exists($"{Setting.Instance.levelPath}/{Name}.scene"))
@@ -82,6 +90,10 @@ namespace GOI地图管理器.Models
             }
             ProgressPercentage = Convert.ToInt32((float)eventArgs.BytesTransferred / eventArgs.TotalBytesToTransfer * 100f);
             Trace.WriteLine(ProgressPercentage);
+        }
+        public override string ToString()
+        {
+            return Name;
         }
         public LCObject MapObject { get; set; }
         public string Name { get; set; }

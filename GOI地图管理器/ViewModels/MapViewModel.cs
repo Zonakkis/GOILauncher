@@ -32,13 +32,13 @@ namespace GOI地图管理器.ViewModels
                 Directory.CreateDirectory($"{directory}Download");
             }
             Maps = new ObservableCollection<Map>();
+            SearchCommand = ReactiveCommand.Create(SearchMap);
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             GetMaps();
         }
-
         public override void OnSelectedViewModelChanged()
         {
             GamePath = Setting.Instance.gamePath;
@@ -61,6 +61,12 @@ namespace GOI地图管理器.ViewModels
             {
                 this.Maps.Add(new Map(map));
             }
+            this.RaisePropertyChanged("Maps");
+        }
+        public void SearchMap()
+        {
+            Map map = Maps.ToList().Find(t => t.Name == Search);
+            SelectedMap = map;
         }
         public async void Download()
         {
@@ -138,20 +144,29 @@ namespace GOI地图管理器.ViewModels
 
         private bool _isSelected;
         public ObservableCollection<Map> Maps { get; }
+
+        private Map _selectedMap;
         public Map SelectedMap
         {
-            get
-            {
-                return this._selectedMap;
-            }
+            get => _selectedMap;
             set
             {
-                this.OnSelectedMapChanged(value);
-                this.RaiseAndSetIfChanged(ref this._selectedMap, value, "SelectedMap");
+                OnSelectedMapChanged(value);
+                this.RaiseAndSetIfChanged(ref _selectedMap, value, "SelectedMap");
             }
         }
 
-        private Map _selectedMap;
+        public string search;
+        public string Search
+        {
+            get => search;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref search, value, "Search");
+            }
+        }
+
+        public ReactiveCommand<Unit, Unit> SearchCommand { get; }
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
 
         private bool selectedGamePathNoteHide;
@@ -182,5 +197,6 @@ namespace GOI地图管理器.ViewModels
             }
         }
         public string LevelPath { get => Setting.Instance.levelPath; }
+
     }
 }

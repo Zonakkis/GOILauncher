@@ -30,7 +30,6 @@ namespace GOI地图管理器.ViewModels
             {
                 AllowMultiple = false
             };
-
             switch (option)
             {
                 case 1:
@@ -43,10 +42,7 @@ namespace GOI地图管理器.ViewModels
                     dialog.Title = "选择Steam路径";
                     break;
             }
-
-
             var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
-
             if (folder.Count > 0)
             {
                 string path;
