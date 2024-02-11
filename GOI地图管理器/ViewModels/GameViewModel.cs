@@ -27,9 +27,8 @@ namespace GOI地图管理器.ViewModels
             {
                 gamePath = "未选择";
             }
-            LaunchCommand = ReactiveCommand.Create<int>(LaunchGOI);
         }
-        public override void OnSelectedViewModelChanged()
+        public override void OnSelectedViewChanged()
         {
             GamePath = Setting.Instance.gamePath;
         }
@@ -152,7 +151,5 @@ namespace GOI地图管理器.ViewModels
                 this.RaiseAndSetIfChanged(ref levelLoaderVersion, value, "LevelLoaderVersion");
             }
         }
-
-        public ReactiveCommand<int, Unit> LaunchCommand { get; }
     }
 }

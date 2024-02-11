@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GOI地图管理器.Models
 {
-    public class Setting : INotifyPropertyChanged
+    public class Setting
     {
 
         public Setting()
@@ -29,21 +29,6 @@ namespace GOI地图管理器.Models
         public string steamPath;
 
         public static Setting Instance = new Setting();
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
-
-        {
-
-            if (PropertyChanged != null)
-
-            {
-
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-
-            }
-
-        }
         public void Save()
         {
             StorageHelper.SaveJSON(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json", this, true);

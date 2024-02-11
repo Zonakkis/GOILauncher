@@ -17,15 +17,13 @@ using System.Xml.Linq;
 
 namespace GOI地图管理器.Models
 {
-    public class Map:INotifyPropertyChanged
+    public class Map:LCObject, INotifyPropertyChanged
     {
-        public Map(LCObject map)
+        public Map() : base("Map")
         {
-            MapObject = map;
-            Name = (string)MapObject["Name"];
-            IsLoaded = false;
             Downloadable = true;
         }
+
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -34,23 +32,6 @@ namespace GOI地图管理器.Models
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
 
-        }
-        public void Load()
-        {
-            this.Author = (string)MapObject["Author"];
-            this.Size = (string)MapObject["Size"];
-            object obj = MapObject["Preview"];
-            LCFile file;
-            if ((string)obj != "") 
-            {
-                file = new LCFile("Preview.png", new Uri((string)obj));
-            }
-            else
-            {
-                file = new LCFile("Preview.png", new Uri("http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"));
-            }
-            this.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
-            IsLoaded = true;
         }
         public void CheckWhetherExisted()
         {
@@ -95,12 +76,30 @@ namespace GOI地图管理器.Models
         {
             return Name;
         }
-        public LCObject MapObject { get; set; }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public string Size { get; set; }
-        public string Preview { get; set; }
-        public bool IsLoaded { get; set; }
+        public string Name 
+        {
+            get=> (this["Name"] as string)!;
+        }
+        public string Author 
+        {
+            get => (this["Author"] as string)!;
+        }
+        public string Size 
+        { 
+            get => (this["Size"] as string)!;
+        }
+        public string Preview 
+        { 
+            get => (this["Preview"] as string)!;
+            set
+            {
+                this["Preview"] = value;
+            }
+        }
+        public List<string> DownloadURL
+        {
+            get=>(this["DownloadURL"] as List<object>)!.ConvertAll<string>(input => (input as string)!);
+        }
 
         private bool downloaded;
         public bool Downloaded { 

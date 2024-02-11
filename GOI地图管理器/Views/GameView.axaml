@@ -17,7 +17,7 @@
 			<Label Grid.Row="1" Grid.Column="1" Content="{Binding ModpackVersion}"/>
 			<Label Grid.Row="2" Grid.Column="0" Content="LevelLoader版本："/>
 			<Label Grid.Row="2" Grid.Column="1" Content="{Binding LevelLoaderVersion}"/>
-			<SplitButton  Command="{Binding LaunchCommand}" Background="Aqua" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5">
+			<SplitButton  Command="{Binding LaunchGOI}" Background="Aqua" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5">
 				<SplitButton.CommandParameter>
 					<sys:Int32>1</sys:Int32>
 				</SplitButton.CommandParameter>
@@ -26,12 +26,12 @@
 				</SplitButton.Content>
 				<SplitButton.Flyout>
 					<MenuFlyout Placement="Top">
-						<MenuItem Background="Aqua" Command="{Binding LaunchCommand}" Header="通过Steam启动" CornerRadius="5" ToolTip.Placement="AnchorAndGravity">
+						<MenuItem Background="Aqua" Command="{Binding LaunchGOI}" Header="通过Steam启动" CornerRadius="5" ToolTip.Placement="AnchorAndGravity">
 							<MenuItem.CommandParameter>
 								<sys:Int32>2</sys:Int32>
 							</MenuItem.CommandParameter>
 							<ToolTip.Tip>
-								<TextBlock Text="只有在设置里选择了Steam路径才能启动哦"/>
+								<TextBlock FontSize="15" Text="只有在设置里选择了Steam路径才能启动哦"/>
 							</ToolTip.Tip>
 						</MenuItem>
 					</MenuFlyout>

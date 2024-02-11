@@ -12,106 +12,79 @@ namespace GOI地图管理器.ViewModels
     {
         public MainWindowViewModel()
         {
-            SelectedListItem = Items[0];
+            SelectedView = Views[0];
         }
-        public void ChangePane()
+        public void ChangeView()
         {
             IsPaneOpen = !IsPaneOpen;
             Trace.WriteLine(IsPaneOpen);
         }
-        public void OnSelectedListItemChanged(ListItemTemplate value)
+        public void OnSelectedViewChanged(ViewTemplate value)
         {
-            value.View.OnSelectedViewModelChanged();
-            CurrentPage = value.View;
+            value.View.OnSelectedViewChanged();
+            CurrentView = value.View;
 
-        }
-        public string Description
-        {
-            get
-            {
-                return _description;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _description, value, "Description");
-            }
-        }
-
-        public bool IsLoading
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        public bool IsReady
-        {
-            get
-            {
-                return true;
-            }
         }
 
         public bool IsPaneOpen
         {
             get
             {
-                return _isPaneOpen;
+                return isPaneOpen;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref _isPaneOpen, value, "IsPaneOpen");
+                this.RaiseAndSetIfChanged(ref isPaneOpen, value, "IsPaneOpen");
             }
         }
 
-        public ViewModelBase CurrentPage
+        public ViewModelBase CurrentView
         {
             get
             {
-                return _currentPage;
+                return currentView;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref _currentPage, value, "CurrentPage");
+                this.RaiseAndSetIfChanged(ref currentView, value, "CurrentView");
             }
         }
 
-        public ListItemTemplate SelectedListItem
+        public ViewTemplate SelectedView
         {
             get
             {
-                return _selectedListItem!;
+                return selectedView!;
             }
             set
             {
-                OnSelectedListItemChanged(value);
-                this.RaiseAndSetIfChanged(ref _selectedListItem, value, "SelectedListItem");
+                OnSelectedViewChanged(value);
+                this.RaiseAndSetIfChanged(ref selectedView, value, "SelectedView");
             }
         }
 
-        public ObservableCollection<ListItemTemplate> Items { get; } = new ObservableCollection<ListItemTemplate>
+        public ObservableCollection<ViewTemplate> Views { get; } = new ObservableCollection<ViewTemplate>
         {
-            new ListItemTemplate(typeof(GameViewModel), "游戏"),
-            new ListItemTemplate(typeof(ModViewModel), "Mod"),
-            new ListItemTemplate(typeof(MapViewModel), "地图"),
-            new ListItemTemplate(typeof(SettingViewModel), "设置")
+            new ViewTemplate(typeof(GameViewModel), "游戏"),
+            new ViewTemplate(typeof(ModViewModel), "Mod"),
+            new ViewTemplate(typeof(MapViewModel), "地图"),
+            new ViewTemplate(typeof(SettingViewModel), "设置")
         };
 
         private string _description = string.Empty;
 
-        private bool _isPaneOpen;
+        private bool isPaneOpen;
 
-        private ViewModelBase _currentPage = new GameViewModel();
+        private ViewModelBase currentView = new GameViewModel();
 
-        private ListItemTemplate? _selectedListItem;
+        private ViewTemplate? selectedView;
 
         
     }
 
-    public class ListItemTemplate
+    public class ViewTemplate
     {
-        public ListItemTemplate(Type type, string name)
+        public ViewTemplate(Type type, string name)
         {
             ModelType = type;
             Label = name;

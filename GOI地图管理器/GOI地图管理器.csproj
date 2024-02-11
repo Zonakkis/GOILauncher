@@ -4,13 +4,18 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PackageId>GOI地图管理器</PackageId>
     <Version>0.0.1</Version>
     <Title>GOI地图管理器</Title>
     <Authors>Zonakkis</Authors>
     <Product>GOI地图管理器</Product>
+    <AssemblyName>GOI地图管理器</AssemblyName>
+    <ApplicationIcon>Assets\goi.ico</ApplicationIcon>
+    <Company>Zonakkis</Company>
+    <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
+    <FileVersion>0.0.1</FileVersion>
+    <AssemblyVersion>0.0.1</AssemblyVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -25,6 +30,10 @@
 
   <ItemGroup>
     <None Remove="Assets\goi.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\goi.ico" />
   </ItemGroup>
 
 

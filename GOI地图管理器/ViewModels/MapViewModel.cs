@@ -6,6 +6,7 @@ using Ionic.Zip;
 using Ionic.Zlib;
 using LeanCloud;
 using LeanCloud.Storage;
+using Microsoft.VisualBasic;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -32,35 +33,51 @@ namespace GOI地图管理器.ViewModels
                 Directory.CreateDirectory($"{directory}Download");
             }
             Maps = new ObservableCollection<Map>();
-            SearchCommand = ReactiveCommand.Create(SearchMap);
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
+            LCObject.RegisterSubclass("Map", () => new Map());
             GetMaps();
         }
-        public override void OnSelectedViewModelChanged()
+        public override void OnSelectedViewChanged()
         {
             GamePath = Setting.Instance.gamePath;
         }
-        public void OnSelectedMapChanged(Map value)
+        public void OnSelectedMapChanged(Map map)
         {
-            if (!value.IsLoaded)
+            IsSelectedMap = (map != null);
+            if(IsSelectedMap) 
             {
-                value.Load();
+                CurrentMap = map!;
             }
-            this.IsSelected = true;
-            this.CurrentMap = value;
         }
         public async void GetMaps()
         {
-            LCQuery<LCObject> query = new LCQuery<LCObject>("Maps");
+            LCQuery<Map> query = new LCQuery<Map>("Map");
             query.OrderByAscending("Name");
-            ReadOnlyCollection<LCObject> maps = await query.Find();
-            foreach (LCObject map in maps)
+            ReadOnlyCollection<Map> maps = await query.Find();
+            bool levelPathExisted = (gamePath != "未选择");
+            foreach (Map map in maps)
             {
-                this.Maps.Add(new Map(map));
+                LCFile file;
+                if (map.Preview != null)
+                {
+                    file = new LCFile("Preview.png", new Uri(map.Preview));
+                }
+                else
+                {
+                    file = new LCFile("Preview.png", new Uri("http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"));
+                }
+                if (levelPathExisted)
+                {
+                    map.CheckWhetherExisted();
+                }
+                map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
+                Maps.Add(map);
             }
+            query.OrderByAscending("updatedAt");
+            LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
             this.RaisePropertyChanged("Maps");
         }
         public void SearchMap()
@@ -72,7 +89,6 @@ namespace GOI地图管理器.ViewModels
         {
             Map map = SelectedMap;
             map.Downloadable= false;
-            List<object> urls = map!.MapObject!["DownloadURL"] as List<object>;
             var downloadOpt = new DownloadConfiguration()
             {
                 ChunkCount = 16, // file parts to download, the default value is 1
@@ -82,9 +98,9 @@ namespace GOI地图管理器.ViewModels
             downloader.DownloadStarted += map.OnDownloadStarted;
             downloader.DownloadProgressChanged += map.OnDownloadProgressChanged;
             downloader.DownloadFileCompleted += map.OnDownloadCompleted;
-            if (urls!.Count == 1)
+            if (map.DownloadURL.Count == 1)
             {
-                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[0]}");
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[0]}");
                 SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
                 string fileName = $"{directory}Download/{map.Name}.zip";
                 await downloader.DownloadFileTaskAsync(directUrl, fileName);
@@ -94,9 +110,9 @@ namespace GOI地图管理器.ViewModels
             else
             {
                 List<string> directUrls = new List<string>();
-                for (int i = 0; i < urls.Count; i++)
+                for (int i = 0; i < map.DownloadURL.Count; i++)
                 {
-                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{(string)urls[i]}");
+                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[i]}");
                     directUrls.Add(directUrl);
                     //Trace.WriteLine(directUrl);
                     SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
@@ -121,38 +137,39 @@ namespace GOI地图管理器.ViewModels
         {
             get
             {
-                return this._currentMap;
+                return this.currentMap;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._currentMap, value, "CurrentMap");
+                this.RaiseAndSetIfChanged(ref this.currentMap, value, "CurrentMap");
             }
         }
 
-        private Map _currentMap;
-        public bool IsSelected
+        private Map currentMap;
+        public bool IsSelectedMap
         {
             get
             {
-                return this._isSelected;
+                return isSelectedMap;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._isSelected, value, "IsSelected");
+                this.RaiseAndSetIfChanged(ref isSelectedMap, value, "IsSelectedMap");
             }
         }
 
-        private bool _isSelected;
+        private bool isSelectedMap;
         public ObservableCollection<Map> Maps { get; }
+        public string LastUpdateTime { get; set; }
 
-        private Map _selectedMap;
+        private Map selectedMap;
         public Map SelectedMap
         {
-            get => _selectedMap;
+            get => selectedMap;
             set
             {
                 OnSelectedMapChanged(value);
-                this.RaiseAndSetIfChanged(ref _selectedMap, value, "SelectedMap");
+                this.RaiseAndSetIfChanged(ref selectedMap, value, "SelectedMap");
             }
         }
 
@@ -165,8 +182,6 @@ namespace GOI地图管理器.ViewModels
                 this.RaiseAndSetIfChanged(ref search, value, "Search");
             }
         }
-
-        public ReactiveCommand<Unit, Unit> SearchCommand { get; }
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
 
         private bool selectedGamePathNoteHide;
@@ -196,7 +211,10 @@ namespace GOI地图管理器.ViewModels
                 }
             }
         }
-        public string LevelPath { get => Setting.Instance.levelPath; }
+        public string LevelPath
+        {
+            get => Setting.Instance.levelPath; 
+        }
 
     }
 }

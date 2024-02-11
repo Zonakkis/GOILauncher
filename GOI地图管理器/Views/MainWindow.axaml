@@ -26,9 +26,9 @@
                 >
 		<SplitView.Pane>
 			<StackPanel Background="White">
-				<Button Content="←" Command="{Binding ChangePane}">
+				<Button Content="←" Command="{Binding ChangeView}">
 				</Button>
-				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" Background="White" CornerRadius="5">
+				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Views}" SelectedItem="{Binding SelectedView}" Background="White" CornerRadius="5">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Label}"  />
@@ -38,7 +38,7 @@
 			</StackPanel>
 		</SplitView.Pane>
 		<SplitView.Content>
-			<TransitioningContentControl Content="{Binding CurrentPage}"/>
+			<TransitioningContentControl Content="{Binding CurrentView}"/>
 		</SplitView.Content>
 	</SplitView>
 
