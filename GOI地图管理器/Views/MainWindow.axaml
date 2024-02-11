@@ -1,15 +1,15 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:designvm="using:GOI地图管理器.DesignViewModels"
-        xmlns:vm="using:GOI地图管理器.ViewModels"
-        xmlns:views="using:GOI地图管理器.Views"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        xmlns:vm="using:GOI地图管理器.ViewModels"
+        xmlns:views="using:GOI地图管理器.Views"
         x:Class="GOI地图管理器.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/goi.ico"
         Title="GOI地图管理器"
+		WindowStartupLocation="CenterScreen"
          >
 	<Window.Title >
 	</Window.Title>
@@ -26,9 +26,9 @@
                 >
 		<SplitView.Pane>
 			<StackPanel Background="White">
-				<Button Content="←" Command="{Binding ChangePane}">
+				<Button Content="←" Command="{Binding ChangeView}">
 				</Button>
-				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}" Background="White" CornerRadius="5">
+				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Views}" SelectedItem="{Binding SelectedView}" Background="White" CornerRadius="5">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<TextBlock Text="{Binding Label}"  />
@@ -38,7 +38,7 @@
 			</StackPanel>
 		</SplitView.Pane>
 		<SplitView.Content>
-			<TransitioningContentControl Content="{Binding CurrentPage}"/>
+			<TransitioningContentControl Content="{Binding CurrentView}"/>
 		</SplitView.Content>
 	</SplitView>
 

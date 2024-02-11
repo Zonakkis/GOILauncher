@@ -1,7 +1,12 @@
-﻿using GOI地图管理器.Helpers;
+﻿using Avalonia.Markup.Xaml.Templates;
+using Downloader;
+using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
+using Ionic.Zip;
+using Ionic.Zlib;
 using LeanCloud;
 using LeanCloud.Storage;
+using Microsoft.VisualBasic;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -11,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,133 +27,193 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}settings.json"))
+            gamePath = "未选择";
+            if (!Directory.Exists($"{directory}Download"))
             {
-                //Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
-            }
-            else
-            {
-                //Setting = new Setting();
-                GamePath = "未选择";
+                Directory.CreateDirectory($"{directory}Download");
             }
             Maps = new ObservableCollection<Map>();
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
-            isDownloadValid.Subscribe(x => UnSelectedNoteHide = x);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
+            LCObject.RegisterSubclass("Map", () => new Map());
             GetMaps();
         }
-
-        public override void OnSelectedViewModelChanged()
+        public override void OnSelectedViewChanged()
         {
-            if (GamePath == "未选择" && File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            GamePath = Setting.Instance.gamePath;
+        }
+        public void OnSelectedMapChanged(Map map)
+        {
+            IsSelectedMap = (map != null);
+            if(IsSelectedMap) 
             {
-                GamePath = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json").GamePath;
+                CurrentMap = map!;
             }
         }
         public async void GetMaps()
         {
-            LCQuery<LCObject> query = new LCQuery<LCObject>("Maps");
+            LCQuery<Map> query = new LCQuery<Map>("Map");
             query.OrderByAscending("Name");
-            ReadOnlyCollection<LCObject> maps = await query.Find();
-            foreach (LCObject map in maps)
+            ReadOnlyCollection<Map> maps = await query.Find();
+            bool levelPathExisted = (gamePath != "未选择");
+            foreach (Map map in maps)
             {
-                this.Maps.Add(new Map(map));
+                LCFile file;
+                if (map.Preview != null)
+                {
+                    file = new LCFile("Preview.png", new Uri(map.Preview));
+                }
+                else
+                {
+                    file = new LCFile("Preview.png", new Uri("http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"));
+                }
+                if (levelPathExisted)
+                {
+                    map.CheckWhetherExisted();
+                }
+                map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
+                Maps.Add(map);
             }
+            query.OrderByAscending("updatedAt");
+            LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
+            this.RaisePropertyChanged("Maps");
         }
-
-        public void Download()
+        public void SearchMap()
         {
-            Trace.WriteLine(1);
+            Map map = Maps.ToList().Find(t => t.Name == Search);
+            SelectedMap = map;
         }
-
-        public void OnSelectedListItemChanged(Map value)
+        public async void Download()
         {
-            if(!value.IsLoaded)
+            Map map = SelectedMap;
+            map.Downloadable= false;
+            var downloadOpt = new DownloadConfiguration()
             {
-                value.Load();
+                ChunkCount = 16, // file parts to download, the default value is 1
+                ParallelDownload = true // download parts of the file as parallel or not. The default value is false
+            };
+            var downloader = new DownloadService(downloadOpt);
+            downloader.DownloadStarted += map.OnDownloadStarted;
+            downloader.DownloadProgressChanged += map.OnDownloadProgressChanged;
+            downloader.DownloadFileCompleted += map.OnDownloadCompleted;
+            if (map.DownloadURL.Count == 1)
+            {
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[0]}");
+                SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
+                string fileName = $"{directory}Download/{map.Name}.zip";
+                await downloader.DownloadFileTaskAsync(directUrl, fileName);
+                map.Status = "解压中";
+                await ZipHelper.ExtractMap(fileName, LevelPath, map);
             }
-            this.IsSelected = true;
-            this.CurrentMap = value;
+            else
+            {
+                List<string> directUrls = new List<string>();
+                for (int i = 0; i < map.DownloadURL.Count; i++)
+                {
+                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[i]}");
+                    directUrls.Add(directUrl);
+                    //Trace.WriteLine(directUrl);
+                    SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
+                    //LanzouyunDownloadHelper.Download(directurl, $"{directory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
+                }
+                for (int i = 0; i < directUrls.Count; i++)
+                {
+                    await downloader.DownloadFileTaskAsync(directUrls[i], $"{directory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
+                }
+                map.Status = "合并中";
+                await ZipHelper.CombineZipSegment($"{directory}Download", $"{directory}Download/{map.Name}.zip", $"*{map.Name}.zip.*");
+                map.Status = "解压中";
+                await ZipHelper.ExtractMap($"{directory}Download/{map.Name}.zip", LevelPath, map);
+                
+            }
+            map.IsDownloading = false;
+            map.Downloaded = true;
         }
 
+        private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
         public Map CurrentMap
         {
             get
             {
-                return this._currentMap;
+                return this.currentMap;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._currentMap, value, "CurrentMap");
+                this.RaiseAndSetIfChanged(ref this.currentMap, value, "CurrentMap");
             }
         }
 
-        private Map _currentMap;
-        public bool IsSelected
+        private Map currentMap;
+        public bool IsSelectedMap
         {
             get
             {
-                return this._isSelected;
+                return isSelectedMap;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this._isSelected, value, "IsSelected");
+                this.RaiseAndSetIfChanged(ref isSelectedMap, value, "IsSelectedMap");
             }
         }
 
-        private bool _isSelected;
+        private bool isSelectedMap;
         public ObservableCollection<Map> Maps { get; }
+        public string LastUpdateTime { get; set; }
+
+        private Map selectedMap;
         public Map SelectedMap
         {
-            get
-            {
-                return this._selectedMap;
-            }
+            get => selectedMap;
             set
             {
-                this.OnSelectedListItemChanged(value);
-                this.RaiseAndSetIfChanged(ref this._selectedMap, value, "SelectedMap");
+                OnSelectedMapChanged(value);
+                this.RaiseAndSetIfChanged(ref selectedMap, value, "SelectedMap");
             }
         }
 
-        private Map _selectedMap;
-
+        public string search;
+        public string Search
+        {
+            get => search;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref search, value, "Search");
+            }
+        }
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
 
-
-
-        private bool unSelectedNoteHide;
-
-        public bool UnSelectedNoteHide
+        private bool selectedGamePathNoteHide;
+        public bool SelectedGamePathNoteHide
         {
-            get => unSelectedNoteHide; set
+            get => selectedGamePathNoteHide;
+            set
             {
-                this.RaiseAndSetIfChanged(ref unSelectedNoteHide, value, "UnSelectedNoteHide");
+                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "UnSelectedGamePathNoteHide");
             }
         }
 
-        //public Setting setting;
-        //public Setting Setting
-        //{
-        //    get => setting;
-        //    set
-        //    {
-        //        this.RaiseAndSetIfChanged(ref setting, value,"Setting");
-        //    }
-        //}
-
         public string gamePath;
-
         public string GamePath
         {
             get => gamePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref gamePath, value,"GamePath");
+                if (gamePath != value)
+                {
+                    this.RaiseAndSetIfChanged(ref gamePath, value, "GamePath");
+                    SelectedGamePathNoteHide = true; 
+                    foreach (var map in Maps)
+                    {
+                        map.CheckWhetherExisted();
+                    }
+                }
             }
+        }
+        public string LevelPath
+        {
+            get => Setting.Instance.levelPath; 
         }
 
     }

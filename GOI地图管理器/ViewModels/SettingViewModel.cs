@@ -5,6 +5,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Platform.Storage;
 using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
+using GOI地图管理器.Views;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -21,74 +22,100 @@ namespace GOI地图管理器.ViewModels
     {
         public SettingViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
-            {
-                Setting = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "settings.json");
-            }
-            else
-            {
-                Setting = new Setting();
-            }
             SelectPathCommand = ReactiveCommand.Create<int>(SelectFolder);
         }
-
-        public ReactiveCommand<int, Unit> SelectPathCommand { get; }
-
-
-
-        public string GamePath
-        {
-            get => Setting.gamePath;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref Setting.gamePath, value,"GamePath");
-                Setting.Save();
-            }
-        }
-
-
         private async void SelectFolder(int option)
         {
             var dialog = new FolderPickerOpenOptions
             {
                 AllowMultiple = false
             };
-
             switch (option)
             {
                 case 1:
                     dialog.Title = "选择游戏路径";
                     break;
                 case 2:
-                    dialog.Title = "选择下载路径";
+                    dialog.Title = "选择地图路径";
+                    break;
+                case 3:
+                    dialog.Title = "选择Steam路径";
                     break;
             }
-
-
             var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
-
             if (folder.Count > 0)
             {
+                string path;
                 switch (option)
                 {
                     case 1:
-                        string path = folder[0].Path.ToString();
-                        GamePath = path.Substring(8, path.Length - 8);
-                        Trace.WriteLine(Setting.GamePath);
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        if (File.Exists($"{path}/GettingOverIt.exe"))
+                        {
+                            GamePath = path;
+                            LevelPath = $"{path}/Levels";
+                        }
+                        else
+                        {
+                            var messageBox = new MessageBoxWindow();
+                            var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
+                            messageBoxWindowViewModel.Message = "没有找到GettingOverIt.exe，是不是找错路径了喵。";
+                            messageBox.DataContext = messageBoxWindowViewModel;
+                            await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
+                        }
                         return;
                     case 2:
-                        //dialog.Title = "选择下载路径";
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        LevelPath = path;
+                        return;
+                    case 3:
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        if (File.Exists($"{path}/steam.exe"))
+                        {
+                            SteamPath = path;
+                        }
+                        else
+                        {
+                            var messageBox = new MessageBoxWindow();
+                            var messageBoxWindowViewModel = new MessageBoxWindowViewModel();
+                            messageBoxWindowViewModel.Message = "没有找到steam.exe，是不是找错路径了喵。";
+                            messageBox.DataContext = messageBoxWindowViewModel;
+                            await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
+                        }
                         return;
                 }
             }
         }
-
-        public Setting setting;
-
-        public Setting Setting
+        public ReactiveCommand<int, Unit> SelectPathCommand { get; }
+        public string GamePath
         {
-            get => setting;
-            set => this.RaiseAndSetIfChanged(ref setting, value, "Setting");
+            get => Setting.Instance.gamePath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.gamePath, value,"GamePath");
+                Setting.Instance.Save();
+            }
+        }
+        public string LevelPath
+        {
+            get => Setting.Instance.levelPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.levelPath, value, "LevelPath");
+                Setting.Instance.Save();
+            }
+        }
+        public string SteamPath
+        {
+            get => Setting.Instance.steamPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.steamPath, value, "SteamPath");
+                Setting.Instance.Save();
+            }
         }
     }
 }

@@ -3,8 +3,10 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GOI地图管理器.ViewModels"
+			 xmlns:m="using:GOI地图管理器.Models"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+			 
              x:Class="GOI地图管理器.Views.MapView"
              x:DataType="vm:MapViewModel"
              FontSize="20">
@@ -14,34 +16,59 @@
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MapViewModel/>
 	</Design.DataContext>
-	<Grid ColumnDefinitions="400,*">
-		<StackPanel Grid.Column="0" Orientation="Vertical">
-			<Grid ColumnDefinitions="*,auto">
-				<TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="6"/>
-				<Button Grid.Column="1" Content="搜索" CornerRadius="5" Margin="10,10,5,10"/>
+	<DockPanel LastChildFill="False">
+
+		<Grid ColumnDefinitions="440,*" DockPanel.Dock="Top">
+			<StackPanel Grid.Column="0" Orientation="Vertical" VerticalAlignment="Stretch">
+				<Grid ColumnDefinitions="*,auto">
+					<!--TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="5"/-->
+					<AutoCompleteBox Name="MapSearcher" Text="{Binding Search}" Grid.Column="0"  ItemsSource="{Binding Maps}" FilterMode="Contains" FontSize="18" Watermark="输入地图名......" Height="38" Margin="10,10,0,0" CornerRadius="5">
+						<AutoCompleteBox.ItemTemplate>
+							<DataTemplate x:DataType="m:Map">
+								<TextBlock Text="{Binding Name}"/>
+							</DataTemplate>
+						</AutoCompleteBox.ItemTemplate>
+				</AutoCompleteBox>
+					<Button Grid.Column="1" Content="搜索" Command="{Binding SearchMap}" CornerRadius="5" Margin="10,10,5,10"/>
+				</Grid>
+				<ListBox Grid.Column="0" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="5" >
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<Grid RowDefinitions="auto" ColumnDefinitions="auto,*">
+								<TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
+								<StackPanel Grid.Row="0" Grid.Column="1">
+									<TextBlock Text="{Binding Status}" IsVisible="{Binding IsDownloading}" HorizontalAlignment="Right" Margin="0,-8,82,0"/>
+									<TextBlock Text="√" IsVisible="{Binding Downloaded}"/>
+									<ProgressBar Value="{Binding ProgressPercentage}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" ShowProgressText="True" Margin="0,0,0,-10"/>
+								</StackPanel>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</StackPanel>
+
+
+			<Grid Grid.Column="1" RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelectedMap}">
+				<Image Grid.Row="0" asyncImageLoader:ImageLoader.Source="{Binding CurrentMap.Preview}" Margin="0,-1,0,0" HorizontalAlignment="Center"/>
+				<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
+				<Grid Grid.Row="2" RowDefinitions="auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="作者："/>
+					<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMap.Author}"/>
+					<TextBlock Grid.Row="1" Grid.Column="0" Text="大小："/>
+					<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
+				</Grid>
+				<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}" IsEnabled="{Binding CurrentMap.Downloadable}"/>
+				<TextBlock Grid.Row="4" Foreground="Red" Text="未选择地图下载路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}" Margin="0,10"/>
 			</Grid>
-			<ListBox Grid.Column="0" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="6" >
-				<ListBox.ItemTemplate>
-					<DataTemplate>
 
-						<TextBlock Text="{Binding Name}"/>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</StackPanel>
-
-
-		<Grid Grid.Column="1" RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelected}">
-			<Image Grid.Row="0" asyncImageLoader:ImageLoader.Source="{Binding CurrentMap.Preview}" Margin="0,-1,0,0" HorizontalAlignment="Center"/>
-			<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
-			<Grid Grid.Row="2" RowDefinitions="auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="作者："/>
-				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMap.Author}"/>
-				<TextBlock Grid.Row="1" Grid.Column="0" Text="大小："/>
-				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
-			</Grid>
-			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}"/>
-			<TextBlock Grid.Row="4" Text="未选择游戏目录，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !UnSelectedNoteHide}" Margin="0,10"/>
 		</Grid>
-	</Grid>
+		<Border Background="Gainsboro" DockPanel.Dock="Bottom"  HorizontalAlignment="Stretch" CornerRadius="5">
+			<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+				<TextBlock Text="地图总数："/>
+				<TextBlock Text="{Binding Maps.Count}" Margin="0,0,100,0" />
+				<TextBlock Text="地图库最后更新日期："/>
+				<TextBlock Text="{Binding LastUpdateTime}"/>
+			</StackPanel>
+		</Border>
+	</DockPanel>
 </UserControl>
