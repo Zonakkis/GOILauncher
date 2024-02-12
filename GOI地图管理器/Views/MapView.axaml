@@ -17,7 +17,7 @@
 		<vm:MapViewModel/>
 	</Design.DataContext>
 	<DockPanel LastChildFill="False">
-		<Grid Width="440" RowDefinitions="auto,*">
+		<Grid Width="440" RowDefinitions="auto,auto">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">
 				<!--TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="5"/-->
 				<AutoCompleteBox Name="MapSearcher" Text="{Binding Search}" Grid.Column="0"  ItemsSource="{Binding Maps}" FilterMode="Contains" FontSize="18" Watermark="输入地图名......" Height="38" Margin="10,10,0,0" CornerRadius="5">
@@ -29,7 +29,7 @@
 				</AutoCompleteBox>
 				<Button Grid.Column="1" Content="搜索" Command="{Binding SearchMap}" CornerRadius="5" Margin="10,10,5,10"/>
 			</Grid>
-			<ListBox Grid.Row="1" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="5">
+			<ListBox Grid.Row="1"  ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" CornerRadius="5">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid RowDefinitions="auto" ColumnDefinitions="auto,*">

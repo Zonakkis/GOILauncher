@@ -41,6 +41,9 @@ namespace GOI地图管理器.ViewModels
                 case 3:
                     dialog.Title = "选择Steam路径";
                     break;
+                case 4:
+                    dialog.Title = "选择下载路径";
+                    break;
             }
             var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
@@ -86,6 +89,11 @@ namespace GOI地图管理器.ViewModels
                             await messageBox.ShowDialog((Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!);
                         }
                         return;
+                    case 4:
+                        path = folder[0].Path.ToString();
+                        path = path.Substring(8, path.Length - 8);
+                        DownloadPath = path;
+                        return;
                 }
             }
         }
@@ -117,5 +125,25 @@ namespace GOI地图管理器.ViewModels
                 Setting.Instance.Save();
             }
         }
+        public string DownloadPath
+        {
+            get => Setting.Instance.downloadPath;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.downloadPath, value, "DownloadPath");
+                Setting.Instance.Save();
+            }
+        }
+
+        public bool SaveMapZip
+        {
+            get => Setting.Instance.saveMapZip;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.saveMapZip, value, "SaveMapZip");
+                Setting.Instance.Save();
+            }
+        }
+
     }
 }

@@ -34,5 +34,18 @@
 				</Button>
 			</Grid>
 		</Expander>
+		<Expander CornerRadius="20" Header="下载" HorizontalAlignment="Stretch" Margin="0,20,0,0">
+			<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,auto,*">
+				<TextBlock Grid.Row="0" Grid.Column="0" Text="下载路径："/>
+				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding DownloadPath}"/>
+				<Button Grid.Row="0" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,-5,0,0">
+					<Button.CommandParameter>
+						<sys:Int32>4</sys:Int32>
+					</Button.CommandParameter>
+				</Button>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="下载地图后保存Zip文件"/>
+				<CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" IsChecked="{Binding SaveMapZip}"/>
+			</Grid>
+		</Expander>
 	</StackPanel>
 </UserControl>

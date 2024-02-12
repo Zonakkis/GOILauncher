@@ -100,8 +100,8 @@ namespace GOI地图管理器.ViewModels
             downloader.DownloadFileCompleted += map.OnDownloadCompleted;
             if (map.DownloadURL.Count == 1)
             {
-                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[0]}");
-                SelectedMap.DownloadSize = await LanzouyunDownloadHelper.GetFileSize(directUrl);
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[0]}");
+                SelectedMap.DownloadSize = await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
                 string fileName = $"{directory}Download/{map.Name}.zip";
                 await downloader.DownloadFileTaskAsync(directUrl, fileName);
                 map.Status = "解压中";
@@ -112,10 +112,10 @@ namespace GOI地图管理器.ViewModels
                 List<string> directUrls = new List<string>();
                 for (int i = 0; i < map.DownloadURL.Count; i++)
                 {
-                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[i]}");
+                    string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
                     directUrls.Add(directUrl);
                     //Trace.WriteLine(directUrl);
-                    SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSize(directUrl);
+                    SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
                     //LanzouyunDownloadHelper.Download(directurl, $"{directory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
                 }
                 for (int i = 0; i < directUrls.Count; i++)

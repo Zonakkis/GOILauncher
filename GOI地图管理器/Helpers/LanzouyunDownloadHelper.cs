@@ -43,7 +43,7 @@ namespace GOI地图管理器.Helpers
             //}
         }
 
-        public static Task<string> GetDirectURL(string LanzouyunURL)
+        public static async Task<string> GetDirectURLAsync(string LanzouyunURL)
         {
             //string url1;
             //string url2;
@@ -131,14 +131,14 @@ namespace GOI地图管理器.Helpers
                         string[] allKeys = webResponse.Headers.AllKeys;
                         string directURL = webResponse.Headers.Get("Location")!;
                         Trace.WriteLine(directURL);
-                        return Task.FromResult(directURL!);
+                        return directURL!;
                     }
                 } 
             }
         }
 
 
-        public static Task<int> GetFileSize(string url)
+        public static async Task<int> GetFileSizeAsync(string url)
         {
             HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest2.Method = "HEAD";
@@ -146,7 +146,7 @@ namespace GOI地图管理器.Helpers
             using (WebResponse webResponse = httpWebRequest2.GetResponse())
             {
                 string contentLength = webResponse.Headers.Get("Content-Length");
-                return Task.FromResult(Convert.ToInt32(contentLength));
+                return Convert.ToInt32(contentLength);
             }
         }
     }
