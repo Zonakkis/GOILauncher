@@ -75,8 +75,6 @@ namespace GOI地图管理器.ViewModels
                 }
                 map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
                 Maps.Add(map);
-                Maps.Add(map);
-                Maps.Add(map);
             }
             query.OrderByDescending("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
