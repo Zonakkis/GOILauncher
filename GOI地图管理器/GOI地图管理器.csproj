@@ -68,4 +68,11 @@
       <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Views\AboutView.axaml.cs">
+      <DependentUpon>AboutView.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

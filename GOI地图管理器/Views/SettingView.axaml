@@ -43,8 +43,8 @@
 						<sys:Int32>4</sys:Int32>
 					</Button.CommandParameter>
 				</Button>
-				<TextBlock Grid.Row="1" Grid.Column="0" Text="下载地图后保存Zip文件"/>
-				<CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" IsChecked="{Binding SaveMapZip}"/>
+				<TextBlock Grid.Row="1" Grid.Column="0" Text="下载地图后保存Zip文件" Margin="0,10"/>
+				<CheckBox Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" IsChecked="{Binding SaveMapZip}" />
 			</Grid>
 		</Expander>
 	</StackPanel>

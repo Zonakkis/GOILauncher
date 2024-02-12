@@ -68,7 +68,8 @@ namespace GOI地图管理器.ViewModels
             new ViewTemplate(typeof(GameViewModel), "游戏"),
             new ViewTemplate(typeof(ModViewModel), "Mod"),
             new ViewTemplate(typeof(MapViewModel), "地图"),
-            new ViewTemplate(typeof(SettingViewModel), "设置")
+            new ViewTemplate(typeof(SettingViewModel), "设置"),
+            new ViewTemplate(typeof(AboutViewModel), "关于"),
         };
 
         private string _description = string.Empty;

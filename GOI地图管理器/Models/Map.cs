@@ -53,6 +53,9 @@ namespace GOI地图管理器.Models
         }
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
+            var d = (DownloadService)sender;
+            d.Package.ReceivedBytesSize
+            Convert.ToInt32(d.Package.FileName.Substring(d.Package.FileName.Length - 3, 3));
             ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
             Trace.WriteLine(ProgressPercentage);
         }
@@ -123,6 +126,19 @@ namespace GOI地图管理器.Models
         public long DownloadSize { get; set; }
         public long SingleFileSize { get; set; }
         public long ReceivedSize { get; set; }
+
+        public List<long> ReceivedSizes { get; set; }
+
+
+
+
+
+
+
+
+
+
+
 
         public int progressPercentage;
         public int ProgressPercentage

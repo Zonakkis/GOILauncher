@@ -37,6 +37,10 @@ namespace GOI地图管理器.Helpers
                     await Task.Run(() => entry.Extract(destinationPath));
                 }
             }
+            if (!Setting.Instance.saveMapZip)
+            {
+                File.Delete(zipPath);
+            }
         }
     }
 }
