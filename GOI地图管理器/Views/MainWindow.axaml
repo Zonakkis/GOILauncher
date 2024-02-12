@@ -26,8 +26,9 @@
                 >
 		<SplitView.Pane>
 			<StackPanel Background="White">
-				<Button Content="←" Command="{Binding ChangeView}">
-				</Button>
+				<Button Command="{Binding ChangeView}">
+					<PathIcon Data="{StaticResource list_regular}"/>
+						</Button>
 				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Views}" SelectedItem="{Binding SelectedView}" Background="White" CornerRadius="5">
 					<ListBox.ItemTemplate>
 						<DataTemplate>

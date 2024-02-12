@@ -1,5 +1,4 @@
 ﻿using Avalonia.Controls.Mixins;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using ReactiveUI;
 using System.Diagnostics;
 

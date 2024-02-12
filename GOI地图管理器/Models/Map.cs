@@ -4,7 +4,6 @@ using Downloader;
 using Ionic.Zip;
 using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

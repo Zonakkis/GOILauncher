@@ -138,7 +138,7 @@ namespace GOI地图管理器.Helpers
         }
 
 
-        public static int GetFileSize(string url)
+        public static Task<int> GetFileSize(string url)
         {
             HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create(url);
             httpWebRequest2.Method = "HEAD";
@@ -146,7 +146,7 @@ namespace GOI地图管理器.Helpers
             using (WebResponse webResponse = httpWebRequest2.GetResponse())
             {
                 string contentLength = webResponse.Headers.Get("Content-Length");
-                return Convert.ToInt32(contentLength);
+                return Task.FromResult(Convert.ToInt32(contentLength));
             }
         }
     }

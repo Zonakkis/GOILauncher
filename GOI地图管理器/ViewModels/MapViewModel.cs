@@ -61,7 +61,7 @@ namespace GOI地图管理器.ViewModels
             foreach (Map map in maps)
             {
                 LCFile file;
-                if (map.Preview != null)
+                if (map.Preview != null && map.Preview != "") 
                 {
                     file = new LCFile("Preview.png", new Uri(map.Preview));
                 }
@@ -75,8 +75,10 @@ namespace GOI地图管理器.ViewModels
                 }
                 map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
                 Maps.Add(map);
+                Maps.Add(map);
+                Maps.Add(map);
             }
-            query.OrderByAscending("updatedAt");
+            query.OrderByDescending("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
             this.RaisePropertyChanged("Maps");
         }
@@ -101,7 +103,7 @@ namespace GOI地图管理器.ViewModels
             if (map.DownloadURL.Count == 1)
             {
                 string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[0]}");
-                SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
+                SelectedMap.DownloadSize = await LanzouyunDownloadHelper.GetFileSize(directUrl);
                 string fileName = $"{directory}Download/{map.Name}.zip";
                 await downloader.DownloadFileTaskAsync(directUrl, fileName);
                 map.Status = "解压中";
@@ -115,7 +117,7 @@ namespace GOI地图管理器.ViewModels
                     string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[i]}");
                     directUrls.Add(directUrl);
                     //Trace.WriteLine(directUrl);
-                    SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
+                    SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSize(directUrl);
                     //LanzouyunDownloadHelper.Download(directurl, $"{directory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
                 }
                 for (int i = 0; i < directUrls.Count; i++)

@@ -22,11 +22,11 @@
 					<sys:Int32>1</sys:Int32>
 				</SplitButton.CommandParameter>
 				<SplitButton.Content>
-						<TextBlock Text="启动游戏"  HorizontalAlignment="Center"/>
+						<TextBlock Text="启动游戏" FontSize="20" HorizontalAlignment="Center"/>
 				</SplitButton.Content>
 				<SplitButton.Flyout>
 					<MenuFlyout Placement="Top">
-						<MenuItem Background="Aqua" Command="{Binding LaunchGOI}" Header="通过Steam启动" CornerRadius="5" ToolTip.Placement="AnchorAndGravity">
+						<MenuItem Background="Aqua" Command="{Binding LaunchGOI}" Header="通过Steam启动" FontSize="18" CornerRadius="5" ToolTip.Placement="AnchorAndGravity">
 							<MenuItem.CommandParameter>
 								<sys:Int32>2</sys:Int32>
 							</MenuItem.CommandParameter>
