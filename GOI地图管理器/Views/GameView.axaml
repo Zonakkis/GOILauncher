@@ -10,14 +10,17 @@
 			 FontSize="16">
 	<Grid>
 		<TextBlock FontSize="20" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}"/>
-	    <Grid RowDefinitions="auto,auto,auto,*" ColumnDefinitions="auto,auto,*" IsVisible="{Binding SelectedGamePathNoteHide}" Margin="10,10">
+	    <Grid RowDefinitions="auto,auto,auto,auto,*" ColumnDefinitions="auto,auto,*" IsVisible="{Binding SelectedGamePathNoteHide}" Margin="10,10">
 			<Label Grid.Row="0" Grid.Column="0" Content="游戏版本："/>
 			<Label Grid.Row="0" Grid.Column="1" Content="{Binding GameVersion}"/>
 			<Label Grid.Row="1" Grid.Column="0" Content="Modpack："/>
 			<Label Grid.Row="1" Grid.Column="1" Content="{Binding ModpackVersion}"/>
 			<Label Grid.Row="2" Grid.Column="0" Content="LevelLoader版本："/>
 			<Label Grid.Row="2" Grid.Column="1" Content="{Binding LevelLoaderVersion}"/>
-			<SplitButton  Command="{Binding LaunchGOI}" Background="Aqua" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5">
+			<Label Grid.Row="3" Grid.Column="0" Content="BepInEx版本："/>
+			<Label Grid.Row="3" Grid.Column="1" Content="{Binding BepInExVersion}"/>
+			
+			<SplitButton  Command="{Binding LaunchGOI}" Background="Aqua" Grid.Row="4" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5">
 				<SplitButton.CommandParameter>
 					<sys:Int32>1</sys:Int32>
 				</SplitButton.CommandParameter>

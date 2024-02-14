@@ -82,6 +82,26 @@ namespace GOI地图管理器.ViewModels
                 return "未安装";
             }
         }
+        string GetBepinExVersion(string gamepath)
+        {
+            if(!Directory.Exists($"{gamepath}/BepInEx/core"))
+            {
+                return "未安装";
+            }
+            else if(File.Exists($"{gamepath}/BepInEx/core/BepInEx.Core.dll"))
+            {
+                Assembly assembly = Assembly.LoadFrom($"{gamepath}/BepInEx/core/BepInEx.Core.dll");
+                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
+                return assemblyInformationalVersionAttribute.InformationalVersion;
+
+            }
+            else
+            {
+                Assembly assembly = Assembly.LoadFrom($"{gamepath}/BepInEx/core/BepInEx.dll");
+                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
+                return assemblyInformationalVersionAttribute.InformationalVersion;
+            }
+        }
         public void LaunchGOI(int para)
         {
             switch(para)
@@ -111,6 +131,8 @@ namespace GOI地图管理器.ViewModels
                     GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
                     ModpackVersion = GetModpackVersion(GamePath);
                     LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
+                    BepInExVersion = GetBepinExVersion(GamePath);
+
                 }
             }
         }
@@ -149,6 +171,15 @@ namespace GOI地图管理器.ViewModels
             get => levelLoaderVersion; set
             {
                 this.RaiseAndSetIfChanged(ref levelLoaderVersion, value, "LevelLoaderVersion");
+            }
+        }
+
+        string bepInExVersion;
+        public string BepInExVersion
+        {
+            get => bepInExVersion; set
+            {
+                this.RaiseAndSetIfChanged(ref bepInExVersion, value, "BepInExVersion");
             }
         }
     }
