@@ -20,7 +20,10 @@ namespace GOI地图管理器.Models
     {
         public Map() : base("Map")
         {
+            DownloadSize = 0;
             Downloadable = true;
+            ReceivedSizes = new List<long>();
+            DownloadSpeeds = new List<double>();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -40,12 +43,34 @@ namespace GOI地图管理器.Models
                 Downloadable = false;
             }
         }
+
+        public async Task WaitForDownloadFinish()
+        {
+            while(CompletedFilesCount != DownloadURL.Count)
+            {
+                if (DownloadSize != 0)
+                {
+                    ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
+                    Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
+                    Trace.WriteLine(ProgressPercentage);
+                }
+                await Task.Delay(400);
+            }
+        }
         public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
         {
-            //DownloadSize += eventArgs.TotalBytesToReceive;
-            SingleFileSize = eventArgs.TotalBytesToReceive;
-            Status = "下载中";
-            IsDownloading = true;
+            if (DownloadSize == 0)
+            {
+                DownloadSize = eventArgs.TotalBytesToReceive;
+            }
+            else
+            {
+                DownloadSize += eventArgs.TotalBytesToReceive;
+            }
+            Trace.WriteLine(DownloadSize);
+            //SingleFileSize = eventArgs.TotalBytesToReceive;
+            //Status = "下载中";
+            //IsDownloading = true;
         }
         public void OnChunkDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
@@ -53,15 +78,17 @@ namespace GOI地图管理器.Models
         }
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
-            var d = (DownloadService)sender;
-            d.Package.ReceivedBytesSize
-            Convert.ToInt32(d.Package.FileName.Substring(d.Package.FileName.Length - 3, 3));
-            ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
-            Trace.WriteLine(ProgressPercentage);
+            var downloadService = (DownloadService)sender; 
+            ReceivedSizes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3))-1] = eventArgs.ReceivedBytesSize;
+            DownloadSpeeds[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.BytesPerSecondSpeed;
+
+            //ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
+            //ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
+            //Trace.WriteLine(ProgressPercentage);
         }
         public void OnDownloadCompleted(object sender, AsyncCompletedEventArgs eventArgs)
         {
-            ReceivedSize += SingleFileSize;
+            CompletedFilesCount++;
 
         }
         public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
@@ -78,6 +105,23 @@ namespace GOI地图管理器.Models
         {
             return Name;
         }
+
+        public string ConvertStorageUnit(double bytes)
+        {
+            if(bytes < 1024)
+            {
+                return $"{DownloadSpeeds.Sum().ToString("0.00")}B/s";
+            }
+            else if(bytes < 1048576)
+            {
+                return $"{(DownloadSpeeds.Sum()/1024D).ToString("0.00")}KB/s";
+            }
+            else
+            {
+                return $"{(DownloadSpeeds.Sum() / 1048576D).ToString("0.00")}MB/s";
+            }
+        }
+
         public string Name 
         {
             get=> (this["Name"] as string)!;
@@ -124,12 +168,10 @@ namespace GOI地图管理器.Models
             }
         }
         public long DownloadSize { get; set; }
-        public long SingleFileSize { get; set; }
-        public long ReceivedSize { get; set; }
-
         public List<long> ReceivedSizes { get; set; }
+        public List<double> DownloadSpeeds { get; set; }
 
-
+        public int CompletedFilesCount { get; set; }
 
 
 

@@ -1,4 +1,5 @@
-﻿using LC.Newtonsoft.Json;
+﻿using GOI地图管理器.Models;
+using LC.Newtonsoft.Json;
 using LC.Newtonsoft.Json.Linq;
 using Microsoft.VisualBasic;
 using System;
@@ -18,18 +19,16 @@ namespace GOI地图管理器.Helpers
     internal class LanzouyunDownloadHelper
     {
 
-        public static void Download(string url,string path)
+        public static async Task DownloadMap(string url,string path,Map map,int id)
         {
-
             WebClient webClient = new WebClient();
             webClient.Credentials = CredentialCache.DefaultCredentials;
             //webClient.DownloadFileCompleted += DownloadFileCallback;
-            webClient.DownloadProgressChanged += delegate (object s, DownloadProgressChangedEventArgs e)
-            {
-                //PercentageDownloaded = (float)e.ProgressPercentage;
-                //Downloading = true;
-            };
-            webClient.DownloadFileAsync(new Uri(url), path);
+            //webClient.DownloadProgressChanged += map.OnDownloadProgressChanged;
+            webClient.DownloadFileCompleted += map.OnDownloadCompleted;
+            webClient.Headers.Add("ID", id.ToString());
+            webClient.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
+            await webClient.DownloadFileTaskAsync(url, path);
 
             //using (HttpClient httpClient = new HttpClient())
             //{
@@ -101,10 +100,10 @@ namespace GOI地图管理器.Helpers
 
             using (var webClient = new WebClient())
             {
-                string htmlSource = webClient.DownloadString(LanzouyunURL).Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
+                string htmlSource = (await webClient.DownloadStringTaskAsync(LanzouyunURL)).Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
                 string url = "https://wwn.lanzouv.com" + htmlSource;
                 Trace.WriteLine(url);
-                string sign = webClient.DownloadString(url).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                string sign = (await webClient.DownloadStringTaskAsync(url)).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 Trace.WriteLine(sign);
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://wwn.lanzouv.com/ajaxm.php");
                 httpWebRequest.Method = "POST";
@@ -115,8 +114,8 @@ namespace GOI地图管理器.Helpers
                 httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
                 string content = "action=downprocess&sign=" + sign + "&ves=1";
                 byte[] bytes = Encoding.UTF8.GetBytes(content);
-                httpWebRequest.GetRequestStream().Write(bytes, 0, bytes.Length);
-                using (Stream responseStream = ((HttpWebResponse)httpWebRequest.GetResponse()).GetResponseStream())
+                (await httpWebRequest.GetRequestStreamAsync()).Write(bytes, 0, bytes.Length);
+                using (Stream responseStream = ((HttpWebResponse)await httpWebRequest.GetResponseAsync()).GetResponseStream())
                 {
                     using (StreamReader streamReader = new StreamReader(responseStream, Encoding.GetEncoding("UTF-8")))
                     {
@@ -127,7 +126,7 @@ namespace GOI地图管理器.Helpers
                         httpWebRequest2.Method = "HEAD";
                         httpWebRequest2.AllowAutoRedirect = false;
                         httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-                        WebResponse webResponse = httpWebRequest2.GetResponse();
+                        WebResponse webResponse = await Task.Run(() => httpWebRequest2.GetResponse());
                         string[] allKeys = webResponse.Headers.AllKeys;
                         string directURL = webResponse.Headers.Get("Location")!;
                         Trace.WriteLine(directURL);

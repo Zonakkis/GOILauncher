@@ -15,6 +15,11 @@ namespace GOI地图管理器.Helpers
         public static async Task CombineZipSegment(string path, string zipName, string searchPattern)
         {
             List<string> zipFiles = Directory.GetFiles(path, searchPattern).ToList();
+            if(zipFiles.Count == 1)
+            {
+                File.Move(zipFiles[0], zipName);
+                return;
+            }
             using (Stream zipStream = File.OpenWrite(Path.Combine(path, zipName)))
             {
                 for (int i = 0; i < zipFiles.Count; i++)
@@ -29,12 +34,12 @@ namespace GOI地图管理器.Helpers
         }
         public static async Task ExtractMap(string zipPath, string destinationPath,Map map)
         {
-            using (ZipFile zip = ZipFile.Read(zipPath))
+            using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
             {
                 zip.ExtractProgress += map.OnExtractProgressChanged;
                 foreach (ZipEntry entry in zip)
                 {
-                    await Task.Run(() => entry.Extract(destinationPath));
+                    await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
                 }
             }
             if (!Setting.Instance.saveMapZip)
