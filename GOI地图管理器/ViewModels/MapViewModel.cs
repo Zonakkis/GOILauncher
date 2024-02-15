@@ -30,7 +30,6 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            gamePath = "未选择";
             if (!Directory.Exists($"{directory}Download"))
             {
                 Directory.CreateDirectory($"{directory}Download");
@@ -255,7 +254,7 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        public string gamePath;
+        public string gamePath = "未选择";
         public string GamePath
         {
             get => gamePath;

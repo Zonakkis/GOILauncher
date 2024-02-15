@@ -12,6 +12,10 @@ namespace GOI地图管理器.ViewModels
     {
         public MainWindowViewModel()
         {
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            {
+                Setting.Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+            }
             SelectedView = Views[0];
         }
         public void ChangeView()

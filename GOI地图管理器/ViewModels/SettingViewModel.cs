@@ -134,7 +134,6 @@ namespace GOI地图管理器.ViewModels
                 Setting.Instance.Save();
             }
         }
-
         public bool SaveMapZip
         {
             get => Setting.Instance.saveMapZip;
