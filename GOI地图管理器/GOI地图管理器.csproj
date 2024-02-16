@@ -11,7 +11,7 @@
     <Authors>Zonakkis</Authors>
     <Product>GOI地图管理器</Product>
     <AssemblyName>GOI地图管理器</AssemblyName>
-    <ApplicationIcon>Assets\goi.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
     <Company>Zonakkis</Company>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
     <FileVersion>0.0.1</FileVersion>
@@ -51,6 +51,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.9" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Downloader" Version="3.1.0-beta" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.0.5" />
   </ItemGroup>
 
 

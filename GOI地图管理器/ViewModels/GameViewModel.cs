@@ -27,7 +27,7 @@ namespace GOI地图管理器.ViewModels
             GamePath = Setting.Instance.gamePath;
         }
 
-        public static Assembly LoadAssembly(string path)
+        public Assembly LoadAssembly(string path)
         {
             byte[] assemblyData = null;
             using (FileStream fileStream = File.OpenRead(path))

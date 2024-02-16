@@ -1,5 +1,6 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="GOI地图管理器.App"
              xmlns:local="using:GOI地图管理器"
              RequestedThemeVariant="Default">
@@ -10,19 +11,8 @@
 	</Application.DataTemplates>
 
 	<Application.Styles>
-		<FluentTheme />
-		<StyleInclude Source="avares://GOI地图管理器/Icons.axaml" />
-		<Style Selector="ToggleButton PathIcon.save-on">
-			<Setter Property="IsVisible" Value="False"/>
-		</Style>
-		<Style Selector="ToggleButton:checked PathIcon.save-on">
-			<Setter Property="IsVisible" Value="True"/>
-		</Style>
-		<Style Selector="ToggleButton PathIcon.save-off">
-			<Setter Property="IsVisible" Value="True"/>
-		</Style>
-		<Style Selector="ToggleButton:checked PathIcon.save-off">
-			<Setter Property="IsVisible" Value="False"/>
-		</Style>
+		<Styles>
+			<sty:FluentAvaloniaTheme />
+		</Styles>
 	</Application.Styles>
 </Application>

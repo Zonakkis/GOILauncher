@@ -6,5 +6,5 @@
              xmlns:vm="using:GOI地图管理器.ViewModels"
              x:Class="GOI地图管理器.Views.AboutView"
 	         x:DataType="vm:AboutViewModel">
-
+	
 </UserControl>

@@ -1,4 +1,5 @@
-﻿using GOI地图管理器.Helpers;
+﻿using FluentAvalonia.UI.Controls;
+using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
 using ReactiveUI;
 using System;
@@ -18,28 +19,11 @@ namespace GOI地图管理器.ViewModels
             }
             SelectedView = Views[0];
         }
-        public void ChangeView()
-        {
-            IsPaneOpen = !IsPaneOpen;
-            Trace.WriteLine(IsPaneOpen);
-        }
         public void OnSelectedViewChanged(ViewTemplate value)
         {
             value.View.OnSelectedViewChanged();
             CurrentView = value.View;
 
-        }
-
-        public bool IsPaneOpen
-        {
-            get
-            {
-                return isPaneOpen;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref isPaneOpen, value, "IsPaneOpen");
-            }
         }
 
         public ViewModelBase CurrentView
@@ -71,20 +55,18 @@ namespace GOI地图管理器.ViewModels
         {
             new ViewTemplate(typeof(GameViewModel), "游戏"),
             new ViewTemplate(typeof(ModViewModel), "Mod"),
-            new ViewTemplate(typeof(MapViewModel), "地图"),
-            new ViewTemplate(typeof(SettingViewModel), "设置"),
-            new ViewTemplate(typeof(AboutViewModel), "关于"),
+            new ViewTemplate(typeof(MapViewModel), "地图")
         };
 
-        private string _description = string.Empty;
-
-        private bool isPaneOpen;
-
-        private ViewModelBase currentView = new GameViewModel();
+        private ViewModelBase currentView;
 
         private ViewTemplate? selectedView;
 
-        
+        public ObservableCollection<ViewTemplate> FooterViews { get; } = new ObservableCollection<ViewTemplate>
+        {
+            new ViewTemplate(typeof(AboutViewModel), "关于"),
+            new ViewTemplate(typeof(SettingViewModel), "设置"),
+        };
     }
 
     public class ViewTemplate
@@ -102,6 +84,8 @@ namespace GOI地图管理器.ViewModels
 
         public ViewModelBase View { get; }
     }
+
+
 }
 
 
