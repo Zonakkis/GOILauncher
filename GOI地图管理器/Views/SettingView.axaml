@@ -2,6 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:GOI地图管理器.ViewModels"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -9,30 +10,35 @@
              x:DataType="vm:SettingViewModel"
 			 FontSize="16">
 	<StackPanel Orientation="Vertical" Margin="10,10">
-		<Expander CornerRadius="20" Header="游戏" HorizontalAlignment="Stretch">
-			<Grid RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,auto,*">
-				<TextBlock Grid.Row="0" Grid.Column="0" Text="游戏路径："/>
-				<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GamePath}"/>
-				<Button Grid.Row="0" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,-5,0,0">
-					<Button.CommandParameter>
-						<sys:Int32>1</sys:Int32>
-					</Button.CommandParameter>
-				</Button>
-				<TextBlock Grid.Row="1" Grid.Column="0" Text="地图下载路径：" Margin="0,10"/>
-				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LevelPath}" Margin="0,10"/>
-				<Button Grid.Row="1" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,0,0,0">
-					<Button.CommandParameter>
-						<sys:Int32>2</sys:Int32>
-					</Button.CommandParameter>
-				</Button>
-				<TextBlock Grid.Row="2" Grid.Column="0" Text="Steam路径：" Margin="0,10"/>
-				<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SteamPath}" Margin="0,10"/>
-				<Button Grid.Row="2" Grid.Column="2" Content="选择" Command="{Binding SelectPathCommand}" HorizontalAlignment="Right" Margin="0,0,0,0">
-					<Button.CommandParameter>
-						<sys:Int32>3</sys:Int32>
-					</Button.CommandParameter>
-				</Button>
-			</Grid>
-		</Expander>
+		<ui:SettingsExpander Header="游戏" >
+			<ui:SettingsExpanderItem Content="游戏路径：" Description="{Binding GamePath}">
+				<ui:SettingsExpanderItem.Footer>
+					<Button Content="选择" Command="{Binding SelectGamePath}"/>
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
+			<ui:SettingsExpanderItem Content="地图路径：" Description="{Binding LevelPath}">
+				<ui:SettingsExpanderItem.Footer>
+					<Button Content="选择" Command="{Binding SelectLevelPath}"/>
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
+			<ui:SettingsExpanderItem Content="Steam路径：" Description="{Binding SteamPath}">
+				<ui:SettingsExpanderItem.Footer>
+					<Button Content="选择" Command="{Binding SelectSteamPath}"/>
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
+		</ui:SettingsExpander>
+		<ui:SettingsExpander Header="下载" Margin="0,10,0,0">
+			<ui:SettingsExpanderItem Content="下载路径：" Description="{Binding DownloadPath}">
+				<ui:SettingsExpanderItem.Footer>
+					<Button Content="选择" Command="{Binding SelectDownloadPath}"/>
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
+			<ui:SettingsExpanderItem Content="下载后保存Zip文件：">
+				<ui:SettingsExpanderItem.Footer>
+					<CheckBox IsChecked="{Binding SaveMapZip}" />
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
+		</ui:SettingsExpander>
+		
 	</StackPanel>
 </UserControl>

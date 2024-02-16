@@ -2,15 +2,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:ui="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         xmlns:vm="using:GOI地图管理器.ViewModels"
         xmlns:views="using:GOI地图管理器.Views"
         x:Class="GOI地图管理器.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/goi.ico"
-        Title="GOI地图管理器"
+        Icon="/Assets/GOIL.ico"
+        Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
-         >
+		Loaded="Loaded">
 	<Window.Title >
 	</Window.Title>
 	<Design.DataContext>
@@ -19,27 +20,11 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<SplitView IsPaneOpen="{Binding IsPaneOpen}"
-               DisplayMode="CompactInline"
-               OpenPaneLength="200"
-               CompactPaneLength="100"
-                >
-		<SplitView.Pane>
-			<StackPanel Background="White">
-				<Button Content="←" Command="{Binding ChangeView}">
-				</Button>
-				<ListBox VerticalAlignment="Stretch" ItemsSource="{Binding Views}" SelectedItem="{Binding SelectedView}" Background="White" CornerRadius="5">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Label}"  />
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-			</StackPanel>
-		</SplitView.Pane>
-		<SplitView.Content>
-			<TransitioningContentControl Content="{Binding CurrentView}"/>
-		</SplitView.Content>
-	</SplitView>
-
+	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedView}" OpenPaneLength="200" CompactPaneLength="70" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False" IsPaneOpen="False">
+		<ui:NavigationView.MenuItemTemplate>
+			<DataTemplate DataType="{x:Type vm:ViewTemplate}">
+				<ui:NavigationViewItem Content="{Binding Label}"/>
+			</DataTemplate>
+		</ui:NavigationView.MenuItemTemplate>
+	</ui:NavigationView>
 </Window>

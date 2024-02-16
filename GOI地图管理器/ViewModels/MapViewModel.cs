@@ -1,4 +1,5 @@
-﻿using Avalonia.Markup.Xaml.Templates;
+﻿using Avalonia.Controls;
+using Avalonia.Markup.Xaml.Templates;
 using Downloader;
 using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
@@ -14,10 +15,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Security.Policy;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOI地图管理器.ViewModels
@@ -27,7 +30,6 @@ namespace GOI地图管理器.ViewModels
         
         public MapViewModel()
         {
-            gamePath = "未选择";
             if (!Directory.Exists($"{directory}Download"))
             {
                 Directory.CreateDirectory($"{directory}Download");
@@ -36,9 +38,9 @@ namespace GOI地图管理器.ViewModels
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
-            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             LCObject.RegisterSubclass("Map", () => new Map());
             GetMaps();
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
         public override void OnSelectedViewChanged()
         {
@@ -61,7 +63,7 @@ namespace GOI地图管理器.ViewModels
             foreach (Map map in maps)
             {
                 LCFile file;
-                if (map.Preview != null)
+                if (map.Preview != null && map.Preview != "") 
                 {
                     file = new LCFile("Preview.png", new Uri(map.Preview));
                 }
@@ -76,9 +78,10 @@ namespace GOI地图管理器.ViewModels
                 map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
                 Maps.Add(map);
             }
-            query.OrderByAscending("updatedAt");
+            query.OrderByDescending("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
             this.RaisePropertyChanged("Maps");
+            this.RaisePropertyChanged("LastUpdateTime");
         }
         public void SearchMap()
         {
@@ -88,49 +91,106 @@ namespace GOI地图管理器.ViewModels
         public async void Download()
         {
             Map map = SelectedMap;
-            map.Downloadable= false;
+            map.Downloadable = false;
             var downloadOpt = new DownloadConfiguration()
             {
-                ChunkCount = 16, // file parts to download, the default value is 1
-                ParallelDownload = true // download parts of the file as parallel or not. The default value is false
+                ChunkCount = 8, // file parts to download, the default value is 1
+                ParallelDownload = true, // download parts of the file as parallel or not. The default value is false
+                MaxTryAgainOnFailover = int.MaxValue, // the maximum number of times to fail
+                Timeout = 5000,
+                //MaximumMemoryBufferBytes = 1024 * 1024 * 50,
+                //ReserveStorageSpaceBeforeStartingDownload = true,
+                //RequestConfiguration =
+                //{
+                    //KeepAlive = true,
+                    //UserAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+                    //ProtocolVersion = HttpVersion.Version20,
+                //}
             };
-            var downloader = new DownloadService(downloadOpt);
-            downloader.DownloadStarted += map.OnDownloadStarted;
-            downloader.DownloadProgressChanged += map.OnDownloadProgressChanged;
-            downloader.DownloadFileCompleted += map.OnDownloadCompleted;
-            if (map.DownloadURL.Count == 1)
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationToken token = tokenSource.Token;
+            DownloadService[] downloader = new DownloadService[map.DownloadURL.Count];
+            List<string> directUrls = new List<string>();
+            map.Status = "获取下载地址中";
+            map.IsDownloading = true;
+            for (int i = 0; i < map.DownloadURL.Count; i++)
             {
-                string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[0]}");
-                SelectedMap.DownloadSize = LanzouyunDownloadHelper.GetFileSize(directUrl);
-                string fileName = $"{directory}Download/{map.Name}.zip";
-                await downloader.DownloadFileTaskAsync(directUrl, fileName);
-                map.Status = "解压中";
-                await ZipHelper.ExtractMap(fileName, LevelPath, map);
+                downloader[i] = new DownloadService(downloadOpt);
+                downloader[i].DownloadStarted += map.OnDownloadStarted;
+                downloader[i].DownloadProgressChanged += map.OnDownloadProgressChanged;
+                downloader[i].DownloadFileCompleted += map.OnDownloadCompleted;
+                map.TotalBytes.Add(0);
+                map.ReceivedBytes.Add(0);
+                map.DownloadSpeeds.Add(0);
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
+                directUrls.Add(directUrl);
+                //Trace.WriteLine(directUrl);
+                //SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
+                //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
             }
-            else
+            map.Status = "启动下载中";
+            Task[] downloadTasks = new Task[directUrls.Count + 1];
+            for (int i = 0; i < directUrls.Count; i++)
             {
-                List<string> directUrls = new List<string>();
-                for (int i = 0; i < map.DownloadURL.Count; i++)
-                {
-                    string directUrl = await LanzouyunDownloadHelper.GetDirectURL($"https://{map.DownloadURL[i]}");
-                    directUrls.Add(directUrl);
-                    //Trace.WriteLine(directUrl);
-                    SelectedMap.DownloadSize += LanzouyunDownloadHelper.GetFileSize(directUrl);
-                    //LanzouyunDownloadHelper.Download(directurl, $"{directory}Download/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
-                }
-                for (int i = 0; i < directUrls.Count; i++)
-                {
-                    await downloader.DownloadFileTaskAsync(directUrls[i], $"{directory}Download/{map.Name}.zip.{(i + 1).ToString("D3")}");
-                }
-                map.Status = "合并中";
-                await ZipHelper.CombineZipSegment($"{directory}Download", $"{directory}Download/{map.Name}.zip", $"*{map.Name}.zip.*");
-                map.Status = "解压中";
-                await ZipHelper.ExtractMap($"{directory}Download/{map.Name}.zip", LevelPath, map);
-                
+                downloadTasks[i] = downloader[i].DownloadFileTaskAsync(directUrls[i], $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}", token);
             }
+            try
+            {
+                downloadTasks[downloadTasks.Length - 1] = map.WaitForDownloadFinish();
+                await Task.WhenAll(downloadTasks);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
+            map.Status = "合并中";
+            await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
+            map.Status = "解压中";
+            await ZipHelper.ExtractMap($"{DownloadPath}/{map.Name}.zip", LevelPath, map);
             map.IsDownloading = false;
             map.Downloaded = true;
         }
+
+        //public async void Download()
+        //{
+        //    Map map = SelectedMap;
+        //    map.Downloadable = false;
+        //    CancellationTokenSource tokenSource = new CancellationTokenSource();
+        //    CancellationToken token = tokenSource.Token;
+        //    List<string> directUrls = new List<string>();
+        //    map.Status = "下载中";
+        //    map.IsDownloading = true;
+        //    for (int i = 0; i < map.DownloadURL.Count; i++)
+        //    {
+        //        map.ReceivedSizes.Add(0);
+        //        string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
+        //        directUrls.Add(directUrl);
+        //        //Trace.WriteLine(directUrl);
+        //        SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
+        //        //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
+        //    }
+        //    Task[] downloadTasks = new Task[directUrls.Count + 1];
+        //    for (int i = 0; i < directUrls.Count; i++)
+        //    {
+        //        downloadTasks[i] = LanzouyunDownloadHelper.DownloadMap(directUrls[i], $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}", map, i);
+        //    }
+        //    try
+        //    {
+        //        downloadTasks[downloadTasks.Length - 1] = map.WaitForDownloadFinish();
+        //        await Task.WhenAll(downloadTasks);
+        //    }
+        //    catch (ArgumentException ex)
+        //    {
+        //        Trace.WriteLine(ex.Message);
+        //    }
+        //    map.Status = "合并中";
+        //    await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
+        //    map.Status = "解压中";
+        //    await ZipHelper.ExtractMap($"{DownloadPath}/{map.Name}.zip", LevelPath, map);
+        //    map.IsDownloading = false;
+        //    map.Downloaded = true;
+        //}
+
 
         private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
         public Map CurrentMap
@@ -194,7 +254,7 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        public string gamePath;
+        public string gamePath = "未选择";
         public string GamePath
         {
             get => gamePath;
@@ -213,8 +273,13 @@ namespace GOI地图管理器.ViewModels
         }
         public string LevelPath
         {
-            get => Setting.Instance.levelPath; 
+            get => Setting.Instance.levelPath;
         }
+        public string DownloadPath
+        {
+            get => Setting.Instance.downloadPath;
+        }
+
 
     }
 }

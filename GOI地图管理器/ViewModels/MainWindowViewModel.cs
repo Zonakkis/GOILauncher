@@ -1,10 +1,16 @@
-﻿using GOI地图管理器.Helpers;
+﻿using Avalonia.Interactivity;
+using FluentAvalonia.UI.Controls;
+using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
+using LeanCloud;
+using LeanCloud.Storage;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace GOI地图管理器.ViewModels
 {
@@ -12,30 +18,49 @@ namespace GOI地图管理器.ViewModels
     {
         public MainWindowViewModel()
         {
+            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            {
+                Setting.Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+            }
+            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
+            //LCLogger.LogDelegate = (LCLogLevel level, string info) =>
+            //{
+            //    switch (level)
+            //    {
+            //        case LCLogLevel.Debug:
+            //            Trace.WriteLine($"[DEBUG] {DateTime.Now} {info}\n");
+            //            break;
+            //        case LCLogLevel.Warn:
+            //            Trace.WriteLine($"[WARNING] {DateTime.Now} {info}\n");
+            //            break;
+            //        case LCLogLevel.Error:
+            //            Trace.WriteLine($"[ERROR] {DateTime.Now} {info}\n");
+            //            break;
+            //        default:
+            //            Trace.WriteLine(info);
+            //            break;
+            //    }
+            //};
+            Views = new ObservableCollection<ViewTemplate>
+            {
+              new ViewTemplate(typeof(GameViewModel), "游戏"),
+             new ViewTemplate(typeof(ModViewModel), "Mod"),
+            new ViewTemplate(typeof(MapViewModel), "地图")
+            };
+            FooterViews = new ObservableCollection<ViewTemplate>
+        {
+            new ViewTemplate(typeof(AboutViewModel), "关于"),
+            new ViewTemplate(typeof(SettingViewModel), "设置"),
+        };
             SelectedView = Views[0];
         }
-        public void ChangeView()
-        {
-            IsPaneOpen = !IsPaneOpen;
-            Trace.WriteLine(IsPaneOpen);
-        }
+
+
         public void OnSelectedViewChanged(ViewTemplate value)
         {
             value.View.OnSelectedViewChanged();
             CurrentView = value.View;
 
-        }
-
-        public bool IsPaneOpen
-        {
-            get
-            {
-                return isPaneOpen;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref isPaneOpen, value, "IsPaneOpen");
-            }
         }
 
         public ViewModelBase CurrentView
@@ -63,23 +88,13 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        public ObservableCollection<ViewTemplate> Views { get; } = new ObservableCollection<ViewTemplate>
-        {
-            new ViewTemplate(typeof(GameViewModel), "游戏"),
-            new ViewTemplate(typeof(ModViewModel), "Mod"),
-            new ViewTemplate(typeof(MapViewModel), "地图"),
-            new ViewTemplate(typeof(SettingViewModel), "设置")
-        };
+        public ObservableCollection<ViewTemplate> Views { get; } 
 
-        private string _description = string.Empty;
-
-        private bool isPaneOpen;
-
-        private ViewModelBase currentView = new GameViewModel();
+        private ViewModelBase currentView;
 
         private ViewTemplate? selectedView;
 
-        
+        public ObservableCollection<ViewTemplate> FooterViews { get; }
     }
 
     public class ViewTemplate
@@ -97,6 +112,8 @@ namespace GOI地图管理器.ViewModels
 
         public ViewModelBase View { get; }
     }
+
+
 }
 
 

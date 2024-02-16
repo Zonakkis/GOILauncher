@@ -4,7 +4,6 @@ using Downloader;
 using Ionic.Zip;
 using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +20,10 @@ namespace GOI地图管理器.Models
     {
         public Map() : base("Map")
         {
+            TotalByte = 0;
             Downloadable = true;
+            ReceivedBytes = new List<long>();
+            DownloadSpeeds = new List<double>();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -41,12 +43,28 @@ namespace GOI地图管理器.Models
                 Downloadable = false;
             }
         }
+
+        public async Task WaitForDownloadFinish()
+        {
+            while(CompletedDownloadCount != DownloadURL.Count)
+            {
+                if (TotalByte != 0)
+                {
+                    ProgressPercentage = Convert.ToInt32((float)ReceivedBytes.Sum() / TotalByte * 100f);
+                    Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
+                    Trace.WriteLine(ProgressPercentage);
+                }
+                await Task.Delay(400);
+            }
+        }
         public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
         {
-            //DownloadSize += eventArgs.TotalBytesToReceive;
-            SingleFileSize = eventArgs.TotalBytesToReceive;
-            Status = "下载中";
-            IsDownloading = true;
+            var downloadService = (DownloadService)sender;
+            TotalBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.TotalBytesToReceive;
+            TotalByte = TotalBytes.Sum();
+            //SingleFileSize = eventArgs.TotalBytesToReceive;
+            //Status = "下载中";
+            //IsDownloading = true;
         }
         public void OnChunkDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
@@ -54,12 +72,17 @@ namespace GOI地图管理器.Models
         }
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
-            ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
-            Trace.WriteLine(ProgressPercentage);
+            var downloadService = (DownloadService)sender; 
+            ReceivedBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3))-1] = eventArgs.ReceivedBytesSize;
+            DownloadSpeeds[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.BytesPerSecondSpeed;
+
+            //ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
+            //ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
+            //Trace.WriteLine(ProgressPercentage);
         }
         public void OnDownloadCompleted(object sender, AsyncCompletedEventArgs eventArgs)
         {
-            ReceivedSize += SingleFileSize;
+            CompletedDownloadCount++;
 
         }
         public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
@@ -76,6 +99,23 @@ namespace GOI地图管理器.Models
         {
             return Name;
         }
+
+        public string ConvertStorageUnit(double bytes)
+        {
+            if(bytes < 1024)
+            {
+                return $"{DownloadSpeeds.Sum().ToString("0.00")}B/s";
+            }
+            else if(bytes < 1048576)
+            {
+                return $"{(DownloadSpeeds.Sum()/1024D).ToString("0.00")}KB/s";
+            }
+            else
+            {
+                return $"{(DownloadSpeeds.Sum() / 1048576D).ToString("0.00")}MB/s";
+            }
+        }
+
         public string Name 
         {
             get=> (this["Name"] as string)!;
@@ -121,9 +161,21 @@ namespace GOI地图管理器.Models
                 NotifyPropertyChanged("IsDownloading");
             }
         }
-        public long DownloadSize { get; set; }
-        public long SingleFileSize { get; set; }
-        public long ReceivedSize { get; set; }
+        public long TotalByte { get; set; }
+        public List<long> TotalBytes { get; set; }
+        public List<long> ReceivedBytes { get; set; }
+        public List<double> DownloadSpeeds { get; set; }
+
+        public int CompletedDownloadCount { get; set; }
+
+
+
+
+
+
+
+
+
 
         public int progressPercentage;
         public int ProgressPercentage

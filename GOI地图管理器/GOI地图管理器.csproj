@@ -5,20 +5,23 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <PackageId>GOI地图管理器</PackageId>
+    <PackageId>GOILauncher</PackageId>
     <Version>0.0.1</Version>
-    <Title>GOI地图管理器</Title>
+    <Title>GOILauncher</Title>
     <Authors>Zonakkis</Authors>
-    <Product>GOI地图管理器</Product>
-    <AssemblyName>GOI地图管理器</AssemblyName>
-    <ApplicationIcon>Assets\goi.ico</ApplicationIcon>
+    <Product>GOILauncher</Product>
+    <AssemblyName>GOILauncher</AssemblyName>
+    <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
     <Company>Zonakkis</Company>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
     <FileVersion>0.0.1</FileVersion>
     <AssemblyVersion>0.0.1</AssemblyVersion>
+    <PublishAot>False</PublishAot>
+    <NeutralLanguage>zh-CN</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
+    <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -48,6 +51,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.9" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Downloader" Version="3.1.0-beta" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.0.5" />
   </ItemGroup>
 
 
@@ -64,5 +68,12 @@
     <Reference Include="Storage.Standard">
       <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Compile Update="Views\AboutView.axaml.cs">
+      <DependentUpon>AboutView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

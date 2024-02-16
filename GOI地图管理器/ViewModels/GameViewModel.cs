@@ -1,4 +1,6 @@
-﻿using GOI地图管理器.Helpers;
+﻿using Avalonia.Controls.Shapes;
+using Avalonia.OpenGL;
+using GOI地图管理器.Helpers;
 using GOI地图管理器.Models;
 using ReactiveUI;
 using System;
@@ -8,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,20 +20,24 @@ namespace GOI地图管理器.ViewModels
     {
         public GameViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
-            {
-                Setting.Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
-                GamePath = Setting.Instance.gamePath;
-                //Trace.WriteLine(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
-            }
-            else
-            {
-                gamePath = "未选择";
-            }
+            
         }
         public override void OnSelectedViewChanged()
         {
             GamePath = Setting.Instance.gamePath;
+        }
+
+        public Assembly LoadAssembly(string path)
+        {
+            byte[] assemblyData = null;
+            using (FileStream fileStream = File.OpenRead(path))
+            {
+                using (BinaryReader binaryReader = new BinaryReader(fileStream))
+                {
+                    assemblyData = binaryReader.ReadBytes((int)fileStream.Length);
+                }
+            }
+            return Assembly.Load(assemblyData);
         }
         string GetGameVersion(long exeSize)
         {
@@ -42,16 +49,26 @@ namespace GOI地图管理器.ViewModels
                     return "未知版本";
             }
         }
-        string GetModpackVersion(string gamepath)
+        void GetModpackandLevelLoaderVersion(string gamepath)
         {
-            Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            if (assembly.GetType("JsonConvertEx") != null)
+            Assembly assembly = LoadAssembly($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
+            Type modPackType = assembly.GetType("JsonConvertEx");
+            Type levelLoaderType = assembly.GetType("GOILevelImporter.ModInfo");
+            if(modPackType != null)
             {
-                return "已安装";
+                ModpackVersion = "已安装";
             }
             else
             {
-                return "未安装";
+                ModpackVersion = "未安装";
+            }
+            if(levelLoaderType != null)
+            {
+                LevelLoaderVersion = (string)levelLoaderType.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
+            }
+            else
+            {
+                LevelLoaderVersion = "未安装";
             }
             //尝试通过Modpack版本变化推断版本，但因为无法创建unity实例失败
             //Type type = assembly.GetType("ModPotCustomizer");
@@ -69,17 +86,24 @@ namespace GOI地图管理器.ViewModels
             //}
 
         }
-        string GetLevelLoaderVersion(string gamepath)
+        string GetBepinExVersion(string gamepath)
         {
-            Assembly assembly = Assembly.LoadFrom($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            Type type = assembly.GetType("GOILevelImporter.ModInfo");
-            if (type != null)
+            if(!Directory.Exists($"{gamepath}/BepInEx/core"))
             {
-                return (string)type.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
+                return "未安装";
+            }
+            else if(File.Exists($"{gamepath}/BepInEx/core/BepInEx.Preloader.Unity.dll"))
+            {
+                Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.Unity.dll");
+                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
+                return assemblyInformationalVersionAttribute.InformationalVersion;
+
             }
             else
             {
-                return "未安装";
+                Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.dll");
+                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
+                return assemblyInformationalVersionAttribute.InformationalVersion;
             }
         }
         public void LaunchGOI(int para)
@@ -98,7 +122,7 @@ namespace GOI地图管理器.ViewModels
             }
         }
 
-        public string gamePath;
+        public string gamePath = "未选择";
         public string GamePath
         {
             get => gamePath;
@@ -109,8 +133,9 @@ namespace GOI地图管理器.ViewModels
                     this.RaiseAndSetIfChanged(ref gamePath, value, "GamePath");
                     SelectedGamePathNoteHide = true;
                     GameVersion = GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
-                    ModpackVersion = GetModpackVersion(GamePath);
-                    LevelLoaderVersion = GetLevelLoaderVersion(GamePath);
+                    GetModpackandLevelLoaderVersion(GamePath);
+                    BepInExVersion = GetBepinExVersion(GamePath);
+
                 }
             }
         }
@@ -151,5 +176,19 @@ namespace GOI地图管理器.ViewModels
                 this.RaiseAndSetIfChanged(ref levelLoaderVersion, value, "LevelLoaderVersion");
             }
         }
+
+        string bepInExVersion;
+        public string BepInExVersion
+        {
+            get => bepInExVersion; set
+            {
+                this.RaiseAndSetIfChanged(ref bepInExVersion, value, "BepInExVersion");
+            }
+        }
     }
+
+
+
+
+
 }
