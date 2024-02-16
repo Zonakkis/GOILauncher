@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOILauncher", "GOILauncher\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GMMUpdater", "GMMUpdater\GMMUpdater.csproj", "{00E554C7-126E-4A50-97B5-F65B502B9F5A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapUploader", "MapUploader\MapUploader.csproj", "{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapUploader", "MapUploader\MapUploader.csproj", "{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{00E554C7-126E-4A50-97B5-F65B502B9F5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00E554C7-126E-4A50-97B5-F65B502B9F5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00E554C7-126E-4A50-97B5-F65B502B9F5A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
