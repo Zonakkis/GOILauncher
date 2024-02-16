@@ -362,10 +362,6 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /MapUploader/MapUploader.csproj
-/MapUploader/MapUploader.csproj
-/MapUploader/MapUploader.csproj
-/MapUploader/MapUploader.csproj
-/MapUploader/MapUploader.csproj
 /MapUploader/App.axaml
 /MapUploader/Program.cs
 /MapUploader/ViewLocator.cs

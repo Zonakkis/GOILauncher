@@ -7,8 +7,14 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GOILUpdater</AssemblyName>
     <RootNamespace>GOILUpdater</RootNamespace>
-    <BaseOutputPath>E:\My Project\GOI地图管理器\GOI地图管理器\bin</BaseOutputPath>
+    <BaseOutputPath>E:\My Project\GOI管理器\GOILauncher\bin</BaseOutputPath>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="bin\**" />
+    <EmbeddedResource Remove="bin\**" />
+    <None Remove="bin\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="DotNetZip" Version="1.16.0" />

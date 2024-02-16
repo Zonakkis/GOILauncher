@@ -5,7 +5,7 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOILauncher", "GOILauncher\GOILauncher.csproj", "{E8A02E8F-7ADE-4037-A856-F98F83CA3D90}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GMMUpdater", "GMMUpdater\GMMUpdater.csproj", "{00E554C7-126E-4A50-97B5-F65B502B9F5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOILUpdater", "GMMUpdater\GOILUpdater.csproj", "{00E554C7-126E-4A50-97B5-F65B502B9F5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapUploader", "MapUploader\MapUploader.csproj", "{6260CBB0-6EC9-48A4-9E89-B251D2292AC6}"
 EndProject
