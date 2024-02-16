@@ -43,7 +43,6 @@ namespace GOILauncher.Models
                 Downloadable = false;
             }
         }
-
         public async Task WaitForDownloadFinish()
         {
             while(CompletedDownloadCount != DownloadURL.Count)
@@ -62,9 +61,6 @@ namespace GOILauncher.Models
             var downloadService = (DownloadService)sender;
             TotalBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.TotalBytesToReceive;
             TotalByte = TotalBytes.Sum();
-            //SingleFileSize = eventArgs.TotalBytesToReceive;
-            //Status = "下载中";
-            //IsDownloading = true;
         }
         public void OnChunkDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
@@ -165,7 +161,6 @@ namespace GOILauncher.Models
         public List<long> TotalBytes { get; set; }
         public List<long> ReceivedBytes { get; set; }
         public List<double> DownloadSpeeds { get; set; }
-
         public int CompletedDownloadCount { get; set; }
 
 

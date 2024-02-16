@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GOILUpdater</AssemblyName>
     <RootNamespace>GOILUpdater</RootNamespace>
-    <BaseOutputPath>E:\My Project\GOI管理器\GOILauncher\bin</BaseOutputPath>
+    <BaseOutputPath>E:\My Project\GOI地图管理器\GOILauncher\bin</BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

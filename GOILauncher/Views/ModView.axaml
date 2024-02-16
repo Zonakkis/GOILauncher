@@ -2,10 +2,32 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GOILauncher.ViewModels"
+			 xmlns:m="using:GOILauncher.Models"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GOILauncher.Views.ModView"
+			 x:DataType="vm:ModViewModel"
 			 FontSize="20">
-	<Grid>
-		<TextBlock Text="这里什么也没有，去别的地方逛逛吧" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-	</Grid>
+	<StackPanel Margin="10,10,10,0">
+		<Expander>
+			<Expander.Header>
+				<TextBlock>
+					<Run FontSize="24" FontWeight="SemiBold" Text="Modpack" />
+					<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
+					<Run FontSize="20" Text="Anjo2" />
+				</TextBlock>
+			</Expander.Header>
+			<ListBox Name="ModpackListBox" SelectionChanged="ModpackSelectionChanged" ItemsSource="{Binding Modpacks}">
+				<ListBox.ItemTemplate>
+					<DataTemplate x:DataType="m:Modpack">
+						<Grid ColumnDefinitions="auto,*,*">
+							<TextBlock Grid.Column="0" Text="{Binding Build}" FontSize="18" VerticalAlignment="Center"/>
+							<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
+							<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Expander>
+	</StackPanel>
 </UserControl>

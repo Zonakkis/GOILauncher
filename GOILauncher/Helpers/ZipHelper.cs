@@ -47,5 +47,19 @@ namespace GOILauncher.Helpers
                 File.Delete(zipPath);
             }
         }
+        public static async Task Extract(string zipPath, string destinationPath)
+        {
+            using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
+            {
+                foreach (ZipEntry entry in zip)
+                {
+                    await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
+                }
+            }
+            if (!Setting.Instance.saveMapZip)
+            {
+                File.Delete(zipPath);
+            }
+        }
     }
 }

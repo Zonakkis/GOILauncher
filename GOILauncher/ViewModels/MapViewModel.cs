@@ -34,7 +34,6 @@ namespace GOILauncher.ViewModels
             {
                 Directory.CreateDirectory($"{directory}Download");
             }
-            Maps = new ObservableCollection<Map>();
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
@@ -59,7 +58,7 @@ namespace GOILauncher.ViewModels
             LCQuery<Map> query = new LCQuery<Map>("Map");
             query.OrderByAscending("Name");
             ReadOnlyCollection<Map> maps = await query.Find();
-            bool levelPathExisted = (gamePath != "未选择");
+            bool levelPathExisted = (GamePath != "未选择");
             foreach (Map map in maps)
             {
                 LCFile file;
@@ -125,7 +124,6 @@ namespace GOILauncher.ViewModels
                 string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
                 directUrls.Add(directUrl);
                 //Trace.WriteLine(directUrl);
-                //SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
                 //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
             }
             map.Status = "启动下载中";
@@ -150,47 +148,6 @@ namespace GOILauncher.ViewModels
             map.IsDownloading = false;
             map.Downloaded = true;
         }
-
-        //public async void Download()
-        //{
-        //    Map map = SelectedMap;
-        //    map.Downloadable = false;
-        //    CancellationTokenSource tokenSource = new CancellationTokenSource();
-        //    CancellationToken token = tokenSource.Token;
-        //    List<string> directUrls = new List<string>();
-        //    map.Status = "下载中";
-        //    map.IsDownloading = true;
-        //    for (int i = 0; i < map.DownloadURL.Count; i++)
-        //    {
-        //        map.ReceivedSizes.Add(0);
-        //        string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
-        //        directUrls.Add(directUrl);
-        //        //Trace.WriteLine(directUrl);
-        //        SelectedMap.DownloadSize += await LanzouyunDownloadHelper.GetFileSizeAsync(directUrl);
-        //        //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
-        //    }
-        //    Task[] downloadTasks = new Task[directUrls.Count + 1];
-        //    for (int i = 0; i < directUrls.Count; i++)
-        //    {
-        //        downloadTasks[i] = LanzouyunDownloadHelper.DownloadMap(directUrls[i], $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}", map, i);
-        //    }
-        //    try
-        //    {
-        //        downloadTasks[downloadTasks.Length - 1] = map.WaitForDownloadFinish();
-        //        await Task.WhenAll(downloadTasks);
-        //    }
-        //    catch (ArgumentException ex)
-        //    {
-        //        Trace.WriteLine(ex.Message);
-        //    }
-        //    map.Status = "合并中";
-        //    await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
-        //    map.Status = "解压中";
-        //    await ZipHelper.ExtractMap($"{DownloadPath}/{map.Name}.zip", LevelPath, map);
-        //    map.IsDownloading = false;
-        //    map.Downloaded = true;
-        //}
-
 
         private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
         public Map CurrentMap
@@ -219,7 +176,7 @@ namespace GOILauncher.ViewModels
         }
 
         private bool isSelectedMap;
-        public ObservableCollection<Map> Maps { get; }
+        public ObservableCollection<Map> Maps { get; } = new ObservableCollection<Map>();
         public string LastUpdateTime { get; set; }
 
         private Map selectedMap;
