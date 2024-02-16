@@ -36,6 +36,7 @@ namespace GOILauncher.Models
 
         public async void Download()
         {
+            //if(ApplicableGameVersion)
             var downloadOpt = new DownloadConfiguration()
             {
                 ChunkCount = 8,
@@ -51,6 +52,7 @@ namespace GOILauncher.Models
             await downloadService.DownloadFileTaskAsync(DownloadURL, $"{Setting.Instance.downloadPath}/Modpack{Build}.zip", token);
             IsDownloading = false;
             await ZipHelper.Extract($"{Setting.Instance.downloadPath}/Modpack{Build}.zip", Setting.Instance.gamePath);
+            GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
             var contentDialog = new ContentDialog()
             {
                 Title = "提示",
@@ -59,7 +61,6 @@ namespace GOILauncher.Models
             };
             await contentDialog.ShowAsync();
         }
-
 
         public string Build
         {

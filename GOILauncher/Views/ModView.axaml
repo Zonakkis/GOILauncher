@@ -21,7 +21,10 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate x:DataType="m:Modpack">
 						<Grid ColumnDefinitions="auto,*,*">
-							<TextBlock Grid.Column="0" Text="{Binding Build}" FontSize="18" VerticalAlignment="Center"/>
+							<TextBlock Grid.Column="0"  FontSize="18" VerticalAlignment="Center">
+								<Run Text="{Binding Build}"/>
+								<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+							</TextBlock>
 							<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
 							<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
 						</Grid>
