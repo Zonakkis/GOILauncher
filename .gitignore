@@ -363,3 +363,17 @@ MigrationBackup/
 FodyWeavers.xsd
 /MapUploader/MapUploader.csproj
 /MapUploader/MapUploader.csproj
+/MapUploader/MapUploader.csproj
+/MapUploader/MapUploader.csproj
+/MapUploader/MapUploader.csproj
+/MapUploader/App.axaml
+/MapUploader/Program.cs
+/MapUploader/ViewLocator.cs
+/MapUploader/app.manifest
+/MapUploader/Views/MainWindow.axaml
+/MapUploader/ViewModels/MainWindowViewModel.cs
+/MapUploader/ViewModels/ViewModelBase.cs
+/MapUploader/Models/Map.cs
+/MapUploader/Assets/avalonia-logo.ico
+/MapUploader/App.axaml.cs
+/MapUploader/Views/MainWindow.axaml.cs
