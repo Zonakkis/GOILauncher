@@ -38,7 +38,6 @@ namespace GOI地图管理器.ViewModels
             var isDownloadValid = this.WhenAnyValue(x => x.GamePath,
                                                 x => x.Length > 3);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
-            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             LCObject.RegisterSubclass("Map", () => new Map());
             GetMaps();
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

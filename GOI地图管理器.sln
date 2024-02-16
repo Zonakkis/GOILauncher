@@ -6,8 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GOI地图管理器", "GOI地图管理器\GOI地图管理器.csproj", "{E8A02E8F-7ADE-4037-A856-F98F83CA3D90}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GMMUpdater", "GMMUpdater\GMMUpdater.csproj", "{00E554C7-126E-4A50-97B5-F65B502B9F5A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E8A02E8F-7ADE-4037-A856-F98F83CA3D90} = {E8A02E8F-7ADE-4037-A856-F98F83CA3D90}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapUploader", "MapUploader\MapUploader.csproj", "{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapUploader", "MapUploader\MapUploader.csproj", "{B8C81C2D-094B-4FB7-B455-BDA17BB14EDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

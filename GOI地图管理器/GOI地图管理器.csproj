@@ -5,12 +5,12 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
-    <PackageId>GOI地图管理器</PackageId>
+    <PackageId>GOILauncher</PackageId>
     <Version>0.0.1</Version>
-    <Title>GOI地图管理器</Title>
+    <Title>GOILauncher</Title>
     <Authors>Zonakkis</Authors>
-    <Product>GOI地图管理器</Product>
-    <AssemblyName>GOI地图管理器</AssemblyName>
+    <Product>GOILauncher</Product>
+    <AssemblyName>GOILauncher</AssemblyName>
     <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
     <Company>Zonakkis</Company>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>

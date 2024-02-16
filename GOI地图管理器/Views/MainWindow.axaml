@@ -9,9 +9,9 @@
         x:Class="GOI地图管理器.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/GOIL.ico"
-        Title="GOI地图管理器"
+        Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
-         >
+		Loaded="Loaded">
 	<Window.Title >
 	</Window.Title>
 	<Design.DataContext>
