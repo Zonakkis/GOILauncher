@@ -119,7 +119,8 @@ namespace GOI地图管理器.ViewModels
                 downloader[i].DownloadStarted += map.OnDownloadStarted;
                 downloader[i].DownloadProgressChanged += map.OnDownloadProgressChanged;
                 downloader[i].DownloadFileCompleted += map.OnDownloadCompleted;
-                map.ReceivedSizes.Add(0);
+                map.TotalBytes.Add(0);
+                map.ReceivedBytes.Add(0);
                 map.DownloadSpeeds.Add(0);
                 string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
                 directUrls.Add(directUrl);

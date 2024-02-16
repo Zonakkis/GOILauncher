@@ -55,10 +55,6 @@ namespace GOI地图管理器.ViewModels
             SelectedView = Views[0];
         }
 
-        public void Initialized(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         public void OnSelectedViewChanged(ViewTemplate value)
         {

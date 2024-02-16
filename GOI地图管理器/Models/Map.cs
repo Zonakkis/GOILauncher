@@ -20,9 +20,9 @@ namespace GOI地图管理器.Models
     {
         public Map() : base("Map")
         {
-            DownloadSize = 0;
+            TotalByte = 0;
             Downloadable = true;
-            ReceivedSizes = new List<long>();
+            ReceivedBytes = new List<long>();
             DownloadSpeeds = new List<double>();
         }
 
@@ -46,11 +46,11 @@ namespace GOI地图管理器.Models
 
         public async Task WaitForDownloadFinish()
         {
-            while(CompletedFilesCount != DownloadURL.Count)
+            while(CompletedDownloadCount != DownloadURL.Count)
             {
-                if (DownloadSize != 0)
+                if (TotalByte != 0)
                 {
-                    ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
+                    ProgressPercentage = Convert.ToInt32((float)ReceivedBytes.Sum() / TotalByte * 100f);
                     Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
                     Trace.WriteLine(ProgressPercentage);
                 }
@@ -59,15 +59,9 @@ namespace GOI地图管理器.Models
         }
         public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
         {
-            if (DownloadSize == 0)
-            {
-                DownloadSize = eventArgs.TotalBytesToReceive;
-            }
-            else
-            {
-                DownloadSize += eventArgs.TotalBytesToReceive;
-            }
-            Trace.WriteLine(DownloadSize);
+            var downloadService = (DownloadService)sender;
+            TotalBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.TotalBytesToReceive;
+            TotalByte = TotalBytes.Sum();
             //SingleFileSize = eventArgs.TotalBytesToReceive;
             //Status = "下载中";
             //IsDownloading = true;
@@ -79,7 +73,7 @@ namespace GOI地图管理器.Models
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
             var downloadService = (DownloadService)sender; 
-            ReceivedSizes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3))-1] = eventArgs.ReceivedBytesSize;
+            ReceivedBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3))-1] = eventArgs.ReceivedBytesSize;
             DownloadSpeeds[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.BytesPerSecondSpeed;
 
             //ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
@@ -88,7 +82,7 @@ namespace GOI地图管理器.Models
         }
         public void OnDownloadCompleted(object sender, AsyncCompletedEventArgs eventArgs)
         {
-            CompletedFilesCount++;
+            CompletedDownloadCount++;
 
         }
         public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
@@ -167,11 +161,12 @@ namespace GOI地图管理器.Models
                 NotifyPropertyChanged("IsDownloading");
             }
         }
-        public long DownloadSize { get; set; }
-        public List<long> ReceivedSizes { get; set; }
+        public long TotalByte { get; set; }
+        public List<long> TotalBytes { get; set; }
+        public List<long> ReceivedBytes { get; set; }
         public List<double> DownloadSpeeds { get; set; }
 
-        public int CompletedFilesCount { get; set; }
+        public int CompletedDownloadCount { get; set; }
 
 
 
