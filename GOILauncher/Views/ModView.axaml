@@ -22,13 +22,16 @@
 				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding Modpacks}">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="m:Modpack">
-							<Grid ColumnDefinitions="auto,*,*">
+							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
 									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
-								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
-								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								</StackPanel>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
@@ -45,13 +48,16 @@
 				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding LevelLoaders}">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="m:LevelLoader">
-							<Grid ColumnDefinitions="auto,*,*">
+							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
 									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
-								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
-								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								</StackPanel>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
@@ -68,13 +74,16 @@
 				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding ModpackandLevelLoaders}">
 					<ListBox.ItemTemplate>
 						<DataTemplate x:DataType="m:ModpackandLevelLoader">
-							<Grid ColumnDefinitions="auto,*,*">
+							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
 									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
-								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
-								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								</StackPanel>
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

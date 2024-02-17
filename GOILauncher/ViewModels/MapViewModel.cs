@@ -144,7 +144,7 @@ namespace GOILauncher.ViewModels
             map.Status = "合并中";
             await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
             map.Status = "解压中";
-            await ZipHelper.ExtractMap($"{DownloadPath}/{map.Name}.zip", LevelPath, map);
+            await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath,map.OnExtractProgressChanged);
             map.IsDownloading = false;
             map.Downloaded = true;
         }

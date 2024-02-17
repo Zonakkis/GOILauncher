@@ -31,6 +31,10 @@ namespace GOILauncher.Models
             }
 
         }
+        public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
+        {
+            Status = "下载中";
+        }
         public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = Convert.ToInt32((float)eventArgs.ReceivedBytesSize / eventArgs.TotalBytesToReceive * 100f);
@@ -49,6 +53,8 @@ namespace GOILauncher.Models
                 await contentDialog.ShowAsync();
                 return;
             }
+            IsDownloading = true;
+            Status = "启动下载中";
             var downloadOpt = new DownloadConfiguration()
             {
                 ChunkCount = 8,
@@ -59,12 +65,15 @@ namespace GOILauncher.Models
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
             var downloadService = new DownloadService(downloadOpt);
+            downloadService.DownloadStarted += OnDownloadStarted;
             downloadService.DownloadProgressChanged += OnDownloadProgressChanged;
-            IsDownloading= true;
-            await downloadService.DownloadFileTaskAsync(DownloadURL, $"{Setting.Instance.downloadPath}/Modpack{Build}.zip", token);
-            IsDownloading = false;
-            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/Modpack{Build}.zip", Setting.Instance.gamePath);
+            await downloadService.DownloadFileTaskAsync(DownloadURL, $"{Setting.Instance.downloadPath}/ModpackandLevelLoader{Build}.zip", token);
+            IsExtracting = true;
+            Status = "解压中";
+            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/ModpackandLevelLoader{Build}.zip", Setting.Instance.gamePath);
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
+            IsExtracting = false;
+            IsDownloading = false;
             contentDialog.Content = $"已经安装ModpackandLevelLoader{Build}！";
             await contentDialog.ShowAsync();
         }
@@ -92,6 +101,28 @@ namespace GOILauncher.Models
             {
                 isDownloading = value;
                 NotifyPropertyChanged("IsDownloading");
+            }
+        }
+
+        public bool isExtracting;
+        public bool IsExtracting
+        {
+            get => isExtracting;
+            set
+            {
+                isExtracting = value;
+                NotifyPropertyChanged("IsExtracting");
+            }
+        }
+
+        public string status;
+        public string Status
+        {
+            get => status;
+            set
+            {
+                status = value;
+                NotifyPropertyChanged("Status");
             }
         }
 

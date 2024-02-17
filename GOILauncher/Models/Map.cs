@@ -22,6 +22,7 @@ namespace GOILauncher.Models
         {
             TotalByte = 0;
             Downloadable = true;
+            TotalBytes = new List<long>();
             ReceivedBytes = new List<long>();
             DownloadSpeeds = new List<double>();
         }
@@ -95,7 +96,6 @@ namespace GOILauncher.Models
         {
             return Name;
         }
-
         public string ConvertStorageUnit(double bytes)
         {
             if(bytes < 1024)
@@ -162,15 +162,6 @@ namespace GOILauncher.Models
         public List<long> ReceivedBytes { get; set; }
         public List<double> DownloadSpeeds { get; set; }
         public int CompletedDownloadCount { get; set; }
-
-
-
-
-
-
-
-
-
 
         public int progressPercentage;
         public int ProgressPercentage

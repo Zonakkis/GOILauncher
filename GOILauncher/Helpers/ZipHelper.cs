@@ -32,27 +32,17 @@ namespace GOILauncher.Helpers
                 }
             }
         }
-        public static async Task ExtractMap(string zipPath, string destinationPath,Map map)
+        public static async Task Extract(string zipPath, string destinationPath,EventHandler<ExtractProgressEventArgs> progressHandler = null)
         {
             using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
             {
-                zip.ExtractProgress += map.OnExtractProgressChanged;
-                foreach (ZipEntry entry in zip)
+                if(!(progressHandler is null))
                 {
-                    await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
+                    zip.ExtractProgress += progressHandler;
                 }
-            }
-            if (!Setting.Instance.saveMapZip)
-            {
-                File.Delete(zipPath);
-            }
-        }
-        public static async Task Extract(string zipPath, string destinationPath)
-        {
-            using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
-            {
                 foreach (ZipEntry entry in zip)
                 {
+
                     await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
                 }
             }
