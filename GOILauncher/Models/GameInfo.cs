@@ -98,8 +98,8 @@ namespace GOILauncher.Models
             else
             {
                 Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.dll");
-                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
-                BepInExVersion =  assemblyInformationalVersionAttribute!.InformationalVersion;
+                AssemblyFileVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyFileVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)));
+                BepInExVersion =  assemblyInformationalVersionAttribute!.Version;
             }
         }
 
