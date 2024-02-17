@@ -8,12 +8,16 @@
     <AssemblyName>GOILUpdater</AssemblyName>
     <RootNamespace>GOILUpdater</RootNamespace>
     <BaseOutputPath>E:\My Project\GOI地图管理器\GOILauncher\bin</BaseOutputPath>
+    <BaseIntermediateOutputPath>E:\My Project\GOI地图管理器\GOILauncher\bin\Release</BaseIntermediateOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="bin\**" />
+    <Compile Remove="obj\**" />
     <EmbeddedResource Remove="bin\**" />
+    <EmbeddedResource Remove="obj\**" />
     <None Remove="bin\**" />
+    <None Remove="obj\**" />
   </ItemGroup>
 
   <ItemGroup>

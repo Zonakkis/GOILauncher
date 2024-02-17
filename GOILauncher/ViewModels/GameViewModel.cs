@@ -22,37 +22,29 @@ namespace GOILauncher.ViewModels
         {
 
         }
+        public override void OnSelectedViewChanged()
+        {
+            if (!SelectedGamePathNoteHide && Setting.Instance.gamePath != "未选择")
+            {
+                SelectedGamePathNoteHide = true;
+                GameInfo.Instance.GetGameVersion(new FileInfo($"{Setting.Instance.gamePath}/GettingOverIt.exe").Length);
+                GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
+                GameInfo.Instance.GetBepinExVersion(Setting.Instance.gamePath);
+            }
+        }
         public void LaunchGOI(int para)
         {
             switch (para)
             {
                 case 1:
-                    Process.Start($"{GamePath}/GettingOverIt.exe");
+                    Process.Start($"{Setting.Instance.gamePath}/GettingOverIt.exe");
                     return;
                 case 2:
                     if (SteamPath != "未选择（需要通过Steam启动游戏时才选择，否则可不选）")
                     {
-                        Process.Start($"{SteamPath}/steam.exe", "steam://rungameid/240720");
+                        Process.Start($"{Setting.Instance.gamePath}/steam.exe", "steam://rungameid/240720");
                     }
                     return;
-            }
-        }
-
-        public string gamePath = "未选择";
-        public string GamePath
-        {
-            get => gamePath;
-            set
-            {
-                if (gamePath != value)
-                {
-                    this.RaiseAndSetIfChanged(ref gamePath, value, "GamePath");
-                    SelectedGamePathNoteHide = true;
-                    GameInfo.Instance.GetGameVersion(new FileInfo($"{GamePath}/GettingOverIt.exe").Length);
-                    GameInfo.Instance.GetModpackandLevelLoaderVersion(GamePath);
-                    GameInfo.Instance.GetBepinExVersion(GamePath);
-
-                }
             }
         }
         public string SteamPath { get => Setting.Instance.steamPath; }
@@ -62,7 +54,7 @@ namespace GOILauncher.ViewModels
         {
             get => selectedGamePathNoteHide; set
             {
-                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "UnSelectedNoteHide");
+                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "SelectedGamePathNoteHide");
             }
         }
         public string GameVersion

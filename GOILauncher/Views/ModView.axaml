@@ -8,29 +8,78 @@
              x:Class="GOILauncher.Views.ModView"
 			 x:DataType="vm:ModViewModel"
 			 FontSize="20">
-	<StackPanel Margin="10,10,10,0">
-		<Expander>
-			<Expander.Header>
-				<TextBlock>
-					<Run FontSize="24" FontWeight="SemiBold" Text="Modpack" />
-					<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
-					<Run FontSize="20" Text="Anjo2" />
-				</TextBlock>
-			</Expander.Header>
-			<ListBox Name="ModpackListBox" SelectionChanged="ModpackSelectionChanged" ItemsSource="{Binding Modpacks}">
-				<ListBox.ItemTemplate>
-					<DataTemplate x:DataType="m:Modpack">
-						<Grid ColumnDefinitions="auto,*,*">
-							<TextBlock Grid.Column="0"  FontSize="18" VerticalAlignment="Center">
-								<Run Text="{Binding Build}"/>
-								<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
-							</TextBlock>
-							<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
-							<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
-		</Expander>
-	</StackPanel>
+	<Grid>
+		<TextBlock FontSize="20" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}"/>
+		<StackPanel Margin="10,10,10,0" IsVisible="{Binding SelectedGamePathNoteHide}">
+			<Expander>
+				<Expander.Header>
+					<TextBlock>
+						<Run FontSize="24" FontWeight="SemiBold" Text="Modpack" />
+						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
+						<Run FontSize="20" Text="Anjo2" />
+					</TextBlock>
+				</Expander.Header>
+				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding Modpacks}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="m:Modpack">
+							<Grid ColumnDefinitions="auto,*,*">
+								<TextBlock Grid.Column="0" VerticalAlignment="Center">
+									<Run Text="{Binding Build}" FontSize="20"/>
+									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+								</TextBlock>
+								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
+								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Expander>
+			<Expander Margin="0,10,0,0">
+				<Expander.Header>
+					<TextBlock>
+						<Run FontSize="24" FontWeight="SemiBold" Text="LevelLoader" />
+						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
+						<Run FontSize="20" Text="Jor02" />
+					</TextBlock>
+				</Expander.Header>
+				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding LevelLoaders}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="m:LevelLoader">
+							<Grid ColumnDefinitions="auto,*,*">
+								<TextBlock Grid.Column="0" VerticalAlignment="Center">
+									<Run Text="{Binding Build}" FontSize="20"/>
+									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+								</TextBlock>
+								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
+								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Expander>
+			<Expander Margin="0,10,0,0">
+				<Expander.Header>
+					<TextBlock>
+						<Run FontSize="24" FontWeight="SemiBold" Text="ModpackandLevelLoader" />
+						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
+						<Run FontSize="20" Text="Nameless＆Jor02" />
+					</TextBlock>
+				</Expander.Header>
+				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding ModpackandLevelLoaders}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="m:ModpackandLevelLoader">
+							<Grid ColumnDefinitions="auto,*,*">
+								<TextBlock Grid.Column="0" VerticalAlignment="Center">
+									<Run Text="{Binding Build}" FontSize="20"/>
+									<Run Text="{Binding ApplicableGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+								</TextBlock>
+								<ProgressBar Grid.Column="1" Value="{Binding ProgressPercentage}" ShowProgressText="True" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}"/>
+								<Button Grid.Column="2" Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</Expander>
+		</StackPanel>
+	</Grid>
 </UserControl>

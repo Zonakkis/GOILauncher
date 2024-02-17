@@ -13,9 +13,10 @@ namespace GOILauncher.Views
             InitializeComponent();
         }
 
-        void ModpackSelectionChanged(object sender, SelectionChangedEventArgs e)
+        void SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            ModpackListBox.SelectedItem = null;
+            var listbox = sender as ListBox;
+            listbox!.SelectedItem = null;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using Avalonia.Interactivity;
-using Downloader;
+﻿using Downloader;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using LeanCloud.Storage;
@@ -15,13 +14,12 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    public class Modpack : LCObject, INotifyPropertyChanged
+    public class LevelLoader : LCObject, INotifyPropertyChanged
     {
-        public Modpack() : base("Modpack")
+        public LevelLoader() : base("LevelLoader")
         {
             DownloadCommand = ReactiveCommand.Create(Download);
         }
-
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
@@ -42,6 +40,7 @@ namespace GOILauncher.Models
             {
                 Title = "提示",
                 CloseButtonText = "好的",
+                FontSize = 200,
             };
             if (!ApplicableGameVersion.Contains(GameInfo.Instance.GameVersion))
             {
@@ -65,7 +64,7 @@ namespace GOILauncher.Models
             IsDownloading = false;
             await ZipHelper.Extract($"{Setting.Instance.downloadPath}/Modpack{Build}.zip", Setting.Instance.gamePath);
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
-            contentDialog.Content = $"已经安装Modack{Build}！";
+            contentDialog.Content = $"已经安装LevelLoader{Build}！";
             await contentDialog.ShowAsync();
         }
 

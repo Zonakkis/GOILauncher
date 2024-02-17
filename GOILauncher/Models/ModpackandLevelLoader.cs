@@ -15,9 +15,9 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    public class Modpack : LCObject, INotifyPropertyChanged
+    public class ModpackandLevelLoader : LCObject, INotifyPropertyChanged
     {
-        public Modpack() : base("Modpack")
+        public ModpackandLevelLoader() : base("ModpackandLevelLoader")
         {
             DownloadCommand = ReactiveCommand.Create(Download);
         }
@@ -65,7 +65,7 @@ namespace GOILauncher.Models
             IsDownloading = false;
             await ZipHelper.Extract($"{Setting.Instance.downloadPath}/Modpack{Build}.zip", Setting.Instance.gamePath);
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
-            contentDialog.Content = $"已经安装Modack{Build}！";
+            contentDialog.Content = $"已经安装ModpackandLevelLoader{Build}！";
             await contentDialog.ShowAsync();
         }
 
