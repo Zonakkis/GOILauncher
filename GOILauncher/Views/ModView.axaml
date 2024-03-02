@@ -7,7 +7,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GOILauncher.Views.ModView"
 			 x:DataType="vm:ModViewModel"
-			 FontSize="20">
+			 FontSize="20"
+			 >
 	<Grid>
 		<TextBlock FontSize="20" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}"/>
 		<StackPanel Margin="10,10,10,0" IsVisible="{Binding SelectedGamePathNoteHide}">

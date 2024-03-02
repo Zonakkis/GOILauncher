@@ -9,7 +9,9 @@
              x:Class="GOILauncher.Views.MapView"
              x:DataType="vm:MapViewModel"
 			 Background="White"
-             FontSize="20">
+             FontSize="20"
+			 FontFamily="{StaticResource PuHuiTi}"
+			 FontWeight="Light">
 
 	<Design.DataContext>
 		<vm:MapViewModel/>
@@ -31,8 +33,8 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto,*">
-							<TextBlock FontSize="16" Grid.Row="0" Grid.Column="0" Text="{Binding Name}" VerticalAlignment="Center"/>
-							<TextBlock Grid.Row="0" Grid.Column="1" Text="√" IsVisible="{Binding Downloaded}"/>
+							<TextBlock Grid.Row="0" Grid.Column="0" FontSize="18" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" Text="{Binding Name}" VerticalAlignment="Center"/>
+							<TextBlock Grid.Row="0" Grid.Column="1" FontSize="18" Text="√" IsVisible="{Binding Downloaded}"/>
 							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-10,0,-14" IsVisible="{Binding IsDownloading}">
 								<TextBlock Grid.Row="0" FontSize="16" Text="{Binding Status}"  HorizontalAlignment="Center"/>
 								<ProgressBar Grid.Row="1" HorizontalAlignment="Right" ShowProgressText="True" Value="{Binding ProgressPercentage}"/>

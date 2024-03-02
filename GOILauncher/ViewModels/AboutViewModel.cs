@@ -11,7 +11,7 @@ namespace GOILauncher.ViewModels
     internal class AboutViewModel : ViewModelBase
     {
 
-        private List<string> Players { get; } = new List<string>() {"hongchafang","唯呵WindowsHim" };
+        private List<string> Players { get; } = new List<string>() {"hongchafang","唯呵WindowsHim","ZHYUjun" };
 
         public string Thanks
         {

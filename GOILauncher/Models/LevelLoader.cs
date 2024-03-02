@@ -52,7 +52,9 @@ namespace GOILauncher.Models
                 await contentDialog.ShowAsync();
                 return;
             }
+            Status = "获取下载地址中";
             IsDownloading = true;
+            DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{DownloadURL}");
             Status = "启动下载中";
             var downloadOpt = new DownloadConfiguration()
             {
@@ -88,6 +90,10 @@ namespace GOILauncher.Models
         public string DownloadURL
         {
             get => (this["DownloadURL"] as string)!;
+            set
+            {
+                this["DownloadURL"] = value;
+            }
         }
 
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }

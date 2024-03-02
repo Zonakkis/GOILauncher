@@ -7,7 +7,9 @@
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="GOILauncher.Views.GameView"
 	         x:DataType="vm:GameViewModel"
-			 FontSize="16">
+			 FontSize="16"
+			 FontFamily="{StaticResource PuHuiTi}" 
+			 FontWeight="Light">
 	<Grid>
 		<TextBlock FontSize="20" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}"/>
 	    <Grid RowDefinitions="auto,auto,auto,auto,*" ColumnDefinitions="auto,auto,*" IsVisible="{Binding SelectedGamePathNoteHide}" Margin="10,10">

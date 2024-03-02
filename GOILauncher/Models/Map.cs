@@ -1,6 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using Downloader;
+using FluentAvalonia.UI.Controls;
 using Ionic.Zip;
 using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
@@ -79,8 +80,18 @@ namespace GOILauncher.Models
         }
         public void OnDownloadCompleted(object sender, AsyncCompletedEventArgs eventArgs)
         {
+            var downloadService = (DownloadService)sender;
+            if (downloadService.Package.ReceivedBytesSize != downloadService.Package.TotalFileSize)
+            {
+                var contentDialog = new ContentDialog()
+                {
+                    Title = "提示",
+                    Content = eventArgs.Error,
+                    CloseButtonText = "好的",
+                };
+               contentDialog.ShowAsync();
+            }
             CompletedDownloadCount++;
-
         }
         public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
         {
@@ -100,15 +111,15 @@ namespace GOILauncher.Models
         {
             if(bytes < 1024)
             {
-                return $"{DownloadSpeeds.Sum().ToString("0.00")}B/s";
+                return $"{bytes.ToString("0.00")}B/s";
             }
             else if(bytes < 1048576)
             {
-                return $"{(DownloadSpeeds.Sum()/1024D).ToString("0.00")}KB/s";
+                return $"{(bytes / 1024D).ToString("0.00")}KB/s";
             }
             else
             {
-                return $"{(DownloadSpeeds.Sum() / 1048576D).ToString("0.00")}MB/s";
+                return $"{(bytes / 1048576D).ToString("0.00")}MB/s";
             }
         }
 

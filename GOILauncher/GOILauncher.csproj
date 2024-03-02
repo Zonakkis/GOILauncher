@@ -18,6 +18,7 @@
     <AssemblyVersion>0.0.1</AssemblyVersion>
     <PublishAot>False</PublishAot>
     <NeutralLanguage>zh-CN</NeutralLanguage>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>portable</DebugType>
@@ -75,5 +76,10 @@
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MapManageView.axaml" />
   </ItemGroup>
 </Project>

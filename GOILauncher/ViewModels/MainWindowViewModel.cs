@@ -41,26 +41,29 @@ namespace GOILauncher.ViewModels
             //            break;
             //    }
             //};
-            Views = new ObservableCollection<ViewTemplate>
-            {
-              new ViewTemplate(typeof(GameViewModel), "游戏"),
-             new ViewTemplate(typeof(ModViewModel), "Mod"),
-            new ViewTemplate(typeof(MapViewModel), "地图")
+            Views = new ObservableCollection<Page>
+            { 
+                new Page(typeof(GameViewModel), "游戏"),
+                new Page(typeof(ModViewModel), "Mod"),
+                new Page(typeof(MapViewModel), "地图"),
+                //new Page(typeof(MapViewModel), "地图",new ObservableCollection<Page>()
+                //{
+                //    new Page(typeof(MapManageViewModel), "管理地图"),
+                //}),
             };
-            FooterViews = new ObservableCollection<ViewTemplate>
+            FooterViews = new ObservableCollection<Page>
         {
-            new ViewTemplate(typeof(AboutViewModel), "关于"),
-            new ViewTemplate(typeof(SettingViewModel), "设置"),
+            new Page(typeof(AboutViewModel), "关于"),
+            new Page(typeof(SettingViewModel), "设置"),
         };
-            SelectedView = Views[0];
+            SelectedPage = Views[0];
         }
 
 
-        public void OnSelectedViewChanged(ViewTemplate value)
+        public void OnSelectedPageChanged(Page value)
         {
             value.View.OnSelectedViewChanged();
             CurrentView = value.View;
-
         }
 
         public ViewModelBase CurrentView
@@ -75,7 +78,7 @@ namespace GOILauncher.ViewModels
             }
         }
 
-        public ViewTemplate SelectedView
+        public Page SelectedPage
         {
             get
             {
@@ -83,34 +86,32 @@ namespace GOILauncher.ViewModels
             }
             set
             {
-                OnSelectedViewChanged(value);
+                OnSelectedPageChanged(value);
                 this.RaiseAndSetIfChanged(ref selectedView, value, "SelectedView");
             }
         }
 
-        public ObservableCollection<ViewTemplate> Views { get; } 
+        public ObservableCollection<Page> Views { get; }
 
         private ViewModelBase currentView;
 
-        private ViewTemplate? selectedView;
-
-        public ObservableCollection<ViewTemplate> FooterViews { get; }
+        private Page? selectedView;
+        public ObservableCollection<Page> FooterViews { get; }
     }
-
-    public class ViewTemplate
+        public class Page
     {
-        public ViewTemplate(Type type, string name)
+        public Page(Type type, string name,ObservableCollection<Page> subPages = null)
         {
             ModelType = type;
             Label = name;
             View = (ViewModelBase)Activator.CreateInstance(ModelType)!;
+            SubPages = subPages;
         }
 
         public string Label { get; }
-
         public Type ModelType { get; }
-
         public ViewModelBase View { get; }
+        public ObservableCollection<Page> SubPages { get; }
     }
 
 

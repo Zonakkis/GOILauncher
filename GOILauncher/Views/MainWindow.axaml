@@ -11,7 +11,9 @@
         Icon="/Assets/GOIL.ico"
         Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
-		Loaded="Loaded">
+		Loaded="Loaded"
+		
+		>
 	<Window.Title >
 	</Window.Title>
 	<Design.DataContext>
@@ -20,11 +22,12 @@
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
 
-	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedView}" OpenPaneLength="200" CompactPaneLength="70" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False" IsPaneOpen="False">
-		<ui:NavigationView.MenuItemTemplate>
-			<DataTemplate DataType="{x:Type vm:ViewTemplate}">
-				<ui:NavigationViewItem Content="{Binding Label}"/>
-			</DataTemplate>
-		</ui:NavigationView.MenuItemTemplate>
-	</ui:NavigationView>
+	
+	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="70" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False" IsPaneOpen="False">
+	<ui:NavigationView.MenuItemTemplate>
+		<DataTemplate DataType="{x:Type vm:Page}">
+			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="{StaticResource PuHuiTi}"/>
+		</DataTemplate>
+	</ui:NavigationView.MenuItemTemplate>
+</ui:NavigationView>
 </Window>
