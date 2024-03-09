@@ -6,26 +6,26 @@
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <PackageId>GOILauncher</PackageId>
-    <Version>0.0.1</Version>
+    <Version></Version>
     <Title>GOILauncher</Title>
     <Authors>Zonakkis</Authors>
     <Product>GOILauncher</Product>
     <AssemblyName>GOILauncher</AssemblyName>
     <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
-    <Company>Zonakkis</Company>
+    <Company></Company>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
-    <FileVersion>0.0.1</FileVersion>
-    <AssemblyVersion>0.0.1</AssemblyVersion>
+    <FileVersion></FileVersion>
+    <AssemblyVersion></AssemblyVersion>
     <PublishAot>False</PublishAot>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

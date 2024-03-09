@@ -22,14 +22,21 @@ namespace GOILauncher.ViewModels
         {
 
         }
+        public override void Init()
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        }
         public override void OnSelectedViewChanged()
         {
             if (!SelectedGamePathNoteHide && Setting.Instance.gamePath != "未选择")
             {
                 SelectedGamePathNoteHide = true;
-                GameInfo.Instance.GetGameVersion(new FileInfo($"{Setting.Instance.gamePath}/GettingOverIt.exe").Length);
-                GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
-                GameInfo.Instance.GetBepinExVersion(Setting.Instance.gamePath);
+                Task.Run(() =>
+                {
+                    GameInfo.Instance.GetGameVersion(new FileInfo($"{Setting.Instance.gamePath}/GettingOverIt.exe").Length);
+                    GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
+                    GameInfo.Instance.GetBepinExVersion(Setting.Instance.gamePath);
+                });
             }
         }
         public void LaunchGOI(int para)

@@ -11,16 +11,10 @@ namespace GOILauncher.ViewModels
         {
             return;
         }
-
-    }
-    public interface IPage
-    {
-        public virtual void OnSelectedViewChanged()
+        public virtual void Init()
         {
             return;
         }
-        public string Label { get; }
-        public Type ModelType { get; }
-        public ViewModelBase View { get; }
+        public bool Initialized;
     }
 }

@@ -14,13 +14,13 @@
 			 FontWeight="Light">
 
 	<Design.DataContext>
-		<vm:MapViewModel/>
+		<vm:DesignMapViewModel/>
 	</Design.DataContext>
 	<DockPanel LastChildFill="False">
-		<Grid Width="440" RowDefinitions="auto,*">
+		<Grid Width="460" RowDefinitions="auto,auto,*">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">
 				<!--TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="5"/-->
-				<AutoCompleteBox  MaxDropDownHeight="200" Name="MapSearcher" Text="{Binding Search}" Grid.Column="0"  ItemsSource="{Binding Maps}" FilterMode="Contains" FontSize="18" Watermark="输入地图名......" Height="38" Margin="10,10,0,0">
+				<AutoCompleteBox  MaxDropDownHeight="200" Name="MapSearcher" Text="{Binding Search}" Grid.Column="0"  ItemsSource="{Binding MapList}" FilterMode="Contains" FontSize="18" Watermark="输入地图名......" Height="38" Margin="10,10,0,0">
 					<AutoCompleteBox.ItemTemplate>
 						<DataTemplate x:DataType="m:Map">
 							<TextBlock Text="{Binding Name}" FontSize="16"/>
@@ -29,13 +29,20 @@
 				</AutoCompleteBox>
 				<Button Grid.Column="1" Height="38" Content="搜索" Command="{Binding SearchMap}" Margin="10,10,5,10"/>
 			</Grid>
-			<ListBox  Grid.Row="1" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" >
+			<Expander Header="筛选" FontSize="18" Grid.Row="1" Margin="10,0,5,0">
+				<Grid RowDefinitions="auto,auto" ColumnDefinitions="auto,*">
+					<TextBlock Grid.Row="0" Grid.Column="0" Text="隐藏已下载的地图"/>
+					<CheckBox Grid.Row="0" Grid.Column="1" IsChecked="{Binding HideDownloadedMap}" HorizontalAlignment="Right" Margin="0,-4,0,0"/>
+					<Button Grid.Row="1" Grid.Column="1" Content="应用" Command="{Binding ApplyFilterSettingCommand}" HorizontalAlignment="Right"/>
+				</Grid>
+			</Expander>
+			<ListBox  Grid.Row="2" ItemsSource="{Binding MapList}" SelectedItem="{Binding SelectedMap}" >
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto,*">
 							<TextBlock Grid.Row="0" Grid.Column="0" FontSize="18" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" Text="{Binding Name}" VerticalAlignment="Center"/>
 							<TextBlock Grid.Row="0" Grid.Column="1" FontSize="18" Text="√" IsVisible="{Binding Downloaded}"/>
-							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-10,0,-14" IsVisible="{Binding IsDownloading}">
+							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-6,0,-10" IsVisible="{Binding IsDownloading}">
 								<TextBlock Grid.Row="0" FontSize="16" Text="{Binding Status}"  HorizontalAlignment="Center"/>
 								<ProgressBar Grid.Row="1" HorizontalAlignment="Right" ShowProgressText="True" Value="{Binding ProgressPercentage}"/>
 							</Grid>
@@ -50,7 +57,7 @@
 				<Grid RowDefinitions="auto,auto" ColumnDefinitions="*">
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 						<TextBlock Text="地图总数："/>
-						<TextBlock Text="{Binding Maps.Count}"/>
+						<TextBlock Text="{Binding AllMaps.Count}"/>
 					</StackPanel>
 					<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
 						<TextBlock Text="地图库最后更新日期："/>
@@ -72,7 +79,7 @@
 				<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
 			</Grid>
 			<Button Grid.Row="3"  Background="BurlyWood" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}" IsEnabled="{Binding CurrentMap.Downloadable}"/>
-			<TextBlock Grid.Row="4" Foreground="Red" Text="未选择地图路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}" Margin="0,10"/>
+			<TextBlock Grid.Row="4" Foreground="Red" Text="未选择地图路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !SelectedLevelPathNoteHide}" Margin="0,10"/>
 		</Grid>
 
 	</DockPanel>

@@ -1,15 +1,18 @@
-﻿using GOILauncher.Models;
+﻿using Downloader;
+using GOILauncher.Models;
 using LC.Newtonsoft.Json;
 using LC.Newtonsoft.Json.Linq;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +43,32 @@ namespace GOILauncher.Helpers
             //        }
             //    }
             //}
+        }
+
+        public static async Task Download(string url,string fileName,EventHandler<DownloadStartedEventArgs> downloadStartedEvent, EventHandler<Downloader.DownloadProgressChangedEventArgs> downloadProgressChangedEventArgs, EventHandler<AsyncCompletedEventArgs>? downloadCompletedEvent,CancellationToken cancellationToken = default)
+        {
+            var downloadOpt = new DownloadConfiguration()
+            {
+                ChunkCount = 8,
+                ParallelDownload = true,
+                MaxTryAgainOnFailover = int.MaxValue,
+                Timeout = 60000,
+                //MaximumMemoryBufferBytes = 1024 * 1024 * 50,
+                RequestConfiguration =
+                {
+                    KeepAlive = true,
+                    UserAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+                    ProtocolVersion = HttpVersion.Version11,
+                }
+            };
+            using (DownloadService downloadService = new DownloadService(downloadOpt))
+            { 
+
+                downloadService.DownloadStarted += downloadStartedEvent;
+                downloadService.DownloadProgressChanged += downloadProgressChangedEventArgs;
+                downloadService.DownloadFileCompleted += downloadCompletedEvent;
+                await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
+            }
         }
 
         public static async Task<string> GetDirectURLAsync(string LanzouyunURL)

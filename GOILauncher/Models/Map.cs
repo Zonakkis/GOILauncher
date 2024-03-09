@@ -2,6 +2,7 @@
 using Avalonia.Media.Imaging;
 using Downloader;
 using FluentAvalonia.UI.Controls;
+using GOILauncher.Helpers;
 using Ionic.Zip;
 using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
@@ -11,7 +12,9 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
@@ -23,9 +26,7 @@ namespace GOILauncher.Models
         {
             TotalByte = 0;
             Downloadable = true;
-            TotalBytes = new List<long>();
-            ReceivedBytes = new List<long>();
-            DownloadSpeeds = new List<double>();
+            DownloadTasks = new List<Task>();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -39,10 +40,18 @@ namespace GOILauncher.Models
         }
         public void CheckWhetherExisted()
         {
-            if (Setting.Instance.levelPath != "未选择（选择游戏路径后自动选择，也可手动更改）" && File.Exists($"{Setting.Instance.levelPath}/{Name}.scene"))
+            if (!IsDownloading && Setting.Instance.levelPath != "未选择（选择游戏路径后自动选择，也可手动更改）") 
             {
-                Downloaded = true;
-                Downloadable = false;
+                if(File.Exists($"{Setting.Instance.levelPath}/{Name}.scene"))
+                {
+                    Downloaded = true;
+                    Downloadable = false;
+                }
+                else
+                {
+                    Downloaded = false;
+                    Downloadable = true;
+                }
             }
         }
         public async Task WaitForDownloadFinish()
@@ -55,45 +64,33 @@ namespace GOILauncher.Models
                     Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
                     Trace.WriteLine(ProgressPercentage);
                 }
-                await Task.Delay(400);
+                await Task.Delay(500);
             }
         }
-        public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
+        public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
             var downloadService = (DownloadService)sender;
-            TotalBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.TotalBytesToReceive;
-            TotalByte = TotalBytes.Sum();
+            TotalByte += eventArgs.TotalBytesToReceive;
         }
-        public void OnChunkDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
+        public void OnChunkDownloadProgressChanged(object sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
-            //Trace.WriteLine(eventArgs.ActiveChunks);
+
         }
-        public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
+        public void OnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
             var downloadService = (DownloadService)sender; 
-            ReceivedBytes[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3))-1] = eventArgs.ReceivedBytesSize;
-            DownloadSpeeds[Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1] = eventArgs.BytesPerSecondSpeed;
-
-            //ProgressPercentage = Convert.ToInt32((float)ReceivedSizes.Sum() / DownloadSize * 100f);
-            //ProgressPercentage = Convert.ToInt32((float)(ReceivedSize + eventArgs.ReceivedBytesSize) / DownloadSize * 100f);
-            //Trace.WriteLine(ProgressPercentage);
+            int fileID = Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1;
+            ReceivedBytes[fileID] = eventArgs.ReceivedBytesSize;
+            DownloadSpeeds[fileID] = eventArgs.BytesPerSecondSpeed;
         }
-        public void OnDownloadCompleted(object sender, AsyncCompletedEventArgs eventArgs)
+        public void OnDownloadCompleted(object? sender, AsyncCompletedEventArgs eventArgs)
         {
-            var downloadService = (DownloadService)sender;
-            if (downloadService.Package.ReceivedBytesSize != downloadService.Package.TotalFileSize)
-            {
-                var contentDialog = new ContentDialog()
-                {
-                    Title = "提示",
-                    Content = eventArgs.Error,
-                    CloseButtonText = "好的",
-                };
-               contentDialog.ShowAsync();
-            }
+            var downloadService = (DownloadService)sender!;
+            int fileID = Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1;
+            DownloadSpeeds[fileID] = 0;
             CompletedDownloadCount++;
         }
-        public void OnExtractProgressChanged(object sender, ExtractProgressEventArgs eventArgs)
+        public void OnExtractProgressChanged(object? sender, ExtractProgressEventArgs eventArgs)
         {
             if (eventArgs.TotalBytesToTransfer == 0)
             {
@@ -109,6 +106,10 @@ namespace GOILauncher.Models
         }
         public string ConvertStorageUnit(double bytes)
         {
+            if(bytes == 0)
+            {
+                return "0.00B/s";
+            }
             if(bytes < 1024)
             {
                 return $"{bytes.ToString("0.00")}B/s";
@@ -145,7 +146,7 @@ namespace GOILauncher.Models
         }
         public List<string> DownloadURL
         {
-            get=>(this["DownloadURL"] as List<object>)!.ConvertAll<string>(input => (input as string)!);
+            get => (this["DownloadURL"] as List<object>)!.ConvertAll<string>(input => (input as string)!);
         }
 
         private bool downloaded;
@@ -169,9 +170,9 @@ namespace GOILauncher.Models
             }
         }
         public long TotalByte { get; set; }
-        public List<long> TotalBytes { get; set; }
-        public List<long> ReceivedBytes { get; set; }
-        public List<double> DownloadSpeeds { get; set; }
+        public long[] ReceivedBytes { get; set; }
+        public double[] DownloadSpeeds { get; set; }
+        public List<Task> DownloadTasks { get; set; }
         public int CompletedDownloadCount { get; set; }
 
         public int progressPercentage;

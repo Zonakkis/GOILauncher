@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
 using System.Reactive;
 using System.Text;
 using System.Threading;
@@ -31,11 +32,11 @@ namespace GOILauncher.Models
             }
 
         }
-        public void OnDownloadStarted(object sender, DownloadStartedEventArgs eventArgs)
+        public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
             Status = "下载中";
         }
-        public void OnDownloadProgressChanged(object sender, DownloadProgressChangedEventArgs eventArgs)
+        public void OnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = Convert.ToInt32((float)eventArgs.ReceivedBytesSize / eventArgs.TotalBytesToReceive * 100f);
         }
@@ -57,19 +58,16 @@ namespace GOILauncher.Models
             IsDownloading = true;
             DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{DownloadURL}");
             Status = "启动下载中";
-            var downloadOpt = new DownloadConfiguration()
-            {
-                ChunkCount = 8,
-                ParallelDownload = true,
-                MaxTryAgainOnFailover = int.MaxValue,
-                Timeout = 5000,
-            };
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
-            var downloadService = new DownloadService(downloadOpt);
-            downloadService.DownloadStarted += OnDownloadStarted;
-            downloadService.DownloadProgressChanged += OnDownloadProgressChanged;
-            await downloadService.DownloadFileTaskAsync(DownloadURL, $"{Setting.Instance.downloadPath}/ModpackandLevelLoader{Build}.zip", token);
+            await LanzouyunDownloadHelper.Download(
+                    DownloadURL,
+                    $"{Setting.Instance.downloadPath}/LevelLoader{Build}.zip",
+                    OnDownloadStarted,
+                    OnDownloadProgressChanged,
+                    null,
+                    token
+                    );
             IsExtracting = true;
             Status = "解压中";
             await ZipHelper.Extract($"{Setting.Instance.downloadPath}/ModpackandLevelLoader{Build}.zip", Setting.Instance.gamePath);

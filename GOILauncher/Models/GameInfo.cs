@@ -20,7 +20,6 @@ namespace GOILauncher.Models
             }
 
         }
-
         public Assembly LoadAssembly(string path)
         {
             byte[] assemblyData = null;

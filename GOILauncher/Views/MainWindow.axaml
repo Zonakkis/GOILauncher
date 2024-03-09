@@ -3,7 +3,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
+		Width="1050" Height="500"
         xmlns:vm="using:GOILauncher.ViewModels"
         xmlns:views="using:GOILauncher.Views"
         x:Class="GOILauncher.Views.MainWindow"
@@ -12,7 +13,7 @@
         Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
 		Loaded="Loaded"
-		
+		Name="Window"
 		>
 	<Window.Title >
 	</Window.Title>
@@ -23,10 +24,16 @@
 	</Design.DataContext>
 
 	
-	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="70" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False" IsPaneOpen="False">
+	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="66" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
 	<ui:NavigationView.MenuItemTemplate>
 		<DataTemplate DataType="{x:Type vm:Page}">
-			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="{StaticResource PuHuiTi}"/>
+			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="{StaticResource PuHuiTi}" IsExpanded="True">
+				<ui:NavigationViewItem.ContextFlyout>
+					<Flyout ShowMode="TransientWithDismissOnPointerMoveAway">
+
+					</Flyout>
+				</ui:NavigationViewItem.ContextFlyout>
+			</ui:NavigationViewItem>
 		</DataTemplate>
 	</ui:NavigationView.MenuItemTemplate>
 </ui:NavigationView>
