@@ -1,10 +1,13 @@
-﻿using GOILauncher.Models;
+﻿using FluentAvalonia.UI.Controls;
+using GOILauncher.Models;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
@@ -15,16 +18,25 @@ namespace GOILauncher.ViewModels
     {
         public MapManageViewModel()
         {
-
+            var isDownloadValid = this.WhenAnyValue(x => x.SelectedCount,
+                                                    x => x > 0);
+            DeleteCommand = ReactiveCommand.Create(DeleteMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
+            //DeleteCommand = ReactiveCommand.Create(DeleteMaps);
         }
-
         public override void OnSelectedViewChanged()
         {
-            if (!SelectedGamePathNoteHide && Setting.Instance.gamePath != "未选择")
-            {
-                SelectedGamePathNoteHide = true;
-                GetMaps();
+            Task.Run(GetMaps);
+        }
 
+        public void OnMapSelectedChanged(bool selected)
+        {
+            if (selected)
+            {
+                SelectedCount++;
+            }
+            else
+            {
+                SelectedCount--;
             }
         }
         public string ConvertStorageUnit(long bytes)
@@ -44,6 +56,8 @@ namespace GOILauncher.ViewModels
         }
         private void GetMaps()
         {
+            Maps = new ObservableCollection<Map>();
+            SelectedCount = 0;
             if (Directory.Exists(Setting.Instance.levelPath))
             {
                 foreach (string file in Directory.GetFiles(Setting.Instance.levelPath))
@@ -51,7 +65,6 @@ namespace GOILauncher.ViewModels
                     if (file.EndsWith(".scene"))
                     {
                         string mapName = Path.GetFileNameWithoutExtension(file);
-                        string empty = string.Empty;
                         if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
                         {
                             try
@@ -63,7 +76,9 @@ namespace GOILauncher.ViewModels
                                 {
                                     map.Author = settings["credit"];
                                 }
-                                map.Size = ConvertStorageUnit(new FileInfo(file).Length);
+                                var fileInfo = new FileInfo(file);
+                                map.Size = ConvertStorageUnit(fileInfo.Length);
+                                map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
                                 Maps.Add(map);
                             }
                             catch
@@ -72,20 +87,52 @@ namespace GOILauncher.ViewModels
                         }
                     }
                 }
+                TotalCount = Maps.Count;
                 this.RaisePropertyChanged("Maps");
             }
         }
-        public ObservableCollection<Map> Maps { get; } = new ObservableCollection<Map>();
-
-        private bool selectedGamePathNoteHide;
-        public bool SelectedGamePathNoteHide
+        public async void DeleteMaps()
         {
-            get => selectedGamePathNoteHide; set
+            var contentDialog = new ContentDialog()
             {
-                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "SelectedGamePathNoteHide");
+                Title = "确定要删除吗？",
+                Content = $"将删除{SelectedCount}个地图",
+                PrimaryButtonText = "确定",
+                CloseButtonText = "取消",
+            };
+            contentDialog.PrimaryButtonCommand = ReactiveCommand.Create(() =>
+            {
+                foreach (var map in Maps.Where(map => map.IsSelected == true))
+                {
+                    map.Delete();
+                }
+                GetMaps();
+            });
+            await contentDialog.ShowAsync();
+            
+        }
+        public ObservableCollection<Map> Maps { get; set; } = new ObservableCollection<Map>();
+
+        private int totalCount;
+        public int TotalCount
+        {
+            get => totalCount;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref totalCount, value, "TotalCount");
             }
         }
 
+        private int selectedCount;
+        public int SelectedCount
+        {
+            get => selectedCount;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref selectedCount, value, "SelectedCount");
+            }
+        }
+        public ReactiveCommand<Unit, Unit> DeleteCommand { get; }
 
         public class Map
         {
@@ -96,8 +143,30 @@ namespace GOILauncher.ViewModels
             public string Name { get; set; }
             public string Author { get; set; }
             public string Size { get; set; }
-            public bool IsSelected { get; set; }
 
+            private bool isSelected;
+            public bool IsSelected 
+            { 
+                get => isSelected; 
+                set
+                {
+                    isSelected = value;
+                    OnMapSeletcedChangedEvent(isSelected);
+                }
+
+            }
+
+            public void Delete()
+            {
+                foreach(var path in Directory.GetFiles($"{Setting.Instance.levelPath}/").Where(filename => filename.Contains(Name)))
+                {
+                    File.Delete(path);
+                }
+            }
+
+            public delegate void OnMapSelectedChanged(bool selected);
+
+            public event OnMapSelectedChanged OnMapSeletcedChangedEvent;
         }
     }
 }

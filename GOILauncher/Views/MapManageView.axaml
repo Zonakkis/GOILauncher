@@ -10,14 +10,29 @@
              FontSize="20"
 			 FontFamily="{StaticResource PuHuiTi}"
 			 FontWeight="Light">
-	<Grid>
-		<DataGrid ItemsSource="{Binding Maps}" >
+	<Grid RowDefinitions="*,auto">
+		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" CanUserResizeColumns="True"  >
 			<DataGrid.Columns>
-				<DataGridCheckBoxColumn Header="" Width="auto" Binding="{Binding IsSelected}"/>
+				<DataGridTemplateColumn Header="" Width="auto" IsReadOnly="True">
+					<DataTemplate>
+						<CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="名字" Width="*" Binding="{Binding Name}" IsReadOnly="True"/>
 				<DataGridTextColumn Header="作者" Width="*" Binding="{Binding Author}" IsReadOnly="True"/>
 				<DataGridTextColumn Header="大小" Width="*" Binding="{Binding Size}" IsReadOnly="True"/>
 			</DataGrid.Columns>
 		</DataGrid>
+		<Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10">
+			<TextBlock>
+				<Run Text="已选"/>
+				<Run Text="{Binding SelectedCount}"/>
+				<Run Text="项，"/>
+				<Run Text="总共"/>
+				<Run Text="{Binding TotalCount}"/>
+				<Run Text="项"/>
+			</TextBlock>
+			<Button Content="删除" Command="{Binding DeleteCommand}" HorizontalAlignment="Right"/>
+		</Grid>
 	</Grid>
 </UserControl>

@@ -45,11 +45,11 @@ namespace GOILauncher.ViewModels
             { 
                 new Page(typeof(GameViewModel), "游戏"),
                 new Page(typeof(ModViewModel), "Mod"),
-                new Page(typeof(MapViewModel), "地图"),
-                //new Page(typeof(MapViewModel), "地图",new ObservableCollection<Page>()
-                //{
-                //    new Page(typeof(MapManageViewModel), "管理地图"),
-                //}),
+                //new Page(typeof(MapViewModel), "地图"),
+                new Page(typeof(MapViewModel), "地图",new ObservableCollection<Page>()
+                {
+                    new Page(typeof(MapManageViewModel), "管理地图"),
+                }),
             };
             FooterViews = new ObservableCollection<Page>
         {
@@ -62,8 +62,13 @@ namespace GOILauncher.ViewModels
 
         public void OnSelectedPageChanged(Page value)
         {
-            value.View.OnSelectedViewChanged();
             CurrentView = value.View;
+            if(!CurrentView.Initialized)
+            {
+                CurrentView.Init();
+                CurrentView.Initialized = true;
+            }
+            value.View.OnSelectedViewChanged();
         }
 
         public ViewModelBase CurrentView

@@ -1,8 +1,6 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml.Templates;
-using Avalonia.Threading;
 using Downloader;
-using DynamicData;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
 using Ionic.Zip;
@@ -24,38 +22,29 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace GOILauncher.ViewModels
 {
-    internal class MapViewModel : ViewModelBase
+    internal class DesignMapViewModel : ViewModelBase
     {
-        
-        public MapViewModel()
-        {
-            hideDownloadedMap = true;
-            var isApplyFilterSettingValid = this.WhenAnyValue(x => x.FilterSettingChanged,
-                                                x => x == true);
-            ApplyFilterSettingCommand = ReactiveCommand.Create(ApplyFilterSetting, isApplyFilterSettingValid);
-            var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
-                                                x => x[0] != '未');
-            DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            
-        }
-        public override void Init()
+        public DesignMapViewModel()
         {
             if (!Directory.Exists($"{directory}Download"))
             {
                 Directory.CreateDirectory($"{directory}Download");
             }
+            var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
+                                                x => x[0] != '未');
+            DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             LCObject.RegisterSubclass("Map", () => new Map());
-            Task.Run(GetMaps);
+            GetMaps();
         }
         public override void OnSelectedViewChanged()
         {
             LevelPath = Setting.Instance.levelPath;
-            foreach (var map in AllMaps)
+            foreach (var map in Maps)
             {
                 map.CheckWhetherExisted();
             }
@@ -68,7 +57,7 @@ namespace GOILauncher.ViewModels
                 CurrentMap = map!;
             }
         }
-        public async Task GetMaps()
+        public async void GetMaps()
         {
             LCQuery<Map> query = new LCQuery<Map>("Map");
             query.OrderByAscending("Name");
@@ -90,34 +79,16 @@ namespace GOILauncher.ViewModels
                     map.CheckWhetherExisted();
                 }
                 map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
-                AllMaps.Add(map);
+                Maps.Add(map);
             }
-            await Task.Run(RefreshMapList);
             query.OrderByDescending("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
+            this.RaisePropertyChanged("Maps");
             this.RaisePropertyChanged("LastUpdateTime");
-        }
-        public void ApplyFilterSetting()
-        {
-            FilterSettingChanged = false;
-            RefreshMapList();
-        }
-        public void RefreshMapList()
-        {
-            MapList = new ObservableCollection<Map>();
-            foreach (var map in AllMaps)
-            {
-                if (HideDownloadedMap && map.Downloaded)
-                {
-                    continue;
-                }
-                MapList.Add(map);
-            }
-            this.RaisePropertyChanged("MapList");
         }
         public void SearchMap()
         {
-            Map map = MapList.ToList().Find(t => t.Name == Search);
+            Map map = Maps.ToList().Find(t => t.Name == Search);
             SelectedMap = map;
         }
         public async void Download()
@@ -127,33 +98,55 @@ namespace GOILauncher.ViewModels
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;
             DownloadService[] downloader = new DownloadService[map.DownloadURL.Count];
+            List<string> directUrls = new List<string>();
             map.Status = "获取下载地址中";
             map.IsDownloading = true;
             map.ReceivedBytes = new long[map.DownloadURL.Count];
             map.DownloadSpeeds = new double[map.DownloadURL.Count];
             for (int i = 0; i < map.DownloadURL.Count; i++)
             {
-                string directURL = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
-                Trace.WriteLine(directURL);
+                //downloader[i] = new DownloadService(downloadOpt);
+                //downloader[i].DownloadStarted += map.OnDownloadStarted;
+                //downloader[i].DownloadProgressChanged += map.OnDownloadProgressChanged;
+                //downloader[i].DownloadFileCompleted += map.OnDownloadCompleted;
+                //map.TotalBytes.Add(0);
+                //map.ReceivedBytes.Add(0);
+                //map.DownloadSpeeds.Add(0);
+
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
+                directUrls.Add(directUrl);
+                //Trace.WriteLine(directUrl);
+                //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");
+            }
+            map.Status = "启动下载中";
+            for (int i = 0; i < directUrls.Count; i++)
+            {
                 map.DownloadTasks.Add(LanzouyunDownloadHelper.Download(
-                    directURL,
+                    directUrls[i],
                     $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}",
                     map.OnDownloadStarted,
                     map.OnDownloadProgressChanged,
                     map.OnDownloadCompleted,
                     token
                     ));
+
+                //map.DownloadTasks.Add(downloader[i].DownloadFileTaskAsync(directUrls[i], $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}", token));
             }
-            map.Status = "启动下载中";
-            map.DownloadTasks.Add(map.WaitForDownloadFinish());
-            await Task.WhenAll(map.DownloadTasks);
+            try
+            {
+                map.DownloadTasks.Add(map.WaitForDownloadFinish());
+                await Task.WhenAll(map.DownloadTasks);
+            }
+            catch (ArgumentException ex)
+            {
+                Trace.WriteLine(ex.Message);
+            }
             map.Status = "合并中";
             await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
             map.Status = "解压中";
             await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath,map.OnExtractProgressChanged);
             map.IsDownloading = false;
             map.Downloaded = true;
-            await Task.Run(RefreshMapList);
         }
 
         private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -183,8 +176,7 @@ namespace GOILauncher.ViewModels
         }
 
         private bool isSelectedMap;
-        public ObservableCollection<Map> AllMaps { get; } = new ObservableCollection<Map>();
-        public ObservableCollection<Map> MapList { get; set; } = new ObservableCollection<Map>();
+        public ObservableCollection<Map> Maps { get; } = new ObservableCollection<Map>();
         public string LastUpdateTime { get; set; }
 
         private Map selectedMap;
@@ -237,25 +229,6 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.downloadPath;
         }
 
-        private bool hideDownloadedMap;
-        public bool HideDownloadedMap {
-            get => hideDownloadedMap;
-            set
-            {
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref hideDownloadedMap, value, "HideDownloadedMap");
-            }
-        }
 
-        private bool filterSettingChanged;
-        public bool FilterSettingChanged
-        {
-            get => filterSettingChanged;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref filterSettingChanged, value, "FilterSettingChanged");
-            }
-        }
-        public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; }
     }
 }
