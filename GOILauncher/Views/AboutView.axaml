@@ -10,12 +10,12 @@
 	<Grid RowDefinitions="auto,auto,auto,auto,*">
 		<Image Grid.Row="0" Source="/Assets/GOIL.ico" Width="200" Margin="0,50,0,0"/>
 		<TextBlock Grid.Row="1" Text="{Binding GOILVerison}" FontWeight="Bold" HorizontalAlignment="Center" FontSize="20"/>
-		<TextBlock Grid.Row="2" Text="感谢以下玩家的支持：" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
-		<TextBlock Grid.Row="3" Text="{Binding Thanks}"  TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="20"  FontFamily="{StaticResource PuHuiTi}" FontWeight="Light"/>
+		<TextBlock Grid.Row="2" Text="感谢以下玩家的支持：" FontFamily="微软雅黑" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
+		<TextBlock Grid.Row="3" Text="{Binding Thanks}"  TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="20"  FontFamily="微软雅黑"/>
 		<StackPanel Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Orientation="Horizontal">
-			<ui:HyperlinkButton Content="哔哩哔哩" FontSize="15" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" NavigateUri="https://space.bilibili.com/292855911"/>
-			<ui:HyperlinkButton Content="Github" FontSize="15" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" NavigateUri="https://github.com/Zonakkis/GOIMapManager"/>
-			<ui:HyperlinkButton Content="爱发电" FontSize="15" FontFamily="{StaticResource PuHuiTi}" FontWeight="Light" NavigateUri="https://afdian.net/a/Zonakkis"/>
+			<ui:HyperlinkButton Content="哔哩哔哩" FontSize="15" FontFamily="微软雅黑" NavigateUri="https://space.bilibili.com/292855911"/>
+			<ui:HyperlinkButton Content="Github" FontSize="15" FontFamily="微软雅黑" NavigateUri="https://github.com/Zonakkis/GOIMapManager"/>
+			<ui:HyperlinkButton Content="爱发电" FontSize="15" FontFamily="微软雅黑" NavigateUri="https://afdian.net/a/Zonakkis"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

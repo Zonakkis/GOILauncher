@@ -14,6 +14,7 @@
 		WindowStartupLocation="CenterScreen"
 		Loaded="Loaded"
 		Name="Window"
+	    FontFamily="微软雅黑"
 		>
 	<Window.Title >
 	</Window.Title>
@@ -24,10 +25,10 @@
 	</Design.DataContext>
 
 	
-	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="66" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
+	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="68" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
 	<ui:NavigationView.MenuItemTemplate>
 		<DataTemplate DataType="{x:Type vm:Page}">
-			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="{StaticResource PuHuiTi}" IsExpanded="True">
+			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="微软雅黑" IsExpanded="True">
 				<ui:NavigationViewItem.ContextFlyout>
 					<Flyout ShowMode="TransientWithDismissOnPointerMoveAway">
 

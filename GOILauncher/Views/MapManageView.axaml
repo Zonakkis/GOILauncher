@@ -8,8 +8,8 @@
              x:Class="GOILauncher.Views.MapManageView"
 			 x:DataType="vm:MapManageViewModel"
              FontSize="20"
-			 FontFamily="{StaticResource PuHuiTi}"
-			 FontWeight="Light">
+			 FontFamily="微软雅黑"
+			 >
 	<Grid RowDefinitions="*,auto">
 		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" CanUserResizeColumns="True"  >
 			<DataGrid.Columns>

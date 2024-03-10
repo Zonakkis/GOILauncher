@@ -12,11 +12,10 @@
 
 	<Application.Styles>
 		<Styles>
-			<sty:FluentAvaloniaTheme  UseSystemFontOnWindows="False">
-			</sty:FluentAvaloniaTheme>
+			<sty:FluentAvaloniaTheme/>
 		</Styles>
 	</Application.Styles> 
-	<Application.Resources>
-        <FontFamily x:Key="PuHuiTi">avares://GOILauncher/Assets/font#Alibaba PuHuiTi 3.0</FontFamily>
-    </Application.Resources>
+	<!--Application.Resources-->
+		<!--FontFamily x:Key="PuHuiTi">avares://GOILauncher/Assets/font#Alibaba PuHuiTi 3.0</FontFamily-->
+	<!--/Application.Resources-->
 </Application>

@@ -9,7 +9,7 @@
              x:Class="GOILauncher.Views.SettingView"
              x:DataType="vm:SettingViewModel"
 			 FontSize="18"
-			 FontFamily="{StaticResource PuHuiTi}" FontWeight="Light">
+			 FontFamily="微软雅黑">
 	<StackPanel Orientation="Vertical" Margin="10,10">
 		<ui:SettingsExpander Header="游戏" >
 			<ui:SettingsExpanderItem Content="游戏路径：" Description="{Binding GamePath}">

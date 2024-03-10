@@ -32,14 +32,6 @@
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="Assets\goi.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Assets\goi.ico" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
