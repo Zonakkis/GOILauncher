@@ -5,7 +5,7 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.Views.SettingView"
              x:DataType="vm:SettingViewModel"
 			 FontSize="18"
@@ -36,7 +36,7 @@
 			</ui:SettingsExpanderItem>
 			<ui:SettingsExpanderItem Content="下载后保存Zip文件：">
 				<ui:SettingsExpanderItem.Footer>
-					<CheckBox IsChecked="{Binding SaveMapZip}" />
+					<ToggleSwitch  OnContent="开" OffContent="关"  IsChecked="{Binding SaveMapZip}"/>
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 		</ui:SettingsExpander>

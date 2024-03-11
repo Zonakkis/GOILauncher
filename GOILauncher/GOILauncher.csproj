@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <PackageId>GOILauncher</PackageId>
     <Version></Version>
     <Title>GOILauncher</Title>
@@ -16,16 +17,18 @@
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
     <FileVersion></FileVersion>
     <AssemblyVersion></AssemblyVersion>
-    <PublishAot>False</PublishAot>
+    <PublishAot>true</PublishAot>
     <NeutralLanguage>zh-CN</NeutralLanguage>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <Trimming></Trimming>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <Optimize>True</Optimize>
+	<PublishAot>false</PublishAot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>full</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>

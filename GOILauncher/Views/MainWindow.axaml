@@ -29,11 +29,7 @@
 	<ui:NavigationView.MenuItemTemplate>
 		<DataTemplate DataType="{x:Type vm:Page}">
 			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="微软雅黑" IsExpanded="True">
-				<ui:NavigationViewItem.ContextFlyout>
-					<Flyout ShowMode="TransientWithDismissOnPointerMoveAway">
 
-					</Flyout>
-				</ui:NavigationViewItem.ContextFlyout>
 			</ui:NavigationViewItem>
 		</DataTemplate>
 	</ui:NavigationView.MenuItemTemplate>

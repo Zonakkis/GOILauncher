@@ -45,6 +45,10 @@ namespace GOILauncher.ViewModels
             { 
                 new Page(typeof(GameViewModel), "游戏"),
                 new Page(typeof(ModViewModel), "Mod"),
+                //new Page(typeof(ModViewModel), "Mod",new ObservableCollection<Page>()
+                //{
+                //    new Page(typeof(ModpackManageViewModel), "Modpack配置"),
+                //}),
                 //new Page(typeof(MapViewModel), "地图"),
                 new Page(typeof(MapViewModel), "地图",new ObservableCollection<Page>()
                 {

@@ -4,9 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:m="using:GOILauncher.Models"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.Views.ModView"
 			 x:DataType="vm:ModViewModel"
+			 FontFamily="微软雅黑"
 			 FontSize="20"
 			 >
 	<Grid>
@@ -15,7 +16,7 @@
 			<Expander>
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="SemiBold" Text="Modpack" />
+						<Run FontSize="24" FontWeight="Black" Text="Modpack" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Anjo2" />
 					</TextBlock>
@@ -41,7 +42,7 @@
 			<Expander Margin="0,10,0,0">
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="SemiBold" Text="LevelLoader" />
+						<Run FontSize="24" FontWeight="Black" Text="LevelLoader" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Jor02" />
 					</TextBlock>
@@ -67,7 +68,7 @@
 			<Expander Margin="0,10,0,0">
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="SemiBold" Text="ModpackandLevelLoader" />
+						<Run FontSize="24" FontWeight="Black" Text="ModpackandLevelLoader" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Nameless＆Jor02" />
 					</TextBlock>

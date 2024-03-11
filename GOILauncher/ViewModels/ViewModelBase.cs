@@ -15,6 +15,7 @@ namespace GOILauncher.ViewModels
         {
             return;
         }
+
         public bool Initialized;
     }
 }

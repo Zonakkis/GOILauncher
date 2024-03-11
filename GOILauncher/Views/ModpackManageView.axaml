@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             xmlns:vm="using:GOILauncher.ViewModels"
+			 xmlns:m="using:GOILauncher.Models"
+             x:Class="GOILauncher.Views.ModpackManageView"
+			 x:DataType="vm:ModpackManageViewModel"
+			 FontFamily="微软雅黑"
+			 FontSize="20"
+			 >
+	<Grid>
+		<Expander Header="计时器" IsExpanded="True" Margin="10,10">
+			<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto">
+				<TextBlock Grid.Row="0" Text="位置"/>
+				<StackPanel Grid.Row="1" Orientation="Horizontal">
+					<RadioButton GroupName="位置" Content="左上角" Command="{Binding SavePosition}" IsChecked="{Binding Position[0]}" FontSize="16" FontFamily="微软雅黑"/>
+					<RadioButton GroupName="位置" Content="右上角" Command="{Binding SavePosition}" IsChecked="{Binding Position[1]}" FontSize="16" FontFamily="微软雅黑"/>
+				</StackPanel>
+				<TextBlock Grid.Row="2" Text="分段显示内容"/>
+				<StackPanel Grid.Row="3" Orientation="Horizontal">
+					<RadioButton GroupName="分段显示内容" Content="最好单局分段时间" IsDefault="True" Command="{Binding SaveSegmentsContent}" IsChecked="{Binding SegmentsContent[0]}" FontSize="16" FontFamily="微软雅黑"/>
+					<RadioButton GroupName="分段显示内容" Content="单个分段最快时间" Command="{Binding SaveSegmentsContent}" IsChecked="{Binding SegmentsContent[1]}" FontSize="16" FontFamily="微软雅黑"/>
+				</StackPanel>
+				<TextBlock Grid.Row="4" Text="何时显示"/>
+				<StackPanel Grid.Row="5" Orientation="Horizontal">
+					<RadioButton GroupName="何时显示" Content="任何时候" IsDefault="True" Command="{Binding SaveWhenToDisplay}" IsChecked="{Binding WhenToDisplay[3]}" FontSize="16" FontFamily="微软雅黑"/>
+					<RadioButton GroupName="何时显示" Content="仅在游戏内" Command="{Binding SaveWhenToDisplay}" IsChecked="{Binding WhenToDisplay[0]}" FontSize="16" FontFamily="微软雅黑"/>
+					<RadioButton GroupName="何时显示" Content="仅在结束界面" Command="{Binding SaveWhenToDisplay}" IsChecked="{Binding WhenToDisplay[1]}" FontSize="16" FontFamily="微软雅黑"/>
+					<RadioButton GroupName="何时显示" Content="仅在开始界面" Command="{Binding SaveWhenToDisplay}" IsChecked="{Binding WhenToDisplay[2]}" FontSize="16" FontFamily="微软雅黑"/>
+				</StackPanel>
+			
+			</Grid>
+		</Expander>
+	</Grid>
+</UserControl>
