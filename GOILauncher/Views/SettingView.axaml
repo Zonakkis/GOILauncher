@@ -14,24 +14,24 @@
 		<ui:SettingsExpander Header="游戏" >
 			<ui:SettingsExpanderItem Content="游戏路径：" Description="{Binding GamePath}">
 				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectGamePath}"/>
+					<Button Content="选择" FontFamily="微软雅黑" Command="{Binding SelectGamePath}"/>
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 			<ui:SettingsExpanderItem Content="地图路径：" Description="{Binding LevelPath}">
 				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectLevelPath}"/>
+					<Button Content="选择" FontFamily="微软雅黑" Command="{Binding SelectLevelPath}"/>
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 			<ui:SettingsExpanderItem Content="Steam路径：" Description="{Binding SteamPath}">
 				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectSteamPath}"/>
+					<Button Content="选择" FontFamily="微软雅黑" Command="{Binding SelectSteamPath}"/>
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 		</ui:SettingsExpander>
 		<ui:SettingsExpander Header="下载" Margin="0,10,0,0">
 			<ui:SettingsExpanderItem Content="下载路径：" Description="{Binding DownloadPath}">
 				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectDownloadPath}"/>
+					<Button Content="选择" FontFamily="微软雅黑" Command="{Binding SelectDownloadPath}"/>
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 			<ui:SettingsExpanderItem Content="下载后保存Zip文件：">

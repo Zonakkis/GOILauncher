@@ -1,0 +1,28 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
+			 xmlns:vm="using:GOILauncher.ViewModels"
+             x:Class="GOILauncher.Views.LeaderBoardView"
+			 x:DataType="vm:LeaderBoardViewModel"
+             FontSize="20"
+			 FontFamily="微软雅黑"
+			 >
+	<Grid>
+		<DataGrid ItemsSource="{Binding Speedruns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="20">
+			<DataGrid.Columns>
+				<DataGridTextColumn Header="排名" Binding="{Binding Rank}"  Width="auto" IsReadOnly="True"/>
+				<DataGridTextColumn Header="玩家" Binding="{Binding Player}" CanUserSort="False" Width="auto" IsReadOnly="True"/>
+				<DataGridTextColumn Header="平台" Binding="{Binding Platform}" CanUserSort="False" Width="auto" IsReadOnly="True"/>
+				<DataGridTextColumn Header="时间" Binding="{Binding Time}" CanUserSort="False" Width="auto" IsReadOnly="True"/>
+				<DataGridTemplateColumn Header="视频地址" Width="auto" IsReadOnly="True">
+					<DataTemplate>
+						<ui:HyperlinkButton Content="{Binding VideoPlatform}" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+			</DataGrid.Columns>
+		</DataGrid>
+	</Grid>
+</UserControl>

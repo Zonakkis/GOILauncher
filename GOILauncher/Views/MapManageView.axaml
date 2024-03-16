@@ -11,7 +11,7 @@
 			 FontFamily="微软雅黑"
 			 >
 	<Grid RowDefinitions="*,auto">
-		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" CanUserResizeColumns="True"  >
+		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" Focusable="False" CanUserResizeColumns="True"  >
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="" Width="auto" IsReadOnly="True">
 					<DataTemplate>

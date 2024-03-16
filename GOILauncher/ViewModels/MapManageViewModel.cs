@@ -20,7 +20,11 @@ namespace GOILauncher.ViewModels
             var isDownloadValid = this.WhenAnyValue(x => x.SelectedCount,
                                                     x => x > 0);
             DeleteCommand = ReactiveCommand.Create(DeleteMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
-            //DeleteCommand = ReactiveCommand.Create(DeleteMaps);
+        }
+
+        public override void Init()
+        {
+
         }
         public override void OnSelectedViewChanged()
         {
@@ -131,7 +135,7 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref selectedCount, value, "SelectedCount");
             }
         }
-        public ReactiveCommand<Unit, Unit> DeleteCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeleteCommand { get; set; }
 
         public class Map
         {
@@ -140,7 +144,7 @@ namespace GOILauncher.ViewModels
                 Name = name;
             }
             public string Name { get; set; }
-            public string Author { get; set; }
+            public string? Author { get; set; }
             public string Size { get; set; }
 
             private bool isSelected;

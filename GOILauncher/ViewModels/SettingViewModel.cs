@@ -23,6 +23,7 @@ namespace GOILauncher.ViewModels
     {
         public SettingViewModel()
         {
+
         }
         
         public async void SelectGamePath()

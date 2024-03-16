@@ -40,8 +40,6 @@ namespace GOILauncher.ViewModels
             var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
                                                 x => x[0] != '未');
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            
         }
         public override void Init()
         {
@@ -49,8 +47,11 @@ namespace GOILauncher.ViewModels
             {
                 Directory.CreateDirectory($"{directory}Download");
             }
-            LCObject.RegisterSubclass("Map", () => new Map());
-            Task.Run(GetMaps);
+            Task.Run(() =>
+            {
+                LCObject.RegisterSubclass("Map", () => new Map());
+                GetMaps();
+            });
         }
         public override void OnSelectedViewChanged()
         {
@@ -68,7 +69,7 @@ namespace GOILauncher.ViewModels
                 CurrentMap = map!;
             }
         }
-        public async Task GetMaps()
+        public async void GetMaps()
         {
             LCQuery<Map> query = new LCQuery<Map>("Map");
             query.OrderByAscending("Name");
@@ -207,7 +208,7 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref search, value, "Search");
             }
         }
-        public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
+        public ReactiveCommand<Unit, Unit> DownloadCommand { get; set; }
 
         private bool selectedLevelPathNoteHide;
         public bool SelectedLevelPathNoteHide
@@ -256,6 +257,6 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref filterSettingChanged, value, "FilterSettingChanged");
             }
         }
-        public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; }
+        public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; set; }
     }
 }

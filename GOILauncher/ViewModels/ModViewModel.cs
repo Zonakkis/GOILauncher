@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,15 +22,22 @@ namespace GOILauncher.ViewModels
     {
         public ModViewModel()
         {
-            LCObject.RegisterSubclass("Modpack", () => new Modpack());
-            LCObject.RegisterSubclass("LevelLoader", () => new LevelLoader());
-            LCObject.RegisterSubclass("ModpackandLevelLoader", () => new ModpackandLevelLoader());
-            GetModpacks();
-            GetLevelLoaders();
-            GetModpackandLevelLoaders();
 
         }
 
+        public override void Init()
+        {
+            Task.Run(()=>
+            {
+                LCObject.RegisterSubclass("Modpack", () => new Modpack());
+                LCObject.RegisterSubclass("LevelLoader", () => new LevelLoader());
+                LCObject.RegisterSubclass("ModpackandLevelLoader", () => new ModpackandLevelLoader());
+                GetModpacks();
+                GetLevelLoaders();
+                GetModpackandLevelLoaders();
+            }); 
+
+        }
         public override void OnSelectedViewChanged()
         {
             if(!SelectedGamePathNoteHide && Setting.Instance.gamePath != "未选择")
