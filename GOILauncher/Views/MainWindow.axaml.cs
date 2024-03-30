@@ -3,6 +3,7 @@ using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Models;
 using LeanCloud.Storage;
+using Microsoft.CodeAnalysis;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
@@ -28,8 +29,14 @@ namespace GOILauncher.Views
                 {
                     Title = "有新版本！！",
                     Content = $"{Models.Version.Instance.ToString()} -> {newVersion.ToString()}\r\n{update["Description"]}",
-                    CloseButtonText = "更新",
-                };
+                    PrimaryButtonText = "手动更新",
+                    CloseButtonText = "自动更新",
+                }; 
+                contentDialog.PrimaryButtonCommand = ReactiveCommand.Create(() =>
+                {
+                    Process.Start("explorer.exe", "https://github.com/Zonakkis/GOILauncher/releases");
+                    Environment.Exit(0);
+                });
                 contentDialog.CloseButtonCommand = ReactiveCommand.Create(() =>
                 {
                     Process.Start("GOILUpdater.exe", (update["DownloadURL"] as string)!);

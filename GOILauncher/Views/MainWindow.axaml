@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
-		Width="1050" Height="500"
+		Width="1000" Height="500"
         xmlns:vm="using:GOILauncher.ViewModels"
         xmlns:views="using:GOILauncher.Views"
         x:Class="GOILauncher.Views.MainWindow"
@@ -22,7 +22,7 @@
 	</Design.DataContext>
 
 	
-	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="68" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
+	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
 	<ui:NavigationView.MenuItemTemplate>
 		<DataTemplate DataType="{x:Type vm:Page}">
 			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="微软雅黑" IsExpanded="True">
