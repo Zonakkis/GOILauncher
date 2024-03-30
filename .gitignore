@@ -373,3 +373,15 @@ FodyWeavers.xsd
 /MapUploader/Assets/avalonia-logo.ico
 /MapUploader/App.axaml.cs
 /MapUploader/Views/MainWindow.axaml.cs
+/MapUploader/Views/MapUploadView.axaml
+/MapUploader/ViewModels/MapUploadViewModel.cs
+/MapUploader/Models/PendingRun.cs
+/MapUploader/Views/PendingView.axaml
+/MapUploader/ViewModels/PendingViewModel.cs
+/MapUploader/Views/MainWindow.axaml
+/MapUploader/Views/MainWindow.axaml.cs
+/MapUploader/Views/MapUploadView.axaml
+/MapUploader/Views/MapUploadView.axaml.cs
+/MapUploader/Views/PendingView.axaml
+/MapUploader/Views/PendingView.axaml.cs
+/MapUploader/Models/Speedrun.cs
