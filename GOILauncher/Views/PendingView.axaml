@@ -5,8 +5,8 @@
              mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="using:GOILauncher.ViewModels"
-             x:Class="GOILauncher.Views.LeaderBoardView"
-			 x:DataType="vm:LeaderBoardViewModel"
+             x:Class="GOILauncher.Views.PendingView"
+			 x:DataType="vm:PendingViewModel"
              FontSize="20"
 			 >
 	<UserControl.Styles>
@@ -15,9 +15,9 @@
 		</Style>
 	</UserControl.Styles>
 	<Grid>
-		<DataGrid ItemsSource="{Binding Speedruns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
+		<DataGrid ItemsSource="{Binding PendingRuns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="排名" Binding="{Binding Rank}"  FontSize="18"  Width="auto" IsReadOnly="True"/>
+				<DataGridTextColumn Header="模式" Binding="{Binding Category}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
 					<DataTemplate>
 						<ui:HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>

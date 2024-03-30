@@ -1,6 +1,13 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using GOILauncher.Helpers;
+using GOILauncher.Models;
+using LeanCloud.Storage;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
@@ -17,6 +24,7 @@ namespace GOILauncher.ViewModels
 
         public override void Init()
         {
+            LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
             SelectSpeedrunType = true;
             Categories = ["Glitchless", "Snake"];
             Platforms = ["PC", "Android", "iOS"];
@@ -25,7 +33,6 @@ namespace GOILauncher.ViewModels
             Platform = Platforms[0];
             VideoPlatform = VideoPlatforms[0];
         }
-
         public void ToggleView(int para)
         {
             switch (para)
@@ -46,6 +53,63 @@ namespace GOILauncher.ViewModels
             }
         }
 
+        public async void Submit(int para)
+        { 
+            switch (para)
+            {
+                case 1:
+                    if(VID == string.Empty)
+                    {
+                        await DialogHelper.ShowContentDialog("提示", "BV号居然是空的？");
+                        return;
+                    }
+                    if (Player == string.Empty)
+                    {
+                        await DialogHelper.ShowContentDialog("提示", "这个BV号好像无效呢...");
+                        return;
+                    }
+                    if(await CheckWhetherExisted(Player,Category,Platform))
+                    {
+                        await DialogHelper.ShowContentDialog("提示", "已存在相同玩家相同平台的同一模式速通，也许可以先等待通过审核？");
+                        return;
+                    }
+                    var run = new PendingRun
+                    {
+                        Category = Category,
+                        Platform = Platform,
+                        Player = Player!,
+                        UID = await BilibiliHelper.GetUIDFromBVID(VID!),
+                        VideoPlatform = VideoPlatform,
+                        VID = VID,
+                        Time = $"{Minute}分{Second.ToString("00")}.{MillionSecond.ToString("000")}秒",
+                        Minute = Minute,
+                        Second = Second,
+                        MillionSecond = MillionSecond,
+                    };
+                    await run.Save();
+                    await DialogHelper.ShowContentDialog("提示", "提交成功！");
+                    break;
+                case 2:
+                    break;
+
+            }
+        }
+
+        public async Task<bool> CheckWhetherExisted(string player, string category, string platform)
+        {
+            LCQuery<PendingRun> query = new LCQuery<PendingRun>(nameof(PendingRun));
+            query.WhereEqualTo("Player", player);
+            query.WhereEqualTo("Category", category);
+            query.WhereEqualTo("Platform", platform);
+            if (await query.Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         private bool selectSpeedrunType;
         public bool SelectSpeedrunType
         {
@@ -197,6 +261,32 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref videoPlatform, value, nameof(VideoPlatform));
             }
         }
+
+        private string vid = string.Empty;
+        public string VID
+        {
+            get
+            {
+                return vid;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref vid, value, nameof(VID));
+            }
+        }
+        private string player = string.Empty;
+        public string Player
+        {
+            get
+            {
+                return player;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref player, value, nameof(Player));
+            }
+        }
+
 
     }
 }

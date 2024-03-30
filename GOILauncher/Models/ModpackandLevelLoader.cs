@@ -18,7 +18,7 @@ namespace GOILauncher.Models
 {
     public class ModpackandLevelLoader : LCObject, INotifyPropertyChanged
     {
-        public ModpackandLevelLoader() : base("ModpackandLevelLoader")
+        public ModpackandLevelLoader() : base(nameof(ModpackandLevelLoader))
         {
             DownloadCommand = ReactiveCommand.Create(Download);
         }
@@ -62,7 +62,7 @@ namespace GOILauncher.Models
             CancellationToken token = tokenSource.Token;
             await LanzouyunDownloadHelper.Download(
                     DownloadURL,
-                    $"{Setting.Instance.downloadPath}/LevelLoader{Build}.zip",
+                    $"{Setting.Instance.downloadPath}/{nameof(ModpackandLevelLoader)}{Build}.zip",
                     OnDownloadStarted,
                     OnDownloadProgressChanged,
                     null,
@@ -70,11 +70,11 @@ namespace GOILauncher.Models
                     );
             IsExtracting = true;
             Status = "解压中";
-            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/ModpackandLevelLoader{Build}.zip", Setting.Instance.gamePath);
+            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/{nameof(ModpackandLevelLoader)}{Build}.zip", Setting.Instance.gamePath);
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
             IsExtracting = false;
             IsDownloading = false;
-            contentDialog.Content = $"已经安装ModpackandLevelLoader{Build}！";
+            contentDialog.Content = $"已经安装{nameof(ModpackandLevelLoader)}{Build}！";
             await contentDialog.ShowAsync();
         }
 

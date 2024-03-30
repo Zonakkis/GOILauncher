@@ -56,7 +56,8 @@ namespace GOILauncher.ViewModels
                 }),
                 new Page(typeof(LeaderBoardViewModel),"排行榜",new ObservableCollection<Page>
                 {
-                    new Page(typeof(SubmitSpeedrunViewModel), "提交速通")
+                    new Page(typeof(SubmitSpeedrunViewModel), "提交速通"),
+                    new Page(typeof(PendingViewModel), "待审核"),
                 })
             };
             FooterViews = new ObservableCollection<Page>

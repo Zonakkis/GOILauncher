@@ -184,8 +184,8 @@ namespace GOILauncher.Helpers
     public class LanzouResponse
     {
         public int zt;
-        public string dom;
-        public string url;
+        public string dom = string.Empty;
+        public string url = string.Empty;
         public int inf;
     }
 }

@@ -5,6 +5,7 @@ using GOILauncher.Helpers;
 using Ionic.Zip;
 using LeanCloud.Storage;
 using ReactiveUI;
+using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -21,7 +22,7 @@ namespace GOILauncher.Models
 {
     public class Modpack : LCObject, INotifyPropertyChanged
     {
-        public Modpack() : base("Modpack")
+        public Modpack() : base(nameof(Modpack))
         {
             DownloadCommand = ReactiveCommand.Create(Download);
         }
@@ -65,7 +66,7 @@ namespace GOILauncher.Models
             CancellationToken token = tokenSource.Token;
             await LanzouyunDownloadHelper.Download(
                     DownloadURL,
-                    $"{Setting.Instance.downloadPath}/Modpack{Build}.zip",
+                    $"{Setting.Instance.downloadPath}/{nameof(Modpack)}{Build}.zip",
                     OnDownloadStarted,
                     OnDownloadProgressChanged,
                     null,
@@ -73,11 +74,11 @@ namespace GOILauncher.Models
                     );
             IsExtracting = true;
             Status = "解压中";
-            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/Modpack{Build}.zip", Setting.Instance.gamePath);
+            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/{nameof(Modpack)}{Build}.zip", Setting.Instance.gamePath);
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
             IsExtracting = false;
             IsDownloading = false;
-            contentDialog.Content = $"已经安装Modack{Build}！";
+            contentDialog.Content = $"已经安装{nameof(Modpack)}{Build}！";
             await contentDialog.ShowAsync();
         }
 
@@ -89,6 +90,17 @@ namespace GOILauncher.Models
         {
             get => (this["ApplicableGameVersion"] as string)!;
         }
+        //public List<string> TargetGameVersion
+        //{
+        //    get {
+
+        //        (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
+        //        StringUtils
+        //    }
+
+            
+        //}
+        
         public string DownloadURL
         {
             get => (this["DownloadURL"] as string)!;

@@ -1,6 +1,7 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:sty="using:FluentAvalonia.Styling"
+			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              x:Class="GOILauncher.App"
              xmlns:local="using:GOILauncher"
              RequestedThemeVariant="Default">
@@ -13,9 +14,11 @@
 	<Application.Styles>
 		<Styles>
 			<sty:FluentAvaloniaTheme/>
+			<Style Selector="ui|ContentDialog TextBlock">
+				<Setter Property="FontFamily" Value="微软雅黑"/>
+			</Style>
 		</Styles>
 	</Application.Styles> 
-	<!--Application.Resources-->
-		<!--FontFamily x:Key="PuHuiTi">avares://GOILauncher/Assets/font#Alibaba PuHuiTi 3.0</FontFamily-->
-	<!--/Application.Resources-->
+	<Application.Resources>
+</Application.Resources>
 </Application>

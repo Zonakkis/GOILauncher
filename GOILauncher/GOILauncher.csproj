@@ -71,6 +71,9 @@
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\PendingView.axaml.cs">
+      <DependentUpon>PendingView.axaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
 

@@ -24,6 +24,10 @@ namespace GOILauncher.Models
         {
             get => (this["Player"] as string)!;
         }
+        public string UID
+        {
+            get => (this["UID"] as string)!;
+        }
         public string Platform
         {
             get => (this["Platform"] as string)!;
@@ -42,5 +46,6 @@ namespace GOILauncher.Models
         }
 
         public string VideoURL { get; set; }
+        public string PlayerURL { get; set; }
     }
 }

@@ -1,4 +1,6 @@
-﻿using GOILauncher.Models;
+﻿using Avalonia.Controls;
+using FluentAvalonia.UI.Controls;
+using GOILauncher.Models;
 using LeanCloud.Storage;
 using ReactiveUI;
 using System;
@@ -33,6 +35,7 @@ namespace GOILauncher.ViewModels
                 if(speedrun.VideoPlatform == "哔哩哔哩")
                 {
                     speedrun.VideoURL = $"https://www.bilibili.com/video/{speedrun.VID}";
+                    speedrun.PlayerURL = $"https://space.bilibili.com/{speedrun.UID}";
                 }
                 Speedruns.Add(speedrun);
             }

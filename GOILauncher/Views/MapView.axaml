@@ -9,9 +9,13 @@
              x:Class="GOILauncher.Views.MapView"
              x:DataType="vm:MapViewModel"
 			 Background="White"
-             FontSize="20"
-			 FontFamily="微软雅黑">
+             FontSize="20">
 
+	<UserControl.Styles>
+		<Style Selector=":is(ContentControl)">
+			<Setter Property="FontFamily" Value="微软雅黑"/>
+		</Style>
+	</UserControl.Styles>
 	<Design.DataContext>
 		<vm:DesignMapViewModel/>
 	</Design.DataContext>
@@ -39,7 +43,7 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto,*">
-							<TextBlock Grid.Row="0" Grid.Column="0" FontSize="18" FontFamily="微软雅黑" Text="{Binding Name}" VerticalAlignment="Center"/>
+							<TextBlock Grid.Row="0" Grid.Column="0" FontSize="18" Text="{Binding Name}" VerticalAlignment="Center"/>
 							<TextBlock Grid.Row="0" Grid.Column="1" FontSize="18" Text="√" IsVisible="{Binding Downloaded}"/>
 							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-6,0,-10" IsVisible="{Binding IsDownloading}">
 								<TextBlock Grid.Row="0" FontSize="16" Text="{Binding Status}"  HorizontalAlignment="Center"/>

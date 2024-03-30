@@ -95,6 +95,7 @@ namespace GOILauncher.ViewModels
             }
             await Task.Run(RefreshMapList);
             query.OrderByDescending("updatedAt");
+            query.Select("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
             this.RaisePropertyChanged("LastUpdateTime");
         }

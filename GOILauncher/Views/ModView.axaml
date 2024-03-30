@@ -8,8 +8,12 @@
              x:Class="GOILauncher.Views.ModView"
 			 x:DataType="vm:ModViewModel"
 			 FontSize="20"
-			 FontFamily="微软雅黑"
 			 >
+	<UserControl.Styles>
+		<Style Selector=":is(ContentControl)">
+			<Setter Property="FontFamily" Value="微软雅黑"/>
+		</Style>
+	</UserControl.Styles>
 	<Grid>
 		<TextBlock FontSize="20" Text="未选择游戏路径，请前往设置页面选择" HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}"/>
 		<StackPanel Margin="10,10,10,0" IsVisible="{Binding SelectedGamePathNoteHide}">
@@ -32,7 +36,7 @@
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-									<Button Content="下载" FontFamily="微软雅黑" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
 								</StackPanel>
 							</Grid>
 						</DataTemplate>
@@ -58,7 +62,7 @@
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-									<Button Content="下载" FontFamily="微软雅黑" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
 								</StackPanel>
 							</Grid>
 						</DataTemplate>
@@ -84,7 +88,7 @@
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-									<Button Content="下载" FontFamily="微软雅黑" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
 								</StackPanel>
 							</Grid>
 						</DataTemplate>
