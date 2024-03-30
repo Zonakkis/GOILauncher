@@ -47,9 +47,9 @@ namespace GOILauncher.Models
                 CloseButtonText = "好的",
                 FontSize = 200,
             };
-            if (!ApplicableGameVersion.Contains(GameInfo.Instance.GameVersion))
+            if (!TargetGameVersion.Contains(GameInfo.Instance.GameVersion))
             {
-                contentDialog.Content = $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}  Mod所需版本：{ApplicableGameVersion}";
+                contentDialog.Content = $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}  Mod所需版本：{TargetGameVersion}";
                 await contentDialog.ShowAsync();
                 return;
             }
@@ -81,9 +81,12 @@ namespace GOILauncher.Models
         {
             get => (this["Build"] as string)!;
         }
-        public string ApplicableGameVersion
+        public string TargetGameVersion
         {
-            get => (this["ApplicableGameVersion"] as string)!;
+            get
+            {
+                return (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!).Concatenate("/");
+            }
         }
         public string DownloadURL
         {
