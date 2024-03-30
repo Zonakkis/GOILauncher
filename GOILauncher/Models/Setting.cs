@@ -1,4 +1,5 @@
-﻿using GOILauncher.Helpers;
+﻿using Avalonia;
+using GOILauncher.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,8 +32,18 @@ namespace GOILauncher.Models
         public string steamPath;
         public string downloadPath;
         public bool saveMapZip;
+        public bool nightMode;
 
         public static Setting Instance = new Setting();
+
+        public static void Load(string path)
+        {
+            Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+            if(Instance.nightMode)
+            {
+                Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+            }
+        }
         public void Save()
         {
             StorageHelper.SaveJSON(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json", this, true);

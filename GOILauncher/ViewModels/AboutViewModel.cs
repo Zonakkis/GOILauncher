@@ -55,7 +55,7 @@ namespace GOILauncher.ViewModels
         public string GOILVerison { get => $"GOILauncher v{GOILverison}";
             set
             {
-                this.RaiseAndSetIfChanged(ref GOILverison, value, "GOILVerison");
+                this.RaiseAndSetIfChanged(ref GOILverison, value, nameof(GOILVerison));
             }
         }
 }

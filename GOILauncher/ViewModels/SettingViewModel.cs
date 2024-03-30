@@ -158,6 +158,22 @@ namespace GOILauncher.ViewModels
                 Setting.Instance.Save();
             }
         }
-
+        public bool NightMode
+        {
+            get => Setting.Instance.nightMode;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.nightMode, value, nameof(NightMode));
+                Task.Run(Setting.Instance.Save);
+                if(value)
+                {
+                    Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
+                }
+                else
+                {
+                    Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
+                }
+            }
+        }
     }
 }

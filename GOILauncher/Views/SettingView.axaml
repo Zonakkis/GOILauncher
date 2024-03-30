@@ -15,8 +15,10 @@
 			<Setter Property="FontFamily" Value="微软雅黑"/>
 		</Style>
 	</UserControl.Styles>
+	<ScrollViewer>
+		
 	<StackPanel Orientation="Vertical" Margin="10,10">
-		<ui:SettingsExpander Header="游戏" >
+		<ui:SettingsExpander Header="游戏">
 			<ui:SettingsExpanderItem Content="游戏路径：" Description="{Binding GamePath}">
 				<ui:SettingsExpanderItem.Footer>
 					<Button Content="选择" Command="{Binding SelectGamePath}"/>
@@ -33,7 +35,7 @@
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 		</ui:SettingsExpander>
-		<ui:SettingsExpander Header="下载" Margin="0,10,0,0">
+		<ui:SettingsExpander Header="下载">
 			<ui:SettingsExpanderItem Content="下载路径：" Description="{Binding DownloadPath}">
 				<ui:SettingsExpanderItem.Footer>
 					<Button Content="选择" Command="{Binding SelectDownloadPath}"/>
@@ -45,6 +47,11 @@
 				</ui:SettingsExpanderItem.Footer>
 			</ui:SettingsExpanderItem>
 		</ui:SettingsExpander>
-		
+		<ui:SettingsExpander Header="夜间模式">
+			<ui:SettingsExpander.Footer>
+				<ToggleSwitch  OnContent="开" OffContent="关"  IsChecked="{Binding NightMode}"/>
+			</ui:SettingsExpander.Footer>
+		</ui:SettingsExpander>
 	</StackPanel>
+	</ScrollViewer>
 </UserControl>
