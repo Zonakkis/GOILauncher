@@ -1,7 +1,10 @@
-﻿using GOILauncher.Models;
+﻿using GOILauncher.Helpers;
+using GOILauncher.Models;
+using LeanCloud.Storage;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,9 +21,23 @@ namespace GOILauncher.ViewModels
 
         public override void Init()
         {
-            Players.Add("hongchafang");
-            Players.Add("唯呵WindowsHim");
-            Players.Add("ZHYUjun");
+            Task.Run(async () =>
+            {
+                await GetCredits();
+                this.RaisePropertyChanged(nameof(Thanks));
+            });
+        }
+
+        public async Task GetCredits()
+        {
+            LCQuery<LCObject> query = new LCQuery<LCObject>("Credits");
+            query.AddAscendingOrder("Player");
+            query.Select("Player");
+            ReadOnlyCollection<LCObject> credits = await query.Find();
+            foreach (LCObject credit in credits)
+            {
+                Players.Add(credit["Player"] as string);
+            }
         }
         private List<string> Players { get; } = new List<string>();
 
@@ -28,14 +45,7 @@ namespace GOILauncher.ViewModels
         {
             get
             {
-                Players!.Sort();
-                string[] playersArray = Players.ToArray();
-                string players = playersArray[0];
-                for (int i = 1; i < playersArray.Length; i++)
-                {
-                    players += $",{playersArray[i]}";
-                }
-                return players;
+                return Players.Concatenate(","); ;
             }
         }
 

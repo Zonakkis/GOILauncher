@@ -90,17 +90,16 @@ namespace GOILauncher.Models
         {
             get => (this["ApplicableGameVersion"] as string)!;
         }
-        //public List<string> TargetGameVersion
-        //{
-        //    get {
+        public string TargetGameVersion
+        {
+            get
+            {
+                //var lis = (this[nameof(TargetGameVersion)] as List<object>);
+                //var list = (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
+                return (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!).Concatenate("/");
+            }
+        }
 
-        //        (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
-        //        StringUtils
-        //    }
-
-            
-        //}
-        
         public string DownloadURL
         {
             get => (this["DownloadURL"] as string)!;
