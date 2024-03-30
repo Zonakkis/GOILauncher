@@ -18,6 +18,7 @@ namespace GOILauncher.Models
         public int Rank
         {
             get => (int)this["Rank"];
+            set => this[nameof(Rank)] = value;
         }
 
         public string Player

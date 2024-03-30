@@ -28,16 +28,19 @@ namespace GOILauncher.ViewModels
         {
             Speedruns = new ObservableCollection<Speedrun>();
             LCQuery<Speedrun> query = new LCQuery<Speedrun>("Speedrun");
-            query.OrderByAscending("Rank");
+            query.OrderByAscending("TotalTime");
+            query.WhereEqualTo("Fastest", true);
+            query.WhereEqualTo("Category", "Glitchless");
             ReadOnlyCollection<Speedrun> speedruns = await query.Find();
-            foreach (Speedrun speedrun in speedruns)
+            for (int i = 0; i < speedruns.Count; i++)
             {
-                if(speedrun.VideoPlatform == "哔哩哔哩")
+                if (speedruns[i].VideoPlatform == "哔哩哔哩")
                 {
-                    speedrun.VideoURL = $"https://www.bilibili.com/video/{speedrun.VID}";
-                    speedrun.PlayerURL = $"https://space.bilibili.com/{speedrun.UID}";
+                    speedruns[i].VideoURL = $"https://www.bilibili.com/video/{speedruns[i].VID}";
+                    speedruns[i].PlayerURL = $"https://space.bilibili.com/{speedruns[i].UID}";
                 }
-                Speedruns.Add(speedrun);
+                speedruns[i].Rank = i + 1;
+                Speedruns.Add(speedruns[i]);
             }
             this.RaisePropertyChanged("Speedruns");
         }
