@@ -11,7 +11,7 @@
 			 >
 	<UserControl.Styles>
 		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="微软雅黑"/>
+			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 		</Style>
 	</UserControl.Styles>
 	<Grid>
@@ -20,14 +20,14 @@
 				<DataGridTextColumn Header="模式" Binding="{Binding Category}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
 					<DataTemplate>
-						<ui:HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
+						<HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="平台" Binding="{Binding Platform}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTextColumn Header="时间" Binding="{Binding Time}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="视频地址" Width="auto" IsReadOnly="True">
 					<DataTemplate>
-						<ui:HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
+						<HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>

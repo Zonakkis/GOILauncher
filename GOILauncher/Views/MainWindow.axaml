@@ -25,7 +25,7 @@
 	<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
 	<ui:NavigationView.MenuItemTemplate>
 		<DataTemplate DataType="{x:Type vm:Page}">
-			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="微软雅黑" IsExpanded="True">
+			<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}" Content="{Binding Label}" FontFamily="Microsoft YaHei" IsExpanded="True">
 
 			</ui:NavigationViewItem>
 		</DataTemplate>

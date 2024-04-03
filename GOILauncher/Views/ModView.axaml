@@ -11,7 +11,7 @@
 			 >
 	<UserControl.Styles>
 		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="微软雅黑"/>
+			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 		</Style>
 	</UserControl.Styles>
 	<Grid>
@@ -20,7 +20,7 @@
 			<Expander>
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="Black" Text="Modpack" />
+						<Run FontSize="24" FontWeight="Bold" Text="Modpack" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Anjo2" />
 					</TextBlock>
@@ -46,7 +46,7 @@
 			<Expander Margin="0,10,0,0">
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="Black" Text="LevelLoader" />
+						<Run FontSize="24" FontWeight="Bold" Text="LevelLoader" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Jor02" />
 					</TextBlock>
@@ -72,7 +72,7 @@
 			<Expander Margin="0,10,0,0">
 				<Expander.Header>
 					<TextBlock>
-						<Run FontSize="24" FontWeight="Black" Text="ModpackandLevelLoader" />
+						<Run FontSize="24" FontWeight="Bold" Text="ModpackandLevelLoader" />
 						<Run FontSize="16" FontWeight="ExtraLight" Text="by" />
 						<Run FontSize="20" Text="Nameless＆Jor02" />
 					</TextBlock>

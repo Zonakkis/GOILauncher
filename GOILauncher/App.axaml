@@ -15,7 +15,7 @@
 		<Styles>
 			<sty:FluentAvaloniaTheme/>
 			<Style Selector="ui|ContentDialog TextBlock">
-				<Setter Property="FontFamily" Value="微软雅黑"/>
+				<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 			</Style>
 		</Styles>
 	</Application.Styles> 

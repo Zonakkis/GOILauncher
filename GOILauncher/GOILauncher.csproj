@@ -38,16 +38,16 @@
 
   <ItemGroup>
     <PackageReference Include="AsyncImageLoader.Avalonia" Version="3.2.1" />
-    <PackageReference Include="Avalonia" Version="11.0.9" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.9" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.9" />
-    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.9" />
+    <PackageReference Include="Avalonia" Version="11.1.0-beta1" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.1.0-beta1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.1.0-beta1" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.1.0-beta1" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.9" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.9" />
+    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.1.0-beta1" />
+    <PackageReference Include="Avalonia.ReactiveUI" Version="11.1.0-beta1" />
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Downloader" Version="3.1.0-beta" />
-    <PackageReference Include="FluentAvaloniaUI" Version="2.0.5" />
+    <PackageReference Include="FluentAvaloniaUI" Version="2.1.0-preview1" />
   </ItemGroup>
 
 

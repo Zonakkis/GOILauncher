@@ -11,7 +11,7 @@
 			 >
 	<UserControl.Styles>
 		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="微软雅黑"/>
+			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 		</Style>
 	</UserControl.Styles>
 	<Grid RowDefinitions="*,auto">
