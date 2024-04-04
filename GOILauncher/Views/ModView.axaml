@@ -31,7 +31,7 @@
 							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
-									<Run Text="{Binding TargetGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+									<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
@@ -57,7 +57,7 @@
 							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
-									<Run Text="{Binding TargetGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+									<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
@@ -83,7 +83,7 @@
 							<Grid ColumnDefinitions="auto,*">
 								<TextBlock Grid.Column="0" VerticalAlignment="Center">
 									<Run Text="{Binding Build}" FontSize="20"/>
-									<Run Text="{Binding TargetGameVersion}" FontSize="12" FontWeight="UltraLight"/>
+									<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 								</TextBlock>
 								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
 									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>

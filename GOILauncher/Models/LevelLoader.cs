@@ -41,16 +41,9 @@ namespace GOILauncher.Models
 
         public async void Download()
         {
-            var contentDialog = new ContentDialog()
-            {
-                Title = "提示",
-                CloseButtonText = "好的",
-                FontSize = 200,
-            };
             if (!TargetGameVersion.Contains(GameInfo.Instance.GameVersion))
             {
-                contentDialog.Content = $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}  Mod所需版本：{TargetGameVersion}";
-                await contentDialog.ShowAsync();
+                await DialogHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}\r\nMod所需版本：{TargetVersion}");
                 return;
             }
             Status = "获取下载地址中";
@@ -73,19 +66,27 @@ namespace GOILauncher.Models
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
             IsExtracting = false;
             IsDownloading = false;
-            contentDialog.Content = $"已经安装{nameof(LevelLoader)}{Build}！";
-            await contentDialog.ShowAsync();
+            await DialogHelper.ShowContentDialog("提示", $"已经安装{nameof(LevelLoader)}{Build}！");
+
         }
 
         public string Build
         {
             get => (this["Build"] as string)!;
         }
-        public string TargetGameVersion
+        public List<string> TargetGameVersion
         {
             get
             {
-                return (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!).Concatenate("/");
+                return (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
+            }
+        }
+
+        public string TargetVersion
+        {
+            get
+            {
+                return TargetGameVersion.Concatenate("/");
             }
         }
         public string DownloadURL
