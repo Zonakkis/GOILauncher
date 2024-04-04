@@ -94,6 +94,30 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
+			</Expander><Expander Margin="0,10,0,0">
+				<Expander.Header>
+					<TextBlock Text="其他Mod" FontSize="24" FontWeight="Bold"/>
+				</Expander.Header>
+				<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding OtherMods}">
+					<ListBox.ItemTemplate>
+						<DataTemplate x:DataType="m:OtherMod">
+							<Grid ColumnDefinitions="auto,*">
+								<TextBlock Grid.Column="0" VerticalAlignment="Center">
+									<Run Text="{Binding Name}" FontSize="20"/>
+									<Run Text="{Binding Build}" FontSize="20"/>
+									<Run Text="by" FontSize="14" FontWeight="UltraLight"/>
+									<Run Text="{Binding Author}" FontSize="18"/>
+									<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
+								</TextBlock>
+								<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+									<TextBlock Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+									<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
+									<Button Content="下载" HorizontalAlignment="Right" Command="{Binding DownloadCommand}"/>
+								</StackPanel>
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
 			</Expander>
 		</StackPanel>
 	</Grid>

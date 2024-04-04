@@ -11,7 +11,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,9 +31,11 @@ namespace GOILauncher.ViewModels
                 LCObject.RegisterSubclass("Modpack", () => new Modpack());
                 LCObject.RegisterSubclass("LevelLoader", () => new LevelLoader());
                 LCObject.RegisterSubclass("ModpackandLevelLoader", () => new ModpackandLevelLoader());
+                LCObject.RegisterSubclass(nameof(OtherMod), () => new OtherMod());
                 GetModpacks();
                 GetLevelLoaders();
                 GetModpackandLevelLoaders();
+                GetOtherMods();
             }); 
 
         }
@@ -72,9 +73,19 @@ namespace GOILauncher.ViewModels
                 ModpackandLevelLoaders.Add(modpackandLevelLoader);
             }
         }
+        private async void GetOtherMods()
+        {
+            LCQuery<OtherMod> query = new LCQuery<OtherMod>(nameof(OtherMod));
+            ReadOnlyCollection<OtherMod> otherMods = await query.Find();
+            foreach (OtherMod otherMod in otherMods)
+            {
+                OtherMods.Add(otherMod);
+            }
+        }
         public ObservableCollection<Modpack> Modpacks { get; } = new ObservableCollection<Modpack>(); 
         public ObservableCollection<LevelLoader> LevelLoaders { get; } = new ObservableCollection<LevelLoader>();
         public ObservableCollection<ModpackandLevelLoader> ModpackandLevelLoaders { get; } = new ObservableCollection<ModpackandLevelLoader>();
+        public ObservableCollection<OtherMod> OtherMods { get; } = new ObservableCollection<OtherMod>();
 
         private bool selectedGamePathNoteHide;
         public bool SelectedGamePathNoteHide

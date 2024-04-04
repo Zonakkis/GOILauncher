@@ -17,6 +17,9 @@
 			<Style Selector="ui|ContentDialog TextBlock">
 				<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 			</Style>
+			<Style Selector="AccessText">
+				<Setter Property="FontFamily" Value="Microsoft YaHei"/>
+			</Style>
 		</Styles>
 	</Application.Styles> 
 	<Application.Resources>
