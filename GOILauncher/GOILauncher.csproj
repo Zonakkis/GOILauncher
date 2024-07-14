@@ -4,31 +4,31 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AvaloniaUseCompiledBindingsByDefault>True</AvaloniaUseCompiledBindingsByDefault>
 	<JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
     <PackageId>GOILauncher</PackageId>
-    <Version></Version>
     <Title>GOILauncher</Title>
     <Authors>Zonakkis</Authors>
     <Product>GOILauncher</Product>
     <AssemblyName>GOILauncher</AssemblyName>
     <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
-    <Company></Company>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
-    <FileVersion></FileVersion>
-    <AssemblyVersion></AssemblyVersion>
-    <PublishAot>true</PublishAot>
+    <PublishAot>False</PublishAot>
     <NeutralLanguage>zh-CN</NeutralLanguage>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Trimming></Trimming>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DebugType>full</DebugType>
     <Optimize>True</Optimize>
-	<PublishAot>false</PublishAot>
+	<PublishAot>False</PublishAot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
+	  <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
+	  <Optimize>True</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Label="Avalonia">
+    <AvaloniaXamlIlDebuggerLaunch>False</AvaloniaXamlIlDebuggerLaunch>
+    <EnableAvaloniaXamlCompilation>True</EnableAvaloniaXamlCompilation>
   </PropertyGroup>
 
   <ItemGroup>
@@ -52,22 +52,6 @@
 
 
   <ItemGroup>
-    <Reference Include="Common">
-      <HintPath>..\Packages\LeanCloud\Common.dll</HintPath>
-    </Reference>
-    <Reference Include="LC.Newtonsoft.Json">
-      <HintPath>..\Packages\LeanCloud\LC.Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Storage">
-      <HintPath>..\Packages\LeanCloud\Storage.dll</HintPath>
-    </Reference>
-    <Reference Include="Storage.Standard">
-      <HintPath>..\Packages\LeanCloud\Storage.Standard.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-
-  <ItemGroup>
     <Compile Update="Views\AboutView.axaml.cs">
       <DependentUpon>AboutView.axaml</DependentUpon>
     </Compile>
@@ -79,5 +63,21 @@
 
   <ItemGroup>
     <UpToDateCheckInput Remove="Views\MapManageView.axaml" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Reference Include="Common">
+      <HintPath>Reference\LeanCloud\Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LC.Newtonsoft.Json">
+      <HintPath>Reference\LeanCloud\LC.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage">
+      <HintPath>Reference\LeanCloud\Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage.Standard">
+      <HintPath>Reference\LeanCloud\Storage.Standard.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
