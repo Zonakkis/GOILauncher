@@ -13,18 +13,12 @@
     <AssemblyName>GOILauncher</AssemblyName>
     <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
-    <PublishAot>False</PublishAot>
     <NeutralLanguage>zh-CN</NeutralLanguage>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <Optimize>True</Optimize>
-	<PublishAot>False</PublishAot>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>none</DebugType>
 	  <IncludeNativeLibrariesForSelfExtract>True</IncludeNativeLibrariesForSelfExtract>
-	  <Optimize>True</Optimize>
   </PropertyGroup>
   <PropertyGroup Label="Avalonia">
     <AvaloniaXamlIlDebuggerLaunch>False</AvaloniaXamlIlDebuggerLaunch>

@@ -131,14 +131,17 @@ namespace GOILauncher.ViewModels
             DownloadService[] downloader = new DownloadService[map.DownloadURL.Count];
             map.Status = "获取下载地址中";
             map.IsDownloading = true;
+            map.DirectURLs = new string[map.DownloadURL.Count];
             map.ReceivedBytes = new long[map.DownloadURL.Count];
             map.DownloadSpeeds = new double[map.DownloadURL.Count];
             for (int i = 0; i < map.DownloadURL.Count; i++)
             {
-                string directURL = await LanzouyunDownloadHelper.GetDirectURLAsync(map.DownloadURL[i]);
-                Trace.WriteLine(directURL);
+                map.DirectURLs[i] = await LanzouyunDownloadHelper.GetDirectURLAsync(map.DownloadURL[i]);
+            }
+            for (int i = 0; i < map.DownloadURL.Count; ++i)
+            {
                 map.DownloadTasks.Add(LanzouyunDownloadHelper.Download(
-                    directURL,
+                    map.DirectURLs[i],
                     $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}",
                     map.OnDownloadStarted,
                     map.OnDownloadProgressChanged,
@@ -240,7 +243,8 @@ namespace GOILauncher.ViewModels
         }
 
         private bool hideDownloadedMap;
-        public bool HideDownloadedMap {
+        public bool HideDownloadedMap
+        {
             get => hideDownloadedMap;
             set
             {

@@ -17,6 +17,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using static GOILauncher.ViewModels.MapManageViewModel;
 
 namespace GOILauncher.Models
 {
@@ -62,15 +63,20 @@ namespace GOILauncher.Models
                 {
                     ProgressPercentage = Convert.ToInt32((float)ReceivedBytes.Sum() / TotalByte * 100f);
                     Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
-                    Trace.WriteLine(ProgressPercentage);
+                    //百分比
+                    //Trace.WriteLine(ProgressPercentage);
+
                 }
                 await Task.Delay(500);
             }
+
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
             var downloadService = (DownloadService)sender;
             TotalByte += eventArgs.TotalBytesToReceive;
+            Trace.WriteLine($"{downloadService.Package.FileName}Started.");
+            Trace.WriteLine($"总Bytes:{TotalByte}");
         }
         public void OnChunkDownloadProgressChanged(object sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
@@ -78,7 +84,7 @@ namespace GOILauncher.Models
         }
         public void OnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
-            var downloadService = (DownloadService)sender; 
+            var downloadService = (DownloadService)sender!; 
             int fileID = Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1;
             ReceivedBytes[fileID] = eventArgs.ReceivedBytesSize;
             DownloadSpeeds[fileID] = eventArgs.BytesPerSecondSpeed;
@@ -88,6 +94,22 @@ namespace GOILauncher.Models
             var downloadService = (DownloadService)sender!;
             int fileID = Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1;
             DownloadSpeeds[fileID] = 0;
+            Trace.WriteLine($"目标Bytes:{downloadService.Package.TotalFileSize} 已接收Bytes:{ReceivedBytes[fileID]}");
+            Trace.WriteLine($"{downloadService.Package.FileName}Completed.");
+            if (downloadService.Package.TotalFileSize != ReceivedBytes[fileID])
+            {
+                TotalByte -= downloadService.Package.TotalFileSize;
+                ReceivedBytes[fileID] = 0;
+                DownloadSpeeds[fileID] = 0;
+                DownloadTasks.Add(LanzouyunDownloadHelper.Download(
+                    DirectURLs[fileID],
+                    downloadService.Package.FileName,
+                    OnDownloadStarted,
+                    OnDownloadProgressChanged,
+                    OnDownloadCompleted
+                    ));
+                return;
+            }
             CompletedDownloadCount++;
         }
         public void OnExtractProgressChanged(object? sender, ExtractProgressEventArgs eventArgs)
@@ -98,7 +120,6 @@ namespace GOILauncher.Models
                 return;
             }
             ProgressPercentage = Convert.ToInt32((float)eventArgs.BytesTransferred / eventArgs.TotalBytesToTransfer * 100f);
-            Trace.WriteLine(ProgressPercentage);
         }
         public override string ToString()
         {
@@ -173,6 +194,7 @@ namespace GOILauncher.Models
         public long[] ReceivedBytes { get; set; }
         public double[] DownloadSpeeds { get; set; }
         public List<Task> DownloadTasks { get; set; }
+        public string[] DirectURLs { get; set; }
         public int CompletedDownloadCount { get; set; }
 
         public int progressPercentage;

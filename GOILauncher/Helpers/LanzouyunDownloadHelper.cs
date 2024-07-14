@@ -49,7 +49,7 @@ namespace GOILauncher.Helpers
         {
             var downloadOpt = new DownloadConfiguration()
             {
-                ChunkCount = 8,
+                ChunkCount = 16,
                 ParallelDownload = true,
                 MaxTryAgainOnFailover = int.MaxValue,
                 Timeout = 60000,
@@ -63,7 +63,6 @@ namespace GOILauncher.Helpers
             };
             using (DownloadService downloadService = new DownloadService(downloadOpt))
             { 
-
                 downloadService.DownloadStarted += downloadStartedEvent;
                 downloadService.DownloadProgressChanged += downloadProgressChangedEventArgs;
                 downloadService.DownloadFileCompleted += downloadCompletedEvent;
