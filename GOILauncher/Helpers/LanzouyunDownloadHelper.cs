@@ -21,7 +21,7 @@ namespace GOILauncher.Helpers
 {
     internal class LanzouyunDownloadHelper
     {
-
+        public static string prefix = string.Empty;
         public static async Task DownloadMap(string url,string path,Map map,int id)
         {
             WebClient webClient = new WebClient();
@@ -71,7 +71,7 @@ namespace GOILauncher.Helpers
             }
         }
 
-        public static async Task<string> GetDirectURLAsync(string LanzouyunURL)
+        public static async Task<string> GetDirectURLAsync(string URL)
         {
             //string url1;
             //string url2;
@@ -129,8 +129,8 @@ namespace GOILauncher.Helpers
 
             using (var webClient = new WebClient())
             {
-                string htmlSource = (await webClient.DownloadStringTaskAsync(LanzouyunURL)).Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
-                string url = "https://wwn.lanzouv.com" + htmlSource;
+                string[] htmlSource = (await webClient.DownloadStringTaskAsync($"{prefix}/{URL}")).Split(new string[] { "/fn?", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries);
+                string url = $"{prefix}/fn?{htmlSource[htmlSource.Length - 2]}";
                 Trace.WriteLine(url);
                 string sign = (await webClient.DownloadStringTaskAsync(url)).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
                 Trace.WriteLine(sign);
@@ -141,7 +141,7 @@ namespace GOILauncher.Helpers
                 httpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 httpWebRequest.Referer = url;
                 httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
-                string content = "action=downprocess&sign=" + sign + "&ves=1";
+                string content = $"action=downprocess&sign={sign}&ves=1";
                 byte[] bytes = Encoding.UTF8.GetBytes(content);
                 (await httpWebRequest.GetRequestStreamAsync()).Write(bytes, 0, bytes.Length);
                 using (Stream responseStream = ((HttpWebResponse)await httpWebRequest.GetResponseAsync()).GetResponseStream())

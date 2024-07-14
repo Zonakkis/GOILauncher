@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
+using GOILauncher.Helpers;
 using GOILauncher.Models;
 using LeanCloud.Storage;
 using Microsoft.CodeAnalysis;
@@ -20,7 +21,11 @@ namespace GOILauncher.Views
 
         private async void Loaded(object? sender, RoutedEventArgs e)
         {
-            LCQuery<LCObject> query = new LCQuery<LCObject>("Update");
+
+            LCQuery<LCObject> query = new LCQuery<LCObject>("Config");
+            LCObject prefixURLObject = await query.Get("6693d2d7209bbd07d16cfde9");
+            LanzouyunDownloadHelper.prefix = prefixURLObject["Value"] as string;
+            query = new LCQuery<LCObject>("Update");
             LCObject update = await query.Get("65cf1c6c6599eb4f2882a8c5");
             Models.Version newVersion = new Models.Version((update["Version"] as string)!);
             if (newVersion > Models.Version.Instance)

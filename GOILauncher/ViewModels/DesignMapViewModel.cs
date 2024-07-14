@@ -113,7 +113,7 @@ namespace GOILauncher.ViewModels
                 //map.ReceivedBytes.Add(0);
                 //map.DownloadSpeeds.Add(0);
 
-                string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
+                string directUrl = await LanzouyunDownloadHelper.GetDirectURLAsync(map.DownloadURL[i]);
                 directUrls.Add(directUrl);
                 //Trace.WriteLine(directUrl);
                 //LanzouyunDownloadHelper.Download(directurl, $"{DownloadPath}/{SelectedMap.Name}.zip.{(i+1).ToString("D3")}");

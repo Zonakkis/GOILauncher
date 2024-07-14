@@ -54,7 +54,7 @@ namespace GOILauncher.Models
             }
             Status = "获取下载地址中";
             IsDownloading = true;
-            DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{DownloadURL}");
+            DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync(DownloadURL);
             Status = "启动下载中";
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             CancellationToken token = tokenSource.Token;

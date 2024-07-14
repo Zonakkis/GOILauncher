@@ -135,7 +135,7 @@ namespace GOILauncher.ViewModels
             map.DownloadSpeeds = new double[map.DownloadURL.Count];
             for (int i = 0; i < map.DownloadURL.Count; i++)
             {
-                string directURL = await LanzouyunDownloadHelper.GetDirectURLAsync($"https://{map.DownloadURL[i]}");
+                string directURL = await LanzouyunDownloadHelper.GetDirectURLAsync(map.DownloadURL[i]);
                 Trace.WriteLine(directURL);
                 map.DownloadTasks.Add(LanzouyunDownloadHelper.Download(
                     directURL,
