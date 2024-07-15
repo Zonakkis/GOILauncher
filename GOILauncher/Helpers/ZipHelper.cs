@@ -14,6 +14,10 @@ namespace GOILauncher.Helpers
     {
         public static async Task CombineZipSegment(string path, string zipName, string searchPattern)
         {
+            if (File.Exists(zipName))
+            {
+                File.Delete(zipName);
+            }
             List<string> zipFiles = Directory.GetFiles(path, searchPattern).ToList();
             if(zipFiles.Count == 1)
             {
