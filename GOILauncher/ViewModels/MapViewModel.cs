@@ -60,6 +60,7 @@ namespace GOILauncher.ViewModels
             {
                 map.CheckWhetherExisted();
             }
+            RefreshMapList();
         }
         public void OnSelectedMapChanged(Map map)
         {
