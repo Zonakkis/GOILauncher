@@ -36,6 +36,12 @@
 			</ui:SettingsExpanderItem>
 		</ui:SettingsExpander>
 		<ui:SettingsExpander Header="下载">
+
+			<ui:SettingsExpanderItem Content="地图预览质量" Description="范围：1-100，重启应用后生效">
+				<ui:SettingsExpanderItem.Footer>
+					<ui:NumberBox Value="{Binding PreviewQuality}" Maximum="100" Minimum="1"/>
+				</ui:SettingsExpanderItem.Footer>
+			</ui:SettingsExpanderItem>
 			<ui:SettingsExpanderItem Content="下载路径：" Description="{Binding DownloadPath}">
 				<ui:SettingsExpanderItem.Footer>
 					<Button Content="选择" Command="{Binding SelectDownloadPath}"/>

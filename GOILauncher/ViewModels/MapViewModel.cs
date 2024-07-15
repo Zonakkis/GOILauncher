@@ -52,6 +52,9 @@ namespace GOILauncher.ViewModels
                 LCObject.RegisterSubclass("Map", () => new Map());
                 GetMaps();
             });
+            Forms = ["不限", "原创", "移植"];
+            Form = Forms[0];
+            FilterSettingChanged = false;   
         }
         public override void OnSelectedViewChanged()
         {
@@ -91,7 +94,7 @@ namespace GOILauncher.ViewModels
                 {
                     map.CheckWhetherExisted();
                 }
-                map.Preview = file.GetThumbnailUrl(640, 360, 50, false, "png");
+                map.Preview = file.GetThumbnailUrl((int)(19.2 * Setting.Instance.previewQuality), (int)(10.8 * Setting.Instance.previewQuality));
                 AllMaps.Add(map);
             }
             await Task.Run(RefreshMapList);
@@ -111,6 +114,10 @@ namespace GOILauncher.ViewModels
             foreach (var map in AllMaps)
             {
                 if (HideDownloadedMap && map.Downloaded)
+                {
+                    continue;
+                }
+                if(Form != Forms[0] && map.Form != Form)
                 {
                     continue;
                 }
@@ -264,5 +271,32 @@ namespace GOILauncher.ViewModels
             }
         }
         public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; set; }
+
+        private string[] forms;
+        public string[] Forms
+        {
+            get
+            {
+                return forms;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref forms, value, nameof(Forms));
+            }
+        }
+
+        private string form;
+        public string Form
+        {
+            get
+            {
+                return form;
+            }
+            set
+            {
+                FilterSettingChanged = true;
+                this.RaiseAndSetIfChanged(ref form, value, nameof(Form));
+            }
+        }
     }
 }

@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:ui="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
-		Width="1000" Height="500"
+		Width="1050" Height="500"
         xmlns:vm="using:GOILauncher.ViewModels"
         xmlns:views="using:GOILauncher.Views"
         x:Class="GOILauncher.Views.MainWindow"

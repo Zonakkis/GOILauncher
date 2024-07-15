@@ -22,6 +22,7 @@ namespace GOILauncher.Models
             steamPath = "未选择（需要通过Steam启动游戏时才选择，否则可不选）";
             downloadPath = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download";
             saveMapZip = false;
+            previewQuality = 40;
         }
 
 
@@ -33,6 +34,7 @@ namespace GOILauncher.Models
         public string downloadPath;
         public bool saveMapZip;
         public bool nightMode;
+        public int previewQuality;
 
         public static Setting Instance = new Setting();
 

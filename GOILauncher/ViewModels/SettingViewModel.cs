@@ -175,5 +175,14 @@ namespace GOILauncher.ViewModels
                 }
             }
         }
+        public int PreviewQuality
+        {
+            get => Setting.Instance.previewQuality;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref Setting.Instance.previewQuality, value, nameof(PreviewQuality));
+                Setting.Instance.Save();
+            }
+        }
     }
 }

@@ -62,7 +62,7 @@ namespace GOILauncher.Models
                 if (TotalByte != 0)
                 {
                     ProgressPercentage = Convert.ToInt32((float)ReceivedBytes.Sum() / TotalByte * 100f);
-                    Status = $"下载中（{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
+                    Status = $"下载中（{ProgressPercentage}%/{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
                     //百分比
                     //Trace.WriteLine(ProgressPercentage);
 
@@ -169,7 +169,14 @@ namespace GOILauncher.Models
         {
             get => (this["DownloadURL"] as List<object>)!.ConvertAll<string>(input => (input as string)!);
         }
-
+        public string Form
+        {
+            get => (this[nameof(Form)] as string)!;
+            set
+            {
+                this[nameof(Form)] = value;
+            }
+        }
         private bool downloaded;
         public bool Downloaded { 
             get => downloaded;
