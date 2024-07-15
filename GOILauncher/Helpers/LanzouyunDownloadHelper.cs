@@ -128,39 +128,48 @@ namespace GOILauncher.Helpers
 
             using (var webClient = new WebClient())
             {
-                string[] htmlSource = (await webClient.DownloadStringTaskAsync($"{prefix}/{URL}")).Split(new string[] { "/fn?", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries);
-                string url = $"{prefix}/fn?{htmlSource[htmlSource.Length - 2]}";
-                Trace.WriteLine(url);
-                string sign = (await webClient.DownloadStringTaskAsync(url)).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                Trace.WriteLine(sign);
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://wwn.lanzouv.com/ajaxm.php");
-                httpWebRequest.Method = "POST";
-                httpWebRequest.Accept = "application/json, text/javascript, */*";
-                httpWebRequest.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.Referer = url;
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
-                string content = $"action=downprocess&sign={sign}&ves=1";
-                byte[] bytes = Encoding.UTF8.GetBytes(content);
-                (await httpWebRequest.GetRequestStreamAsync()).Write(bytes, 0, bytes.Length);
-                using (Stream responseStream = ((HttpWebResponse)await httpWebRequest.GetResponseAsync()).GetResponseStream())
+                try
                 {
-                    using (StreamReader streamReader = new StreamReader(responseStream, Encoding.GetEncoding("UTF-8")))
+                    string[] htmlSource = (await webClient.DownloadStringTaskAsync($"{prefix}/{URL}")).Split(new string[] { "/fn?", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries);
+                    string url = $"{prefix}/fn?{htmlSource[htmlSource.Length - 2]}";
+                    Trace.WriteLine(url);
+                    string sign = (await webClient.DownloadStringTaskAsync(url)).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    Trace.WriteLine(sign);
+                    HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"{prefix}/ajaxm.php");
+                    httpWebRequest.Method = "POST";
+                    httpWebRequest.Accept = "application/json, text/javascript, */*";
+                    httpWebRequest.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
+                    httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                    httpWebRequest.Referer = url;
+                    httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
+                    string content = $"action=downprocess&sign={sign}&ves=1";
+                    byte[] bytes = Encoding.UTF8.GetBytes(content);
+                    (await httpWebRequest.GetRequestStreamAsync()).Write(bytes, 0, bytes.Length);
+                    using (Stream responseStream = ((HttpWebResponse)await httpWebRequest.GetResponseAsync()).GetResponseStream())
                     {
-                        string responseString = streamReader.ReadToEnd().Replace("\\/", "/");
-                        Trace.WriteLine(responseString);
-                        LanzouResponse response = JsonConvert.DeserializeObject<LanzouResponse>(responseString);
-                        HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create($"{response.dom}/file/{response.url}");
-                        httpWebRequest2.Method = "HEAD";
-                        httpWebRequest2.AllowAutoRedirect = false;
-                        httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-                        WebResponse webResponse = await Task.Run(() => httpWebRequest2.GetResponse());
-                        string[] allKeys = webResponse.Headers.AllKeys;
-                        string directURL = webResponse.Headers.Get("Location")!;
-                        Trace.WriteLine(directURL);
-                        return directURL!;
+                        using (StreamReader streamReader = new StreamReader(responseStream, Encoding.GetEncoding("UTF-8")))
+                        {
+                            string responseString = streamReader.ReadToEnd().Replace("\\/", "/");
+                            Trace.WriteLine(responseString);
+                            LanzouResponse response = JsonConvert.DeserializeObject<LanzouResponse>(responseString);
+                            HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create($"{response.dom}/file/{response.url}");
+                            httpWebRequest2.Method = "HEAD";
+                            httpWebRequest2.AllowAutoRedirect = false;
+                            httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
+                            WebResponse webResponse = await Task.Run(() => httpWebRequest2.GetResponse());
+                            string[] allKeys = webResponse.Headers.AllKeys;
+                            string directURL = webResponse.Headers.Get("Location")!;
+                            Trace.WriteLine(directURL);
+                            return directURL!;
+
+                        }
                     }
-                } 
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"获取直链失败：{ex.Message}");
+                    return await GetDirectURLAsync(URL);
+                }
             }
         }
 

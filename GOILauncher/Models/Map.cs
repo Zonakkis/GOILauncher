@@ -96,7 +96,7 @@ namespace GOILauncher.Models
             DownloadSpeeds[fileID] = 0;
             Trace.WriteLine($"目标Bytes:{downloadService.Package.TotalFileSize} 已接收Bytes:{ReceivedBytes[fileID]}");
             Trace.WriteLine($"{downloadService.Package.FileName}Completed.");
-            if (downloadService.Package.TotalFileSize != ReceivedBytes[fileID])
+            if (ReceivedBytes[fileID] == 0 || downloadService.Package.TotalFileSize != ReceivedBytes[fileID])
             {
                 TotalByte -= downloadService.Package.TotalFileSize;
                 ReceivedBytes[fileID] = 0;
