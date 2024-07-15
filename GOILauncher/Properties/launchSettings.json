@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GOILauncher": {
+      "commandName": "Project",
+      "commandLineArgs": "http://lc-3Dec7Zyj.cn-n1.lcfile.com/2yYngsJvyTJugdugga8QD8JHBQsRs9TR/GOILauncher.zip"
+    }
+  }
+}
