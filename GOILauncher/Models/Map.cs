@@ -28,6 +28,9 @@ namespace GOILauncher.Models
             TotalByte = 0;
             Downloadable = true;
             DownloadTasks = new List<Task>();
+            ReceivedBytes = Array.Empty<long>();
+            DownloadSpeeds = Array.Empty<double>();
+            DirectURLs = Array.Empty<string>();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -67,16 +70,16 @@ namespace GOILauncher.Models
                     //Trace.WriteLine(ProgressPercentage);
 
                 }
-                await Task.Delay(500);
+                await Task.Delay(1000);
             }
 
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
-            var downloadService = (DownloadService)sender;
+            var downloadService = (DownloadService)sender!;
             TotalByte += eventArgs.TotalBytesToReceive;
-            Trace.WriteLine($"{downloadService.Package.FileName}Started.");
-            Trace.WriteLine($"总Bytes:{TotalByte}");
+            //Trace.WriteLine($"{downloadService.Package.FileName}Started.");
+            //Trace.WriteLine($"总Bytes:{TotalByte}");
         }
         public void OnChunkDownloadProgressChanged(object sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
@@ -94,8 +97,8 @@ namespace GOILauncher.Models
             var downloadService = (DownloadService)sender!;
             int fileID = Convert.ToInt32(downloadService.Package.FileName.Substring(downloadService.Package.FileName.Length - 3, 3)) - 1;
             DownloadSpeeds[fileID] = 0;
-            Trace.WriteLine($"目标Bytes:{downloadService.Package.TotalFileSize} 已接收Bytes:{ReceivedBytes[fileID]}");
-            Trace.WriteLine($"{downloadService.Package.FileName}Completed.");
+            //Trace.WriteLine($"目标Bytes:{downloadService.Package.TotalFileSize} 已接收Bytes:{ReceivedBytes[fileID]}");
+            //Trace.WriteLine($"{downloadService.Package.FileName}Completed.");
             if (ReceivedBytes[fileID] == 0 || downloadService.Package.TotalFileSize != ReceivedBytes[fileID])
             {
                 TotalByte -= downloadService.Package.TotalFileSize;
@@ -215,7 +218,7 @@ namespace GOILauncher.Models
             }
         }
 
-        public string status;
+        public string status = string.Empty;
         public string Status
         {
             get => status; 
