@@ -17,6 +17,7 @@ namespace GOILauncher.Views
         public MainWindow()
         {
             InitializeComponent();
+            NotificationHelper.NotificationBar  = NotificationBar;
         }
 
         private async void Loaded(object? sender, RoutedEventArgs e)

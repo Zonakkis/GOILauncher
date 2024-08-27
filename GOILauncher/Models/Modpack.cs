@@ -49,7 +49,7 @@ namespace GOILauncher.Models
         {
             if (!TargetGameVersion.Contains(GameInfo.Instance.GameVersion))
             {
-                await DialogHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}\r\nMod所需版本：{TargetVersion}");
+                await NotificationHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}\r\nMod所需版本：{TargetVersion}");
                 return;
             }
             Status = "获取下载地址中";
@@ -72,7 +72,7 @@ namespace GOILauncher.Models
             GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
             IsExtracting = false;
             IsDownloading = false;
-            await DialogHelper.ShowContentDialog("提示", $"已经安装{nameof(Modpack)}{Build}！");
+            await NotificationHelper.ShowContentDialog("提示", $"已经安装{nameof(Modpack)}{Build}！");
         }
 
         public string Build

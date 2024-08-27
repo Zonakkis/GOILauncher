@@ -60,17 +60,17 @@ namespace GOILauncher.ViewModels
                 case 1:
                     if(VID == string.Empty)
                     {
-                        await DialogHelper.ShowContentDialog("提示", "BV号居然是空的？");
+                        await NotificationHelper.ShowContentDialog("提示", "BV号居然是空的？");
                         return;
                     }
                     if (Player == string.Empty)
                     {
-                        await DialogHelper.ShowContentDialog("提示", "这个BV号好像无效呢...");
+                        await NotificationHelper.ShowContentDialog("提示", "这个BV号好像无效呢...");
                         return;
                     }
                     if(await CheckWhetherExisted(Player,Category,Platform))
                     {
-                        await DialogHelper.ShowContentDialog("提示", "已存在相同玩家相同平台的同一模式速通，也许可以先等待通过审核？");
+                        await NotificationHelper.ShowContentDialog("提示", "已存在相同玩家相同平台的同一模式速通，也许可以先等待通过审核？");
                         return;
                     }
                     var run = new PendingRun
@@ -87,7 +87,7 @@ namespace GOILauncher.ViewModels
                         MillionSecond = MillionSecond,
                     };
                     await run.Save();
-                    await DialogHelper.ShowContentDialog("提示", "提交成功！");
+                    await NotificationHelper.ShowContentDialog("提示", "提交成功！");
                     break;
                 case 2:
                     break;

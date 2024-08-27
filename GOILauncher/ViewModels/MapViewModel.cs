@@ -3,6 +3,7 @@ using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Threading;
 using Downloader;
 using DynamicData;
+using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
 using Ionic.Zip;
@@ -164,6 +165,7 @@ namespace GOILauncher.ViewModels
             await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
             map.Status = "解压中";
             await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath,map.OnExtractProgressChanged);
+            await NotificationHelper.ShowNotification("下载完成", $"{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
             await Task.Run(RefreshMapList);
