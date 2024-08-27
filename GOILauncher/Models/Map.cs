@@ -23,7 +23,7 @@ namespace GOILauncher.Models
 {
     public class Map:LCObject, INotifyPropertyChanged
     {
-        public Map() : base("Map")
+        public Map() : base(nameof(Map))
         {
             TotalByte = 0;
             Downloadable = true;
@@ -80,10 +80,6 @@ namespace GOILauncher.Models
             TotalByte += eventArgs.TotalBytesToReceive;
             //Trace.WriteLine($"{downloadService.Package.FileName}Started.");
             //Trace.WriteLine($"总Bytes:{TotalByte}");
-        }
-        public void OnChunkDownloadProgressChanged(object sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
-        {
-
         }
         public void OnDownloadProgressChanged(object? sender, Downloader.DownloadProgressChangedEventArgs eventArgs)
         {
@@ -186,7 +182,7 @@ namespace GOILauncher.Models
             set
             {
                 downloaded = value;
-                NotifyPropertyChanged("Downloaded");
+                NotifyPropertyChanged(nameof(Downloaded));
             }
         }
 
@@ -197,7 +193,7 @@ namespace GOILauncher.Models
             set
             {
                 isDownloading = value;
-                NotifyPropertyChanged("IsDownloading");
+                NotifyPropertyChanged(nameof(IsDownloading));
             }
         }
         public long TotalByte { get; set; }
@@ -214,7 +210,7 @@ namespace GOILauncher.Models
             set
             {
                 progressPercentage = value;
-                NotifyPropertyChanged("ProgressPercentage");
+                NotifyPropertyChanged(nameof(ProgressPercentage));
             }
         }
 
@@ -225,7 +221,7 @@ namespace GOILauncher.Models
             set
             {
                 status = value;
-                NotifyPropertyChanged("Status");
+                NotifyPropertyChanged(nameof(Status));
             }
         }
 
@@ -236,7 +232,7 @@ namespace GOILauncher.Models
             set
             {
                 downloadable = value;
-                NotifyPropertyChanged("Downloadable");
+                NotifyPropertyChanged(nameof(Downloadable));
             }
         }
 

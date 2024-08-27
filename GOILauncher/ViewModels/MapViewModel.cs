@@ -165,7 +165,7 @@ namespace GOILauncher.ViewModels
             await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
             map.Status = "解压中";
             await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath,map.OnExtractProgressChanged);
-            await NotificationHelper.ShowNotification("下载完成", $"{map.Name}下载完成", InfoBarSeverity.Success);
+            await NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
             await Task.Run(RefreshMapList);
