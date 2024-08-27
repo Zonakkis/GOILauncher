@@ -31,11 +31,6 @@ namespace GOILauncher.Helpers
             NotificationBar.IsOpen = false;
         }
 
-        internal static void ShowNotification(string v1, string v2, object infoBarSeverity)
-        {
-            throw new NotImplementedException();
-        }
-
         public static InfoBar? NotificationBar { get; set; }
     }
 }

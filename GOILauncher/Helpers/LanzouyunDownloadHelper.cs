@@ -173,18 +173,6 @@ namespace GOILauncher.Helpers
             }
         }
 
-
-        public static async Task<int> GetFileSizeAsync(string url)
-        {
-            HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create(url);
-            httpWebRequest2.Method = "HEAD";
-            httpWebRequest2.AllowAutoRedirect = false;
-            using (WebResponse webResponse = httpWebRequest2.GetResponse())
-            {
-                string contentLength = webResponse.Headers.Get("Content-Length");
-                return Convert.ToInt32(contentLength);
-            }
-        }
     }
 
 
