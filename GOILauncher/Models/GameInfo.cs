@@ -37,9 +37,22 @@ namespace GOILauncher.Models
             switch (exeSize)
             {
                 case 653824:
-                    GameVersion = "1.7";
+                    GameVersion = "1.6/1.7";
+                    break;
+                case 650752:
+                    GameVersion = "1.599";
+                    break;
+                case 639488:
+                    GameVersion = "1.59/1.5861/1.584";
+                    break;
+                case 18687488:
+                    GameVersion = "1.5762/1.54";
+                    break;
+                 case 18678272:
+                    GameVersion = "1.53";
                     break;
                 default:
+                    Console.WriteLine(exeSize);
                     GameVersion = "未知版本";
                     break;
             }
