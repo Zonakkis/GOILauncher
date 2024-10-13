@@ -14,7 +14,7 @@ namespace GOILauncher.Helpers
             {
                 return string.Empty;
             }
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             sb.Append(list[0]);
             for (int i = 1; i < list.Count; i++) 
             {

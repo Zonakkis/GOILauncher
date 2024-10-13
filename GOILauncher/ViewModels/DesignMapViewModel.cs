@@ -59,7 +59,7 @@ namespace GOILauncher.ViewModels
         }
         public async void GetMaps()
         {
-            LCQuery<Map> query = new LCQuery<Map>("Map");
+            LCQuery<Map> query = new("Map");
             query.OrderByAscending("Name");
             ReadOnlyCollection<Map> maps = await query.Find();
             bool levelPathExisted = (LevelPath != "未选择");
@@ -83,8 +83,8 @@ namespace GOILauncher.ViewModels
             }
             query.OrderByDescending("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
-            this.RaisePropertyChanged("Maps");
-            this.RaisePropertyChanged("LastUpdateTime");
+            this.RaisePropertyChanged(nameof(Maps));
+            this.RaisePropertyChanged(nameof(LastUpdateTime));
         }
         public void SearchMap()
         {
@@ -95,10 +95,10 @@ namespace GOILauncher.ViewModels
         {
             Map map = SelectedMap;
             map.Downloadable = false;
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationTokenSource tokenSource = new();
             CancellationToken token = tokenSource.Token;
             DownloadService[] downloader = new DownloadService[map.DownloadURL.Count];
-            List<string> directUrls = new List<string>();
+            List<string> directUrls = [];
             map.Status = "获取下载地址中";
             map.IsDownloading = true;
             map.ReceivedBytes = new long[map.DownloadURL.Count];
@@ -123,7 +123,7 @@ namespace GOILauncher.ViewModels
             {
                 map.DownloadTasks.Add(LanzouyunDownloadHelper.Download(
                     directUrls[i],
-                    $"{DownloadPath}/{map.Name}.zip.{(i + 1).ToString("D3")}",
+                    $"{DownloadPath}/{map.Name}.zip.{i + 1:D3}",
                     map.OnDownloadStarted,
                     map.OnDownloadProgressChanged,
                     map.OnDownloadCompleted,
@@ -154,11 +154,11 @@ namespace GOILauncher.ViewModels
         {
             get
             {
-                return this.currentMap;
+                return currentMap;
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref this.currentMap, value, "CurrentMap");
+                this.RaiseAndSetIfChanged(ref currentMap, value, nameof(CurrentMap));
             }
         }
 
@@ -171,12 +171,12 @@ namespace GOILauncher.ViewModels
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref isSelectedMap, value, "IsSelectedMap");
+                this.RaiseAndSetIfChanged(ref isSelectedMap, value, nameof(IsSelectedMap));
             }
         }
 
         private bool isSelectedMap;
-        public ObservableCollection<Map> Maps { get; } = new ObservableCollection<Map>();
+        public ObservableCollection<Map> Maps { get; } = [];
         public string LastUpdateTime { get; set; }
 
         private Map selectedMap;
@@ -186,7 +186,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 OnSelectedMapChanged(value);
-                this.RaiseAndSetIfChanged(ref selectedMap, value, "SelectedMap");
+                this.RaiseAndSetIfChanged(ref selectedMap, value, nameof(SelectedMap));
             }
         }
 
@@ -196,7 +196,7 @@ namespace GOILauncher.ViewModels
             get => search;
             set
             {
-                this.RaiseAndSetIfChanged(ref search, value, "Search");
+                this.RaiseAndSetIfChanged(ref search, value, nameof(Search));
             }
         }
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; }
@@ -207,7 +207,7 @@ namespace GOILauncher.ViewModels
             get => selectedLevelPathNoteHide;
             set
             {
-                this.RaiseAndSetIfChanged(ref selectedLevelPathNoteHide, value, "SelectedLevelPathNoteHide");
+                this.RaiseAndSetIfChanged(ref selectedLevelPathNoteHide, value, nameof(SelectedLevelPathNoteHide));
             }
         }
 
@@ -219,7 +219,7 @@ namespace GOILauncher.ViewModels
             {
                 if (value[0] != '未')
                 {
-                    this.RaiseAndSetIfChanged(ref levelPath, value, "LevelPath");
+                    this.RaiseAndSetIfChanged(ref levelPath, value, nameof(LevelPath));
                     SelectedLevelPathNoteHide = true;
                 }
             }

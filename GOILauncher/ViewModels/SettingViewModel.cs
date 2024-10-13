@@ -36,8 +36,8 @@ namespace GOILauncher.ViewModels
             var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
-                        string path = folder[0].Path.ToString();
-                        path = path.Substring(8, path.Length - 8);
+                string path = folder[0].Path.ToString();
+                path = path[8..];
                 if (File.Exists($"{path}/GettingOverIt.exe"))
                 {
                     GamePath = path;
@@ -66,7 +66,7 @@ namespace GOILauncher.ViewModels
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
-                path = path.Substring(8, path.Length - 8);
+                path = path[8..];
                 LevelPath = path;
             }
         }
@@ -81,7 +81,7 @@ namespace GOILauncher.ViewModels
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
-                path = path.Substring(8, path.Length - 8);
+                path = path[8..];
                 if (File.Exists($"{path}/steam.exe"))
                 {
                     SteamPath = path;
@@ -109,7 +109,7 @@ namespace GOILauncher.ViewModels
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
-                path = path.Substring(8, path.Length - 8);
+                path = path[8..];
                 DownloadPath = path;
             }
         }
@@ -118,7 +118,7 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.gamePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.gamePath, value,"GamePath");
+                this.RaiseAndSetIfChanged(ref Setting.Instance.gamePath, value,nameof(GamePath));
                 Setting.Instance.Save();
             }
         }
@@ -127,7 +127,7 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.levelPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.levelPath, value, "LevelPath");
+                this.RaiseAndSetIfChanged(ref Setting.Instance.levelPath, value, nameof(LevelPath));
                 Setting.Instance.Save();
             }
         }
@@ -136,7 +136,7 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.steamPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.steamPath, value, "SteamPath");
+                this.RaiseAndSetIfChanged(ref Setting.Instance.steamPath, value, nameof(SteamPath));
                 Setting.Instance.Save();
             }
         }
@@ -145,7 +145,7 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.downloadPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.downloadPath, value, "DownloadPath");
+                this.RaiseAndSetIfChanged(ref Setting.Instance.downloadPath, value, nameof(DownloadPath));
                 Setting.Instance.Save();
             }
         }
@@ -154,7 +154,7 @@ namespace GOILauncher.ViewModels
             get => Setting.Instance.saveMapZip;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.saveMapZip, value, "SaveMapZip");
+                this.RaiseAndSetIfChanged(ref Setting.Instance.saveMapZip, value, nameof(SaveMapZip));
                 Setting.Instance.Save();
             }
         }

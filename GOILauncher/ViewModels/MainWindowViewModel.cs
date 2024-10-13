@@ -41,30 +41,27 @@ namespace GOILauncher.ViewModels
                         break;
                 }
             };
-            Views = new ObservableCollection<Page>
-            {
-                new Page(typeof(GameViewModel), "游戏"),
-                new Page(typeof(ModViewModel), "Mod"),
+            Views = [
+                new(typeof(GameViewModel), "游戏"),
+                new(typeof(ModViewModel), "Mod"),
                 //new Page(typeof(ModViewModel), "Mod",new ObservableCollection<Page>()
                 //{
                 //    new Page(typeof(ModpackManageViewModel), "Modpack配置"),
                 //}),
                 //new Page(typeof(MapViewModel), "地图"),
-                new Page(typeof(MapViewModel), "地图",new ObservableCollection<Page>()
-                {
-                    new Page(typeof(MapManageViewModel), "管理地图"),
-                }),
-                new Page(typeof(LeaderBoardViewModel),"排行榜",new ObservableCollection<Page>
-                {
-                    new Page(typeof(SubmitSpeedrunViewModel), "提交速通"),
-                    new Page(typeof(PendingViewModel), "待审核"),
-                })
-            };
-            FooterViews = new ObservableCollection<Page>
-        {
-            new Page(typeof(AboutViewModel), "关于"),
-            new Page(typeof(SettingViewModel), "设置"),
-        };
+                new(typeof(MapViewModel), "地图",[
+
+                    new(typeof(MapManageViewModel), "管理地图"),
+                ]),
+                new(typeof(LeaderBoardViewModel),"排行榜",[
+                    new(typeof(SubmitSpeedrunViewModel), "提交速通"),
+                    new(typeof(PendingViewModel), "待审核"),
+                ])
+            ];
+            FooterViews = [
+                new Page(typeof(AboutViewModel), "关于"),
+                new Page(typeof(SettingViewModel), "设置"),
+            ];
             SelectedPage = Views[0];
         }
 
@@ -88,7 +85,7 @@ namespace GOILauncher.ViewModels
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref currentView, value, "CurrentView");
+                this.RaiseAndSetIfChanged(ref currentView, value, nameof(CurrentView));
             }
         }
 
@@ -114,7 +111,7 @@ namespace GOILauncher.ViewModels
     }
         public class Page
     {
-        public Page(Type type, string name,ObservableCollection<Page> subPages = null)
+        public Page(Type type, string name,ObservableCollection<Page>? subPages = null)
         {
             ModelType = type;
             Label = name;
@@ -125,7 +122,7 @@ namespace GOILauncher.ViewModels
         public string Label { get; }
         public Type ModelType { get; }
         public ViewModelBase View { get; }
-        public ObservableCollection<Page> SubPages { get; }
+        public ObservableCollection<Page>? SubPages { get; }
     }
 
 

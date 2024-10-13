@@ -26,8 +26,8 @@ namespace GOILauncher.ViewModels
         }
         public async Task GetSpeedruns()
         {
-            Speedruns = new ObservableCollection<Speedrun>();
-            LCQuery<Speedrun> query = new LCQuery<Speedrun>("Speedrun");
+            Speedruns = [];
+            LCQuery<Speedrun> query = new("Speedrun");
             query.OrderByAscending("TotalTime");
             query.WhereEqualTo("Fastest", true);
             query.WhereEqualTo("Category", "Glitchless");
@@ -42,7 +42,7 @@ namespace GOILauncher.ViewModels
                 speedruns[i].Rank = i + 1;
                 Speedruns.Add(speedruns[i]);
             }
-            this.RaisePropertyChanged("Speedruns");
+            this.RaisePropertyChanged(nameof(Speedruns));
         }
 
         public ObservableCollection<Speedrun> Speedruns { get; set; }

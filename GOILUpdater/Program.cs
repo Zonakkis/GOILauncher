@@ -9,7 +9,7 @@ using Ionic.Zip;
 using System.Text;
 using System.Diagnostics;
 
-namespace MapUploader
+namespace GOILUpdater
 {
     internal class Program
     {
@@ -25,7 +25,7 @@ namespace MapUploader
                 Thread.Sleep(100);
             }
             Console.WriteLine("下载中");
-            WebClient webClient = new WebClient();
+            WebClient webClient = new();
             webClient.DownloadFile(args[0], "GOILauncher.zip");
             //webClient.DownloadFile("http://lc-3Dec7Zyj.cn-n1.lcfile.com/DdpBYgVeVx9feNJiFyGq6XhdXQe0J9dB/GOIL.zip", "GOIL.zip");
             Console.WriteLine("解压中");

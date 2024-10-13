@@ -61,7 +61,7 @@ namespace GOILauncher.ViewModels
         {
             get => selectedGamePathNoteHide; set
             {
-                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "SelectedGamePathNoteHide");
+                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, nameof(SelectedGamePathNoteHide));
             }
         }
         public string GameVersion

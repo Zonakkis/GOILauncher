@@ -36,11 +36,11 @@ namespace GOILauncher.Models
         public bool nightMode;
         public int previewQuality;
 
-        public static Setting Instance = new Setting();
+        public static Setting Instance = new();
 
         public static void Load(string path)
         {
-            Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+            Instance = StorageHelper.LoadJSON<Setting>(path, "Settings.json");
             if(Instance.nightMode)
             {
                 Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;

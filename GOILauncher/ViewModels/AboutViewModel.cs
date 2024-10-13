@@ -30,7 +30,7 @@ namespace GOILauncher.ViewModels
 
         public async Task GetCredits()
         {
-            LCQuery<LCObject> query = new LCQuery<LCObject>("Credits");
+            LCQuery<LCObject> query = new("Credits");
             query.AddAscendingOrder("Player");
             query.Select("Player");
             ReadOnlyCollection<LCObject> credits = await query.Find();
@@ -39,7 +39,7 @@ namespace GOILauncher.ViewModels
                 Players.Add(credit["Player"] as string);
             }
         }
-        private List<string> Players { get; } = new List<string>();
+        private List<string> Players { get; } = [];
 
         public string Thanks
         {

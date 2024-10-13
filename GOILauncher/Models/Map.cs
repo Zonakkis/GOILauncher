@@ -27,19 +27,16 @@ namespace GOILauncher.Models
         {
             TotalByte = 0;
             Downloadable = true;
-            DownloadTasks = new List<Task>();
-            ReceivedBytes = Array.Empty<long>();
-            DownloadSpeeds = Array.Empty<double>();
-            DirectURLs = Array.Empty<string>();
+            DownloadTasks = [];
+            ReceivedBytes = [];
+            DownloadSpeeds = [];
+            DirectURLs = [];
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         }
         public void CheckWhetherExisted()
@@ -76,7 +73,7 @@ namespace GOILauncher.Models
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
-            var downloadService = (DownloadService)sender!;
+            //var downloadService = (DownloadService)sender!;
             TotalByte += eventArgs.TotalBytesToReceive;
             //Trace.WriteLine($"{downloadService.Package.FileName}Started.");
             //Trace.WriteLine($"总Bytes:{TotalByte}");
@@ -132,15 +129,15 @@ namespace GOILauncher.Models
             }
             if(bytes < 1024)
             {
-                return $"{bytes.ToString("0.00")}B/s";
+                return $"{bytes:0.00}B/s";
             }
             else if(bytes < 1048576)
             {
-                return $"{(bytes / 1024D).ToString("0.00")}KB/s";
+                return $"{bytes / 1024D:0.00}KB/s";
             }
             else
             {
-                return $"{(bytes / 1048576D).ToString("0.00")}MB/s";
+                return $"{bytes / 1048576D:0.00}MB/s";
             }
         }
 

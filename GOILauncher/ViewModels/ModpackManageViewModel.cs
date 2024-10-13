@@ -35,7 +35,7 @@ namespace GOILauncher.ViewModels
             WhenToDisplay[(int)goiKey.GetValue("Display On_h1489980990", 3)] = true;
             this.RaisePropertyChanged("Position[0]");
             this.RaisePropertyChanged("Position[1]");
-            this.RaisePropertyChanged("Position");
+            this.RaisePropertyChanged(nameof(Position));
             this.RaisePropertyChanged(nameof(Position));
             this.RaisePropertyChanged(nameof(SegmentsContent));
             this.RaisePropertyChanged(nameof(WhenToDisplay));
@@ -88,7 +88,7 @@ namespace GOILauncher.ViewModels
         }
         private RegistryKey goiKey;
         private bool[] position = new bool[2];
-        private bool[] Position { get => position; set => this.RaiseAndSetIfChanged(ref position, value, "Position"); }
+        private bool[] Position { get => position; set => this.RaiseAndSetIfChanged(ref position, value, nameof(Position)); }
         private bool[] SegmentsContent { get; set; } = new bool[2];
         private bool[] WhenToDisplay { get; set; } = new bool[4];
     }

@@ -81,7 +81,7 @@ namespace GOILauncher.ViewModels
                         UID = await BilibiliHelper.GetUIDFromBVID(VID!),
                         VideoPlatform = VideoPlatform,
                         VID = VID,
-                        Time = $"{Minute}分{Second.ToString("00")}.{MillionSecond.ToString("000")}秒",
+                        Time = $"{Minute}分{Second:00}.{MillionSecond:000}秒",
                         Minute = Minute,
                         Second = Second,
                         MillionSecond = MillionSecond,
@@ -97,7 +97,7 @@ namespace GOILauncher.ViewModels
 
         public async Task<bool> CheckWhetherExisted(string player, string category, string platform)
         {
-            LCQuery<PendingRun> query = new LCQuery<PendingRun>(nameof(PendingRun));
+            LCQuery<PendingRun> query = new(nameof(PendingRun));
             query.WhereEqualTo("Player", player);
             query.WhereEqualTo("Category", category);
             query.WhereEqualTo("Platform", platform);

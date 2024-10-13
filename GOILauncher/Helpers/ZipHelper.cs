@@ -18,29 +18,27 @@ namespace GOILauncher.Helpers
             {
                 File.Delete(zipName);
             }
-            List<string> zipFiles = Directory.GetFiles(path, searchPattern).ToList();
+            List<string> zipFiles = [.. Directory.GetFiles(path, searchPattern)];
             if(zipFiles.Count == 1)
             {
                 File.Move(zipFiles[0], zipName);
                 return;
             }
-            using (Stream zipStream = File.OpenWrite(Path.Combine(path, zipName)))
+            using Stream zipStream = File.OpenWrite(Path.Combine(path, zipName));
+            for (int i = 0; i < zipFiles.Count; i++)
             {
-                for (int i = 0; i < zipFiles.Count; i++)
+                using (Stream stream = File.OpenRead(zipFiles[i]))
                 {
-                    using (Stream stream = File.OpenRead(zipFiles[i]))
-                    {
-                        await Task.Run(() => stream.CopyTo(zipStream));
-                    }
-                    File.Delete(zipFiles[i]);
+                    await Task.Run(() => stream.CopyTo(zipStream));
                 }
+                File.Delete(zipFiles[i]);
             }
         }
-        public static async Task Extract(string zipPath, string destinationPath,EventHandler<ExtractProgressEventArgs> progressHandler = null)
+        public static async Task Extract(string zipPath, string destinationPath,EventHandler<ExtractProgressEventArgs>? progressHandler = null)
         {
             using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
             {
-                if(!(progressHandler is null))
+                if(progressHandler is not null)
                 {
                     zip.ExtractProgress += progressHandler;
                 }

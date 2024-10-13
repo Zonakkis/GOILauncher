@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GOILauncher.Helpers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -14,21 +15,16 @@ namespace GOILauncher.Models
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         }
         public Assembly LoadAssembly(string path)
         {
-            byte[] assemblyData = null;
+            byte[]? assemblyData = null;
             using (FileStream fileStream = File.OpenRead(path))
             {
-                using (BinaryReader binaryReader = new BinaryReader(fileStream))
-                {
-                    assemblyData = binaryReader.ReadBytes((int)fileStream.Length);
-                }
+                using BinaryReader binaryReader = new(fileStream);
+                assemblyData = binaryReader.ReadBytes((int)fileStream.Length);
             }
             return Assembly.Load(assemblyData);
         }
@@ -59,24 +55,31 @@ namespace GOILauncher.Models
         }
         public void GetModpackandLevelLoaderVersion(string gamepath)
         {
-            Assembly assembly = LoadAssembly($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-            Type modPackType = assembly.GetType("JsonConvertEx");
-            Type levelLoaderType = assembly.GetType("GOILevelImporter.ModInfo");
-            if (modPackType != null)
+            try
             {
-                ModpackVersion = "已安装";
+                Assembly assembly = LoadAssembly($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
+                Type modPackType = assembly.GetType("JsonConvertEx");
+                Type levelLoaderType = assembly.GetType("GOILevelImporter.ModInfo");
+                if (modPackType != null)
+                {
+                    ModpackVersion = "已安装";
+                }
+                else
+                {
+                    ModpackVersion = "未安装";
+                }
+                if (levelLoaderType != null)
+                {
+                    LevelLoaderVersion = (string)levelLoaderType.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
+                }
+                else
+                {
+                    LevelLoaderVersion = "未安装";
+                }
             }
-            else
+            catch(Exception ex)
             {
-                ModpackVersion = "未安装";
-            }
-            if (levelLoaderType != null)
-            {
-                LevelLoaderVersion = (string)levelLoaderType.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
-            }
-            else
-            {
-                LevelLoaderVersion = "未安装";
+                NotificationHelper.ShowNotification("获取Modpack版本失败", ex.Message, FluentAvalonia.UI.Controls.InfoBarSeverity.Error);
             }
             //尝试通过Modpack版本变化推断版本，但因为无法创建unity实例失败
             //Type type = assembly.GetType("ModPotCustomizer");
@@ -105,7 +108,6 @@ namespace GOILauncher.Models
                 Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.Unity.dll");
                 AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
                 BepInExVersion = assemblyInformationalVersionAttribute!.InformationalVersion;
-
             }
             else
             {
@@ -122,7 +124,7 @@ namespace GOILauncher.Models
             set
             {
                 gameVersion = value;
-                NotifyPropertyChanged("GameVersion");
+                NotifyPropertyChanged(nameof(GameVersion));
             }
         }
 
@@ -133,7 +135,7 @@ namespace GOILauncher.Models
             set
             {
                 modpackVersion = value;
-                NotifyPropertyChanged("ModpackVersion");
+                NotifyPropertyChanged(nameof(ModpackVersion));
 
             }
         }
@@ -145,7 +147,7 @@ namespace GOILauncher.Models
             set
             {
                 levelLoaderVersion = value;
-                NotifyPropertyChanged("LevelLoaderVersion");
+                NotifyPropertyChanged(nameof(LevelLoaderVersion));
             }
         }
 
@@ -156,10 +158,10 @@ namespace GOILauncher.Models
             set
             {
                 bepInExVersion = value;
-                NotifyPropertyChanged("BepInExVersion");
+                NotifyPropertyChanged(nameof(BepInExVersion));
             }
         }
 
-        public static GameInfo Instance = new GameInfo();
+        public static readonly GameInfo Instance = new();
     }
 }

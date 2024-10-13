@@ -26,11 +26,7 @@ namespace GOILauncher.Models
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
@@ -52,7 +48,7 @@ namespace GOILauncher.Models
             IsDownloading = true;
             DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync(DownloadURL);
             Status = "启动下载中";
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            CancellationTokenSource tokenSource = new();
             CancellationToken token = tokenSource.Token;
             await LanzouyunDownloadHelper.Download(
                     DownloadURL,
@@ -108,7 +104,7 @@ namespace GOILauncher.Models
             set
             {
                 isDownloading = value;
-                NotifyPropertyChanged("IsDownloading");
+                NotifyPropertyChanged(nameof(IsDownloading));
             }
         }
 
@@ -119,7 +115,7 @@ namespace GOILauncher.Models
             set
             {
                 isExtracting = value;
-                NotifyPropertyChanged("IsExtracting");
+                NotifyPropertyChanged(nameof(IsExtracting));
             }
         }
 
@@ -130,7 +126,7 @@ namespace GOILauncher.Models
             set
             {
                 status = value;
-                NotifyPropertyChanged("Status");
+                NotifyPropertyChanged(nameof(Status));
             }
         }
 
@@ -141,7 +137,7 @@ namespace GOILauncher.Models
             set
             {
                 progressPercentage = value;
-                NotifyPropertyChanged("ProgressPercentage");
+                NotifyPropertyChanged(nameof(ProgressPercentage));
             }
         }
     }

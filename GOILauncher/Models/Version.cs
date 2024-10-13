@@ -10,33 +10,33 @@ namespace GOILauncher.Models
     {
         public Version(int x,int y,int z)
         {
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
         }
         public Version(string version)
         {
             string[] v = version.Split('.', StringSplitOptions.RemoveEmptyEntries);
-            x = int.Parse(v[0]);
-            y = int.Parse(v[1]);
-            z = int.Parse(v[2]);
+            X = int.Parse(v[0]);
+            Y = int.Parse(v[1]);
+            Z = int.Parse(v[2]);
         }
 
 
-        int x{ get; }
-        int y{ get; }
-        int z{ get; }
+        int X{ get; }
+        int Y{ get; }
+        int Z{ get; }
 
-        public static Version Instance = new Version(0,1,1);
+        public static readonly Version Instance = new(0,1,1);
 
         public int GetVersionValue()
         {
-            return Convert.ToInt32($"{x}{y}{z}");
+            return Convert.ToInt32($"{X}{Y}{Z}");
         }
 
         public override string ToString()
         {
-            return $"{x}.{y}.{z}";
+            return $"{X}.{Y}.{Z}";
         }
 
         public static bool operator >(Version newVersion, Version oldVersion)
