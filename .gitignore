@@ -397,3 +397,6 @@ FodyWeavers.xsd
 /GOILauncherServer/Views/MapUploadView.axaml
 /GOILauncherServer/Helpers/StorageUnitHelper.cs
 /GOILauncherServer/Assets/avalonia-logo.ico
+/GOILauncherServer/App.axaml.cs
+/GOILauncherServer/Views/MainWindow.axaml.cs
+/GOILauncherServer/Views/MapUpLoadView.axaml.cs
