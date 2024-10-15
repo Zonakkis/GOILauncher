@@ -385,3 +385,4 @@ FodyWeavers.xsd
 /MapUploader/Views/PendingView.axaml
 /MapUploader/Views/PendingView.axaml.cs
 /MapUploader/Models/Speedrun.cs
+/GOILauncherServer/GOILauncherServer.csproj
