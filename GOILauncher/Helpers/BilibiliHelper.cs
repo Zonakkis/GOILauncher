@@ -12,8 +12,7 @@ namespace GOILauncher.Helpers
 {
     internal class BilibiliHelper
     {
-
-        public async static Task<string> GetUIDFromBVID(string bvid)
+        public async static Task<BlibiliResult> GetResultFromBVID(string bvid)
         {
             using HttpClient client = new();
             var response = await client.GetAsync($"https://api.bilibili.com/x/web-interface/view?bvid={bvid}");
@@ -21,59 +20,35 @@ namespace GOILauncher.Helpers
             var bilibiliResponse = JsonConvert.DeserializeObject<BilibiliResponse>(content);
             if (bilibiliResponse.code == 0)
             {
-                var videoResponse = JsonConvert.DeserializeObject<VideoResponse>(content);
-                return videoResponse.data.owner.mid.ToString();
+                return new BlibiliResult()
+                {
+                    UID = bilibiliResponse.data.owner.mid,
+                    Name = bilibiliResponse.data.owner.name
+                };
             }
             else
             {
-                return string.Empty;
+                return new BlibiliResult();
             }
         }
-
-        public async static Task<string> GetUserNameFromUID(string uid)
+        public class BilibiliResponse
         {
-            using HttpClient client = new();
-            var response = await client.GetAsync($"https://api.live.bilibili.com/live_user/v1/Master/info?uid={uid}");
-            string content = await response.Content.ReadAsStringAsync();
-            var bilibiliResponse = JsonConvert.DeserializeObject<BilibiliResponse>(content);
-            if (bilibiliResponse.code == 0)
-            {
-                var liveUserResponse = JsonConvert.DeserializeObject<LiveUserResponse>(content);
-                return liveUserResponse.data.info.uname;
-            }
-            else
-            {
-                return string.Empty;
-            }
+            public int code;
+            public Data data = new();
+        }
+        public class Data
+        {
+            public Owner owner = new();
+        }
+        public class Owner
+        {
+            public string? mid;
+            public string? name;
+        }
+        public class BlibiliResult
+        {
+            public string UID { get; set; }
+            public string? Name { get; set; }
         }
     }
-    public class BilibiliResponse
-    {
-        public int code;
-    }
-    public class VideoResponse
-    {
-        public VideoDataResponse data = new();
-    }
-    public class VideoDataResponse
-    {
-        public VideoOwnerResponse owner = new();
-    }
-    public class VideoOwnerResponse
-    {
-        public int mid;
-    }
-    public class LiveUserResponse
-    {
-        public LiveUserDataResponse data = new();
-    }
-    public class LiveUserDataResponse
-    {
-        public LiveUserInfoResponse info = new();
-    }
-    public class LiveUserInfoResponse
-    {
-        public string uname = string.Empty;
-    }
-
 }

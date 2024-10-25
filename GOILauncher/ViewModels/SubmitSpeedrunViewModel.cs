@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -78,7 +79,7 @@ namespace GOILauncher.ViewModels
                         Category = Category,
                         Platform = Platform,
                         Player = Player!,
-                        UID = await BilibiliHelper.GetUIDFromBVID(VID!),
+                        UID = (await BilibiliHelper.GetResultFromBVID(VID)).UID,
                         VideoPlatform = VideoPlatform,
                         VID = VID,
                         Time = $"{Minute}分{Second:00}.{MillionSecond:000}秒",

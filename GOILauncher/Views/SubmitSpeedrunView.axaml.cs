@@ -18,8 +18,7 @@ namespace GOILauncher.Views
         private async void InputBVIDCompleted(object? sender,RoutedEventArgs e)
         {
             TextBox? textBox = sender as TextBox;
-            Trace.WriteLine(textBox!.Text);
-            Player.Text = await BilibiliHelper.GetUserNameFromUID(await BilibiliHelper.GetUIDFromBVID(textBox.Text!));
+            Player.Text = (await BilibiliHelper.GetResultFromBVID(textBox.Text!)).Name;
         }
 
         private void Binding(object? sender, RoutedEventArgs e)
