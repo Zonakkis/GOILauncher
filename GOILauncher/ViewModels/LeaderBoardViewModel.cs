@@ -34,10 +34,16 @@ namespace GOILauncher.ViewModels
             ReadOnlyCollection<Speedrun> speedruns = await query.Find();
             for (int i = 0; i < speedruns.Count; i++)
             {
-                if (speedruns[i].VideoPlatform == "哔哩哔哩")
+                switch (speedruns[i].VideoPlatform)
                 {
-                    speedruns[i].VideoURL = $"https://www.bilibili.com/video/{speedruns[i].VID}";
-                    speedruns[i].PlayerURL = $"https://space.bilibili.com/{speedruns[i].UID}";
+                    case "哔哩哔哩":
+                        speedruns[i].VideoURL = $"https://www.bilibili.com/video/{speedruns[i].VID}";
+                        speedruns[i].PlayerURL = $"https://space.bilibili.com/{speedruns[i].UID}";
+                        break;
+                    case "YouTube":
+                        speedruns[i].VideoURL = $"https://www.youtube.com/watch?v={speedruns[i].VID}";
+                        speedruns[i].PlayerURL = $"https://www.youtube.com/channel/{speedruns[i].UID}";
+                        break;
                 }
                 speedruns[i].Rank = i + 1;
                 Speedruns.Add(speedruns[i]);
