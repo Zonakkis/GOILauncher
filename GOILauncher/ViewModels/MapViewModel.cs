@@ -31,7 +31,7 @@ namespace GOILauncher.ViewModels
 {
     internal class MapViewModel : ViewModelBase
     {
-        
+
         public MapViewModel()
         {
             hideDownloadedMap = true;
@@ -55,7 +55,11 @@ namespace GOILauncher.ViewModels
             });
             Forms = ["不限", "原创", "移植"];
             Form = Forms[0];
-            FilterSettingChanged = false;   
+            Styles = ["不限","挑战", "休闲"];
+            Style = Styles[0];
+            Difficulties = ["不限","地狱", "极难", "困难", "中等", "简单"];
+            Difficulty = Difficulties[0];
+            FilterSettingChanged = false;
         }
         public override void OnSelectedViewChanged()
         {
@@ -69,7 +73,7 @@ namespace GOILauncher.ViewModels
         public void OnSelectedMapChanged(Map map)
         {
             IsSelectedMap = (map != null);
-            if(IsSelectedMap) 
+            if (IsSelectedMap)
             {
                 CurrentMap = map!;
             }
@@ -83,7 +87,7 @@ namespace GOILauncher.ViewModels
             foreach (Map map in maps)
             {
                 LCFile file;
-                if (map.Preview != null && map.Preview != "") 
+                if (map.Preview != null && map.Preview != "")
                 {
                     file = new LCFile("Preview.png", new Uri(map.Preview));
                 }
@@ -118,10 +122,12 @@ namespace GOILauncher.ViewModels
                 {
                     continue;
                 }
-                if(Form != Forms[0] && map.Form != Form)
+                if (Form != Forms[0] && map.Form != Form)
                 {
                     continue;
                 }
+                if (Style != Styles[0] && map.Style != Style) continue;
+                if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
                 MapList.Add(map);
             }
             this.RaisePropertyChanged(nameof(MapList));
@@ -164,7 +170,7 @@ namespace GOILauncher.ViewModels
             map.Status = "合并中";
             await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
             map.Status = "解压中";
-            await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath,map.OnExtractProgressChanged);
+            await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath, map.OnExtractProgressChanged);
             NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
@@ -298,6 +304,60 @@ namespace GOILauncher.ViewModels
             {
                 FilterSettingChanged = true;
                 this.RaiseAndSetIfChanged(ref form, value, nameof(Form));
+            }
+        }
+
+        private string[] styles;
+        public string[] Styles
+        {
+            get
+            {
+                return styles;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref styles, value, nameof(Styles));
+            }
+        }
+
+        private string style;
+        public string Style
+        {
+            get
+            {
+                return style;
+            }
+            set
+            {
+                FilterSettingChanged = true;
+                this.RaiseAndSetIfChanged(ref style, value, nameof(Style));
+            }
+        }
+
+        private string[] difficulties;
+        public string[] Difficulties
+        {
+            get
+            {
+                return difficulties;
+            }
+            set
+            {
+                this.RaiseAndSetIfChanged(ref difficulties, value, nameof(Difficulties));
+            }
+        }
+
+        private string difficulty;
+        public string Difficulty
+        {
+            get
+            {
+                return difficulty;
+            }
+            set
+            {
+                FilterSettingChanged = true;
+                this.RaiseAndSetIfChanged(ref difficulty, value, nameof(Difficulty));
             }
         }
     }

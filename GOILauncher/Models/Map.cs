@@ -173,6 +173,22 @@ namespace GOILauncher.Models
                 this[nameof(Form)] = value;
             }
         }
+        public string Style
+        {
+            get => (this[nameof(Style)] as string)!;
+            set
+            {
+                this[nameof(Style)] = value;
+            }
+        }
+        public string Difficulty
+        {
+            get => (this[nameof(Difficulty)] as string)!;
+            set
+            {
+                this[nameof(Difficulty)] = value;
+            }
+        }
         private bool downloaded;
         public bool Downloaded { 
             get => downloaded;
