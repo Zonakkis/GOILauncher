@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
@@ -76,7 +77,7 @@ namespace GOILauncher.ViewModels
             }
             value.View.OnSelectedViewChanged();
         }
-
+        public static HttpClient HttpClient { get; private set; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
         public ViewModelBase CurrentView
         {
             get

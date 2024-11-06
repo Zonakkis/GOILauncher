@@ -1,5 +1,7 @@
 ﻿using Downloader;
+using DynamicData;
 using GOILauncher.Models;
+using GOILauncher.ViewModels;
 using LC.Newtonsoft.Json;
 using LC.Newtonsoft.Json.Linq;
 using Microsoft.VisualBasic;
@@ -13,7 +15,9 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Runtime.InteropServices.Marshalling;
+using System.Security.Policy;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,32 +25,8 @@ namespace GOILauncher.Helpers
 {
     internal class LanzouyunDownloadHelper
     {
-        public static string prefix = string.Empty;
-        public static async Task DownloadMap(string url,string path,Map map,int id)
-        {
-            WebClient webClient = new()
-            {
-                Credentials = CredentialCache.DefaultCredentials
-            };
-            //webClient.DownloadFileCompleted += DownloadFileCallback;
-            //webClient.DownloadProgressChanged += map.OnDownloadProgressChanged;
-            webClient.DownloadFileCompleted += map.OnDownloadCompleted;
-            webClient.Headers.Add("ID", id.ToString());
-            webClient.CachePolicy = new System.Net.Cache.RequestCachePolicy(System.Net.Cache.RequestCacheLevel.NoCacheNoStore);
-            await webClient.DownloadFileTaskAsync(url, path);
-
-            //using (HttpClient httpClient = new HttpClient())
-            //{
-            //    using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead))
-            //    {
-            //        using(var download = await response.Content.ReadAsStreamAsync())
-            //        {
-            //            await download.CopyToAsync(new FileStream(path,FileMode.Create),104857600);
-            //        }
-            //    }
-            //}
-        }
-
+        public static string prefix { get; set; } = string.Empty;
+        public static HttpClient HttpClient => MainWindowViewModel.HttpClient;
         public static async Task Download(string url,string fileName,EventHandler<DownloadStartedEventArgs> downloadStartedEvent, EventHandler<Downloader.DownloadProgressChangedEventArgs> downloadProgressChangedEventArgs, EventHandler<AsyncCompletedEventArgs>? downloadCompletedEvent,CancellationToken cancellationToken = default)
         {
             var downloadOpt = new DownloadConfiguration()
@@ -70,106 +50,56 @@ namespace GOILauncher.Helpers
             await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
         }
 
-        public static async Task<string> GetDirectURLAsync(string URL)
+        public static async Task<string> GetDirectURLAsync(string code)
         {
-            //string url1;
-            //string url2;
-            //string url3;
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    using (HttpResponseMessage httpResponse = client.GetAsync(LanzouyunURL).Result)
-            //    {
-            //        using (HttpContent content = httpResponse.Content)
-            //        {
-            //            url2 = content.ReadAsStringAsync().Result.Split(new string[] { "src=\"", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries)[3];
-            //            url2 = $"https://wwn.lanzouv.com{url2}";
-            //            Trace.WriteLine(url2);
-            //        }
-            //    }
-            //}
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    using (HttpResponseMessage httpResponse = client.GetAsync(url2).Result)
-            //    {
-            //        using (HttpContent content = httpResponse.Content)
-            //        {
-            //            url1 = content.ReadAsStringAsync().Result.Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
-            //            Trace.WriteLine($"{url1}");
-            //        }
-            //    }
-            //}
-            //using (HttpClientHandler handler = new HttpClientHandler { UseDefaultCredentials = true })
-            //{
-            //    using (HttpClient client = new HttpClient(handler))
-            //    {
-            //        client.DefaultRequestHeaders.Referrer = new Uri(url2);
-            //        url1 = $"action=downprocess&sign={url1}&ves=1";
-            //        byte[] bytess = Encoding.UTF8.GetBytes(url1);
-            //        await client.PostAsync("https://wwn.lanzouv.com/ajaxm.php", new StringContent(url1));
-            //        HttpResponseMessage response = (await client.GetAsync("https://wwn.lanzouv.com/ajaxm.php"));
-            //        StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync(), Encoding.GetEncoding("UTF-8"));
-            //        url3 = sr.ReadToEnd().Replace("\\/", "/");
-            //        Trace.Write(url3);
-            //    }
-            //    using (HttpClientHandler handler1 = new HttpClientHandler { UseDefaultCredentials = true })
-            //    {
-            //        using (HttpClient client = new HttpClient(handler))
-            //        {
-            //            client.DefaultRequestHeaders.Add("Method", "HEAD");
-            //            client.DefaultRequestHeaders.Add("AllowAutoRedirect", "false");
-            //            HttpContent rm = (await client.GetAsync(url3.Substring(url3.Length - url3.Length + 15, url3.Length - 25).Replace("\",\"url\":\"", "/file/"))).Content;
-            //            return rm.Headers.GetValues("location").ToString();
-            //        }
-            //    }
-
-            //}
-
-            //string text = new HttpClient().DownloadString(LanzouURL).Split(new string[] { "src=" }, StringSplitOptions.RemoveEmptyEntries)[2].Substring(1, 108);
-
-            using WebClient webClient = new();
             try
             {
-                string[] htmlSource = (await webClient.DownloadStringTaskAsync($"{prefix}/{URL}")).Split(new string[] { "/fn?", "\" frameborder" }, StringSplitOptions.RemoveEmptyEntries);
-                string url = $"{prefix}/fn?{htmlSource[^2]}";
-                Trace.WriteLine(url);
-                string sign = (await webClient.DownloadStringTaskAsync(url)).Split(new string[] { "'sign':'" }, StringSplitOptions.RemoveEmptyEntries)[1].Split(new string[] { "','" }, StringSplitOptions.RemoveEmptyEntries)[0];
-                Trace.WriteLine(sign);
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create($"{prefix}/ajaxm.php");
-                httpWebRequest.Method = "POST";
-                httpWebRequest.Accept = "application/json, text/javascript, */*";
-                httpWebRequest.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
-                httpWebRequest.Referer = url;
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36";
-                string content = $"action=downprocess&sign={sign}&ves=1";
-                byte[] bytes = Encoding.UTF8.GetBytes(content);
-                (await httpWebRequest.GetRequestStreamAsync()).Write(bytes, 0, bytes.Length);
-                using Stream responseStream = ((HttpWebResponse)await httpWebRequest.GetResponseAsync()).GetResponseStream();
-                using StreamReader streamReader = new(responseStream, Encoding.GetEncoding("UTF-8"));
-                string responseString = streamReader.ReadToEnd().Replace("\\/", "/");
-                Trace.WriteLine(responseString);
-                LanzouResponse response = JsonConvert.DeserializeObject<LanzouResponse>(responseString);
-                HttpWebRequest httpWebRequest2 = (HttpWebRequest)WebRequest.Create($"{response.dom}/file/{response.url}");
-                httpWebRequest2.Method = "HEAD";
-                httpWebRequest2.AllowAutoRedirect = false;
-                httpWebRequest2.Headers.Add("accept-language", "zh-CN,zh;q=0.9,ko;q=0.8");
-                WebResponse webResponse = await Task.Run(() => httpWebRequest2.GetResponse());
-                string[] allKeys = webResponse.Headers.AllKeys;
-                string directURL = webResponse.Headers.Get("Location")!;
-                Trace.WriteLine(directURL);
-                return directURL!;
+                string url = $"{prefix}/{code}";
+                url = await GetDownloadPage(url);
+                string sign = await GetSign(url);
+                LanzouResponse lanzouResponse = await GetLanzouResponse(url , sign);
+                return await GetRealURL($"{lanzouResponse.dom}/file/{lanzouResponse.url}");
             }
             catch (Exception ex)
             {
+                NotificationHelper.ShowNotification("发生错误！", $"获取直链失败：{ex.Message}", FluentAvalonia.UI.Controls.InfoBarSeverity.Error);
                 Trace.WriteLine($"获取直链失败：{ex.Message}");
-                return await GetDirectURLAsync(URL);
+                return await GetDirectURLAsync(code);
             }
         }
-
+        public static async Task<string> GetDownloadPage(string url)
+        {
+            string content1 = await HttpClient.GetStringAsync(url);
+            string regex = "\"/(fn\\?.*?)\"";
+            return $"{prefix}/{Regex.Match(content1, regex).Groups[1].Value}";
+        }
+        public static async Task<string> GetSign(string url)
+        {
+            string content = await HttpClient.GetStringAsync(url);
+            string regex = "'sign':'(.*?)'";
+            return Regex.Match(content, regex).Groups[1].Value;
+        }
+        public static async Task<LanzouResponse> GetLanzouResponse(string referer,string sign)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{prefix}/ajaxm.php");
+            request.Headers.Accept.ParseAdd("application/json, text/javascript, */*");
+            request.Headers.AcceptLanguage.ParseAdd("zh-CN,zh;q=0.9,ko;q=0.8");
+            request.Headers.Referrer = new Uri(referer);
+            request.Headers.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.198 Safari/537.36");
+            request.Content = new StringContent($"action=downprocess&sign={sign}&ves=1", Encoding.UTF8, "application/x-www-form-urlencoded");
+            HttpResponseMessage response = await HttpClient.SendAsync(request);
+            HttpContent content = response.Content;
+            string data = (await content.ReadAsStringAsync()).Replace("\\/", "/");
+            return JsonConvert.DeserializeObject<LanzouResponse>(data);
+        }
+        public static async Task<string> GetRealURL(string url)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Head, url);
+            request.Headers.AcceptLanguage.ParseAdd("zh-CN,zh;q=0.9,ko;q=0.8");
+            var response = await HttpClient.SendAsync(request);
+            return response.Headers.Location.OriginalString;
+        }
     }
-
-
-
     public class LanzouResponse
     {
         public int zt;

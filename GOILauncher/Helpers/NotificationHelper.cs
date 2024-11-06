@@ -21,7 +21,7 @@ namespace GOILauncher.Helpers
             };
             await contentDialog.ShowAsync();
         }
-        public async static Task ShowNotification(string title, string message,InfoBarSeverity severity)
+        public async static void ShowNotification(string title, string message,InfoBarSeverity severity)
         {
             NotificationBar!.Title = title;
             NotificationBar.Message = message;
