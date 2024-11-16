@@ -9,11 +9,6 @@
 			 x:DataType="vm:PendingViewModel"
              FontSize="20"
 			 >
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid>
 		<DataGrid ItemsSource="{Binding PendingRuns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
 			<DataGrid.Columns>

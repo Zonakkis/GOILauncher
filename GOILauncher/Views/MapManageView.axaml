@@ -9,11 +9,6 @@
 			 x:DataType="vm:MapManageViewModel"
              FontSize="20"
 			 >
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid RowDefinitions="*,auto">
 		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" Focusable="False" CanUserResizeColumns="True"  >
 			<DataGrid.Columns>

@@ -7,11 +7,6 @@
              xmlns:vm="using:GOILauncher.ViewModels"
              x:Class="GOILauncher.Views.AboutView"
 	         x:DataType="vm:AboutViewModel">
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid RowDefinitions="auto,auto,auto,auto,*">
 		<Image Grid.Row="0" Source="/Assets/GOIL.ico" Width="200" Margin="0,50,0,0"/>
 		<TextBlock Grid.Row="1" Text="{Binding GOILVerison}" FontWeight="Bold" HorizontalAlignment="Center" FontSize="20"/>

@@ -10,11 +10,6 @@
 			 x:DataType="vm:SubmitSpeedrunViewModel"
              FontSize="20"
 			>
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid>
 		<Grid IsVisible="{Binding SelectSpeedrunType}">
 			<Button Command="{Binding ToggleView}" Content="提交速通" Width="120" Height="60" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="200,0,0,0">

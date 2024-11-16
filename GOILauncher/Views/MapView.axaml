@@ -9,12 +9,6 @@
              x:Class="GOILauncher.Views.MapView"
              x:DataType="vm:MapViewModel"
              FontSize="20">
-
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid ColumnDefinitions="480,*">
 		<Grid Grid.Column="0" RowDefinitions="auto,auto,*">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">

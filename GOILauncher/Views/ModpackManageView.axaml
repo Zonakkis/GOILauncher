@@ -9,11 +9,6 @@
 			 x:DataType="vm:ModpackManageViewModel"
 			 FontSize="20"
 			 >
-	<UserControl.Styles>
-		<Style Selector=":is(ContentControl)">
-			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-		</Style>
-	</UserControl.Styles>
 	<Grid>
 		<Expander Header="计时器" IsExpanded="True" Margin="10,10">
 			<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto">

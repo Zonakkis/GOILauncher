@@ -14,10 +14,7 @@
 	<Application.Styles>
 		<Styles>
 			<sty:FluentAvaloniaTheme/>
-			<Style Selector="ui|ContentDialog TextBlock">
-				<Setter Property="FontFamily" Value="Microsoft YaHei"/>
-			</Style>
-			<Style Selector="AccessText">
+			<Style Selector="TextBlock:not(#Icon)">
 				<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 			</Style>
 		</Styles>
