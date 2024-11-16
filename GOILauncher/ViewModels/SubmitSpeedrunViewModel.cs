@@ -25,10 +25,6 @@ namespace GOILauncher.ViewModels
         {
             VID = string.Empty;
             Player = string.Empty;
-        }
-        public override void Init()
-        {
-            LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
             SelectSpeedrunType = true;
             Categories = ["Glitchless", "Snake"];
             Platforms = ["PC", "Android", "iOS"];
@@ -36,6 +32,10 @@ namespace GOILauncher.ViewModels
             Category = Categories[0];
             Platform = Platforms[0];
             VideoPlatform = VideoPlatforms[0];
+        }
+        public override void Init()
+        {
+            LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
         }
         public void ToggleView(int para)
         {

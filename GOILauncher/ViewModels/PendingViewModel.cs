@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,6 @@ namespace GOILauncher.ViewModels
         public override void Init()
         {
             LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
-            PendingRuns = new ObservableCollection<PendingRun>();
         }
         public override void OnSelectedViewChanged()
         {
@@ -28,12 +28,12 @@ namespace GOILauncher.ViewModels
         }
         public async Task GetPendingRuns()
         {
-            LCQuery<PendingRun> query = new LCQuery<PendingRun>(nameof(PendingRun));
+            LCQuery<PendingRun> query = new(nameof(PendingRun));
             if(await query.Count() == PendingRuns.Count)
             {
                 return;
             }
-            PendingRuns = new ObservableCollection<PendingRun>();
+            PendingRuns = [];
             ReadOnlyCollection<PendingRun> pendingRuns = await query.Find();
             foreach (PendingRun pendingRun in pendingRuns)
             {
@@ -44,9 +44,9 @@ namespace GOILauncher.ViewModels
                 }
                 PendingRuns.Add(pendingRun);
             }
-            this.RaisePropertyChanged("PendingRuns");
+            this.RaisePropertyChanged(nameof(PendingRuns));
         }
 
-        public ObservableCollection<PendingRun> PendingRuns { get; set; }
+        public ObservableCollection<PendingRun> PendingRuns { get; private set; } = [];
     }
 }

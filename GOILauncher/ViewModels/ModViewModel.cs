@@ -49,7 +49,7 @@ namespace GOILauncher.ViewModels
         }
         private async void GetModpacks()
         {
-            LCQuery<Modpack> query = new LCQuery<Modpack>("Modpack");
+            LCQuery<Modpack> query = new("Modpack");
             ReadOnlyCollection<Modpack> modpacks = await query.Find();
             foreach (Modpack modpack in modpacks)
             {
@@ -58,7 +58,7 @@ namespace GOILauncher.ViewModels
         }
         private async void GetLevelLoaders()
         {
-            LCQuery<LevelLoader> query = new LCQuery<LevelLoader>("LevelLoader");
+            LCQuery<LevelLoader> query = new("LevelLoader");
             ReadOnlyCollection<LevelLoader> levelLoaders = await query.Find();
             foreach (LevelLoader levelLoader in levelLoaders)
             {
@@ -67,7 +67,7 @@ namespace GOILauncher.ViewModels
         }
         private async void GetModpackandLevelLoaders()
         {
-            LCQuery<ModpackandLevelLoader> query = new LCQuery<ModpackandLevelLoader>("ModpackandLevelLoader");
+            LCQuery<ModpackandLevelLoader> query = new("ModpackandLevelLoader");
             ReadOnlyCollection<ModpackandLevelLoader> modpackandLevelLoaders = await query.Find();
             foreach (ModpackandLevelLoader modpackandLevelLoader in modpackandLevelLoaders)
             {
@@ -76,17 +76,17 @@ namespace GOILauncher.ViewModels
         }
         private async void GetOtherMods()
         {
-            LCQuery<OtherMod> query = new LCQuery<OtherMod>(nameof(OtherMod));
+            LCQuery<OtherMod> query = new(nameof(OtherMod));
             ReadOnlyCollection<OtherMod> otherMods = await query.Find();
             foreach (OtherMod otherMod in otherMods)
             {
                 OtherMods.Add(otherMod);
             }
         }
-        public ObservableCollection<Modpack> Modpacks { get; } = new ObservableCollection<Modpack>(); 
-        public ObservableCollection<LevelLoader> LevelLoaders { get; } = new ObservableCollection<LevelLoader>();
-        public ObservableCollection<ModpackandLevelLoader> ModpackandLevelLoaders { get; } = new ObservableCollection<ModpackandLevelLoader>();
-        public ObservableCollection<OtherMod> OtherMods { get; } = new ObservableCollection<OtherMod>();
+        public ObservableCollection<Modpack> Modpacks { get; } = []; 
+        public ObservableCollection<LevelLoader> LevelLoaders { get; } = [];
+        public ObservableCollection<ModpackandLevelLoader> ModpackandLevelLoaders { get; } = [];
+        public ObservableCollection<OtherMod> OtherMods { get; } = [];
         [Reactive]
         public bool SelectedGamePathNoteHide { get; set; }
     }

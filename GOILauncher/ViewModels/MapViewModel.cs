@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -34,6 +35,7 @@ namespace GOILauncher.ViewModels
     {
         public MapViewModel()
         {
+            CurrentMap = new();
             hideDownloadedMap = true;
             SelectedLevelPathNoteHide = LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）";
             Setting.LevelPathChanged += () =>
@@ -41,12 +43,19 @@ namespace GOILauncher.ViewModels
                 SelectedLevelPathNoteHide = true;
                 this.RaisePropertyChanged(nameof(LevelPath));
             };
-            var isApplyFilterSettingValid = this.WhenAnyValue(x => x.FilterSettingChanged,
-                                                x => x == true);
+            var isApplyFilterSettingValid = this.WhenAnyValue(x => x.FilterSettingChanged);
             ApplyFilterSettingCommand = ReactiveCommand.Create(ApplyFilterSetting, isApplyFilterSettingValid);
             var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
                     x => x != "未选择（选择游戏路径后自动选择，也可手动更改）");
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
+            Forms = ["不限", "原创", "移植"];
+            Form = Forms[0];
+            Styles = ["不限", "挑战", "休闲"];
+            Style = Styles[0];
+            Difficulties = ["不限", "地狱", "极难", "困难", "中等", "简单"];
+            Difficulty = Difficulties[0];
+            LastUpdateTime = "未知";
+            Search = string.Empty;
         }
         public override void Init()
         {
@@ -59,12 +68,6 @@ namespace GOILauncher.ViewModels
                 LCObject.RegisterSubclass("Map", () => new Map());
                 GetMaps();
             });
-            Forms = ["不限", "原创", "移植"];
-            Form = Forms[0];
-            Styles = ["不限","挑战", "休闲"];
-            Style = Styles[0];
-            Difficulties = ["不限","地狱", "极难", "困难", "中等", "简单"];
-            Difficulty = Difficulties[0];
             FilterSettingChanged = false;
         }
         public override void OnSelectedViewChanged()
@@ -111,7 +114,6 @@ namespace GOILauncher.ViewModels
             query.OrderByDescending("updatedAt");
             query.Select("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
-            this.RaisePropertyChanged(nameof(LastUpdateTime));
         }
         public void ApplyFilterSetting()
         {
@@ -139,11 +141,12 @@ namespace GOILauncher.ViewModels
         }
         public void SearchMap()
         {
-            Map map = MapList.ToList().Find(t => t.Name == Search);
+            Map? map = MapList.ToList().Find(t => t.Name == Search);
             SelectedMap = map;
         }
         public async void Download()
         {
+            if (SelectedMap == null) return;
             Map map = SelectedMap;
             map.Downloadable = false;
             CancellationTokenSource tokenSource = new();
@@ -189,16 +192,16 @@ namespace GOILauncher.ViewModels
         public bool IsSelectedMap { get; set; }
         public ObservableCollection<Map> AllMaps { get; } = [];
         public ObservableCollection<Map> MapList { get; set; } = [];
+        [Reactive]
         public string LastUpdateTime { get; set; }
 
-        private Map selectedMap;
-        [Reactive]
-        public Map SelectedMap
+        private Map? selectedMap;
+        public Map? SelectedMap
         {
             get => selectedMap;
             set
             {
-                OnSelectedMapChanged(value);
+                OnSelectedMapChanged(value!);
                 this.RaiseAndSetIfChanged(ref selectedMap, value, nameof(SelectedMap));
             }
         }
@@ -218,6 +221,7 @@ namespace GOILauncher.ViewModels
             get => hideDownloadedMap;
             set
             {
+                if (HideDownloadedMap == value) return;
                 FilterSettingChanged = true;
                 this.RaiseAndSetIfChanged(ref hideDownloadedMap, value, nameof(HideDownloadedMap));
             }
@@ -227,24 +231,41 @@ namespace GOILauncher.ViewModels
         public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; set; }
         [Reactive]
         public string[] Forms { get; set; }
-        [Reactive]
-        public string Form { get; set; }
+        public string form = "不限";
+        public string Form
+        {
+            get => form;
+            set
+            {
+                if (value is not string val || val == Form) return;
+                FilterSettingChanged = true;
+                this.RaiseAndSetIfChanged(ref form, value, nameof(Form));
+            }
+        }
         [Reactive]
         public string[] Styles { get; set; }
-        [Reactive]
-        public string Style { get; set; }
+        private string style = "不限";
+        public string Style
+        {
+            get => style;
+            set
+            {
+                if (value is not string val || val == Style) return;
+                FilterSettingChanged = true;
+                this.RaiseAndSetIfChanged(ref style, value, nameof(Style));
+            }
+        }
         [Reactive]
         public string[] Difficulties { get; set; }
 
-        private string difficulty;
+        private string difficulty = "不限";
+
         public string Difficulty
         {
-            get
-            {
-                return difficulty;
-            }
+            get => difficulty;
             set
             {
+                if (value is not string val || val == Difficulty) return;
                 FilterSettingChanged = true;
                 this.RaiseAndSetIfChanged(ref difficulty, value, nameof(Difficulty));
             }

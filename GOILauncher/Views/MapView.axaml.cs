@@ -16,10 +16,9 @@ namespace GOILauncher.Views
 
         bool SearchEmployees(string search, object value)
         {
-            Map emp = value as Map;
-            if (emp != null)
+            if (value is Map emp)
             {
-                if (emp.Name.Contains(search,System.StringComparison.OrdinalIgnoreCase))
+                if (emp.Name.Contains(search, System.StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }

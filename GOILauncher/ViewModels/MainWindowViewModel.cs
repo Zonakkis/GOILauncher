@@ -21,24 +21,7 @@ namespace GOILauncher.ViewModels
         public MainWindowViewModel()
         {
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
-            LCLogger.LogDelegate = (LCLogLevel level, string info) =>
-            {
-                switch (level)
-                {
-                    case LCLogLevel.Debug:
-                        Trace.WriteLine($"[DEBUG] {DateTime.Now} {info}\n");
-                        break;
-                    case LCLogLevel.Warn:
-                        Trace.WriteLine($"[WARNING] {DateTime.Now} {info}\n");
-                        break;
-                    case LCLogLevel.Error:
-                        Trace.WriteLine($"[ERROR] {DateTime.Now} {info}\n");
-                        break;
-                    default:
-                        Trace.WriteLine(info);
-                        break;
-                }
-            };
+            //EnableLeanCloudLog();
             Views = [
                 new(typeof(GameViewModel), "游戏"),
                 new(typeof(ModViewModel), "Mod"),
@@ -62,8 +45,29 @@ namespace GOILauncher.ViewModels
             ];
             SelectedPage = Views[0];
         }
-
-
+#if DEBUG
+        private void EnableLeanCloudLog()
+        {
+            LCLogger.LogDelegate = (LCLogLevel level, string info) =>
+            {
+                switch (level)
+                {
+                    case LCLogLevel.Debug:
+                        Trace.WriteLine($"[DEBUG] {DateTime.Now} {info}\n");
+                        break;
+                    case LCLogLevel.Warn:
+                        Trace.WriteLine($"[WARNING] {DateTime.Now} {info}\n");
+                        break;
+                    case LCLogLevel.Error:
+                        Trace.WriteLine($"[ERROR] {DateTime.Now} {info}\n");
+                        break;
+                    default:
+                        Trace.WriteLine(info);
+                        break;
+                }
+            };
+        }
+#endif
         public void OnSelectedPageChanged(Page value)
         {
             CurrentView = value.View;
@@ -85,8 +89,8 @@ namespace GOILauncher.ViewModels
             }
             set
             {
-                OnSelectedPageChanged(value);
                 this.RaiseAndSetIfChanged(ref selectedView, value, "SelectedView");
+                OnSelectedPageChanged(value);
             }
         }
 
