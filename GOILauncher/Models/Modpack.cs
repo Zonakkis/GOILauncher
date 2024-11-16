@@ -57,7 +57,7 @@ namespace GOILauncher.Models
             CancellationToken token = tokenSource.Token;
             await LanzouyunDownloadHelper.Download(
                     DownloadURL,
-                    $"{Setting.Instance.downloadPath}/{nameof(Modpack)}{Build}.zip",
+                    $"{Setting.Instance.DownloadPath}/{nameof(Modpack)}{Build}.zip",
                     OnDownloadStarted,
                     OnDownloadProgressChanged,
                     null,
@@ -65,8 +65,8 @@ namespace GOILauncher.Models
                     );
             IsExtracting = true;
             Status = "解压中";
-            await ZipHelper.Extract($"{Setting.Instance.downloadPath}/{nameof(Modpack)}{Build}.zip", Setting.Instance.gamePath);
-            GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.gamePath);
+            await ZipHelper.Extract($"{Setting.Instance.DownloadPath}/{nameof(Modpack)}{Build}.zip", Setting.Instance.GamePath);
+            GameInfo.Instance.GetModpackandLevelLoaderVersion(Setting.Instance.GamePath);
             IsExtracting = false;
             IsDownloading = false;
             await NotificationHelper.ShowContentDialog("提示", $"已经安装{nameof(Modpack)}{Build}！");

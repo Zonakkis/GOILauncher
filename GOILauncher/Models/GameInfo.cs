@@ -10,13 +10,15 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    public class GameInfo: INotifyPropertyChanged
+    public class GameInfo
     {
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
+        public event Action? Refreshed;
+        public void Refresh(string gamepath)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
+            GetGameVersion(new FileInfo($"{gamepath}/GettingOverIt.exe").Length);
+            GetModpackandLevelLoaderVersion(gamepath);
+            GetBepinExVersion(gamepath);
+            Refreshed?.Invoke();
         }
         public Assembly LoadAssembly(string path)
         {
@@ -117,50 +119,10 @@ namespace GOILauncher.Models
             }
         }
 
-        private string gameVersion;
-        public string GameVersion
-        {
-            get => gameVersion;
-            set
-            {
-                gameVersion = value;
-                NotifyPropertyChanged(nameof(GameVersion));
-            }
-        }
-
-        private string modpackVersion;
-        public string ModpackVersion
-        {
-            get => modpackVersion; 
-            set
-            {
-                modpackVersion = value;
-                NotifyPropertyChanged(nameof(ModpackVersion));
-
-            }
-        }
-
-        private string levelLoaderVersion;
-        public string LevelLoaderVersion
-        {
-            get => levelLoaderVersion; 
-            set
-            {
-                levelLoaderVersion = value;
-                NotifyPropertyChanged(nameof(LevelLoaderVersion));
-            }
-        }
-
-        private string bepInExVersion;
-        public string BepInExVersion
-        {
-            get => bepInExVersion; 
-            set
-            {
-                bepInExVersion = value;
-                NotifyPropertyChanged(nameof(BepInExVersion));
-            }
-        }
+        public string GameVersion { get; private set; } = string.Empty;
+        public string ModpackVersion { get; private set; } = string.Empty;
+        public string LevelLoaderVersion { get; private set; } = string.Empty;
+        public string BepInExVersion { get; private set; } = string.Empty;
 
         public static readonly GameInfo Instance = new();
     }

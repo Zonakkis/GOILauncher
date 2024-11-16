@@ -61,9 +61,9 @@ namespace GOILauncher.ViewModels
         {
             Maps = new ObservableCollection<Map>();
             SelectedCount = 0;
-            if (Directory.Exists(Setting.Instance.levelPath))
+            if (Directory.Exists(Setting.Instance.LevelPath))
             {
-                foreach (string file in Directory.GetFiles(Setting.Instance.levelPath))
+                foreach (string file in Directory.GetFiles(Setting.Instance.LevelPath))
                 {
                     if (file.EndsWith(".scene"))
                     {
@@ -161,7 +161,7 @@ namespace GOILauncher.ViewModels
 
             public void Delete()
             {
-                foreach(var path in Directory.GetFiles($"{Setting.Instance.levelPath}/").Where(filename => filename.Contains(Name)))
+                foreach(var path in Directory.GetFiles($"{Setting.Instance.LevelPath}/").Where(filename => filename.Contains(Name)))
                 {
                     File.Delete(path);
                 }

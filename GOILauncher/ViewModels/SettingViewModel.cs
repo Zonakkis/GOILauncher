@@ -113,75 +113,68 @@ namespace GOILauncher.ViewModels
                 DownloadPath = path;
             }
         }
+        private static Setting Setting => Setting.Instance;
         public string GamePath
         {
-            get => Setting.Instance.gamePath;
+            get => Setting.GamePath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.gamePath, value,nameof(GamePath));
-                Setting.Instance.Save();
+                Setting.GamePath = value;
+                this.RaisePropertyChanged(nameof(GamePath));
             }
         }
         public string LevelPath
         {
-            get => Setting.Instance.levelPath;
+            get => Setting.LevelPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.levelPath, value, nameof(LevelPath));
-                Setting.Instance.Save();
+                Setting.LevelPath = value;
+                this.RaisePropertyChanged(nameof(LevelPath));
             }
         }
         public string SteamPath
         {
-            get => Setting.Instance.steamPath;
+            get => Setting.SteamPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.steamPath, value, nameof(SteamPath));
-                Setting.Instance.Save();
+                Setting.SteamPath = value;
+                this.RaisePropertyChanged(nameof(SteamPath));
             }
         }
         public string DownloadPath
         {
-            get => Setting.Instance.downloadPath;
+            get => Setting.DownloadPath;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.downloadPath, value, nameof(DownloadPath));
-                Setting.Instance.Save();
+                Setting.DownloadPath = value;
+                this.RaisePropertyChanged(nameof(DownloadPath));
             }
         }
         public bool SaveMapZip
         {
-            get => Setting.Instance.saveMapZip;
+            get => Setting.SaveMapZip;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.saveMapZip, value, nameof(SaveMapZip));
-                Setting.Instance.Save();
+                Setting.SaveMapZip = value;
+                this.RaisePropertyChanged(nameof(SaveMapZip));
             }
         }
         public bool NightMode
         {
-            get => Setting.Instance.nightMode;
+            get => Setting.NightMode;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.nightMode, value, nameof(NightMode));
-                Task.Run(Setting.Instance.Save);
-                if(value)
-                {
-                    Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
-                }
-                else
-                {
-                    Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Light;
-                }
+                Setting.NightMode = value;
+                this.RaisePropertyChanged(nameof(NightMode));
             }
         }
         public int PreviewQuality
         {
-            get => Setting.Instance.previewQuality;
+            get => Setting.PreviewQuality;
             set
             {
-                this.RaiseAndSetIfChanged(ref Setting.Instance.previewQuality, value, nameof(PreviewQuality));
-                Setting.Instance.Save();
+                Setting.PreviewQuality = value;
+                this.RaisePropertyChanged(nameof(PreviewQuality));
             }
         }
     }

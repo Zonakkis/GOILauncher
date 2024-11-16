@@ -41,9 +41,9 @@ namespace GOILauncher.Models
         }
         public void CheckWhetherExisted()
         {
-            if (!IsDownloading && Setting.Instance.levelPath != "未选择（选择游戏路径后自动选择，也可手动更改）") 
+            if (!IsDownloading && Setting.Instance.LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）") 
             {
-                if(File.Exists($"{Setting.Instance.levelPath}/{Name}.scene"))
+                if(File.Exists($"{Setting.Instance.LevelPath}/{Name}.scene"))
                 {
                     Downloaded = true;
                     Downloadable = false;

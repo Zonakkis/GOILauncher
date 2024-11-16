@@ -41,7 +41,7 @@ namespace GOILauncher.ViewModels
         }
         public override void OnSelectedViewChanged()
         {
-            if(!SelectedGamePathNoteHide && Setting.Instance.gamePath != "未选择")
+            if(!SelectedGamePathNoteHide && Setting.Instance.GamePath != "未选择")
             {
                 SelectedGamePathNoteHide = true;
             }

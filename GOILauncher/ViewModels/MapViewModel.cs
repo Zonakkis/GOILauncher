@@ -31,15 +31,20 @@ namespace GOILauncher.ViewModels
 {
     internal class MapViewModel : ViewModelBase
     {
-
         public MapViewModel()
         {
             hideDownloadedMap = true;
+            SelectedLevelPathNoteHide = LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）";
+            Setting.LevelPathChanged += () =>
+            {
+                SelectedLevelPathNoteHide = true;
+                this.RaisePropertyChanged(nameof(LevelPath));
+            };
             var isApplyFilterSettingValid = this.WhenAnyValue(x => x.FilterSettingChanged,
                                                 x => x == true);
             ApplyFilterSettingCommand = ReactiveCommand.Create(ApplyFilterSetting, isApplyFilterSettingValid);
             var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
-                                                x => x[0] != '未');
+                    x => x != "未选择（选择游戏路径后自动选择，也可手动更改）");
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
         }
         public override void Init()
@@ -63,7 +68,6 @@ namespace GOILauncher.ViewModels
         }
         public override void OnSelectedViewChanged()
         {
-            LevelPath = Setting.Instance.levelPath;
             foreach (var map in AllMaps)
             {
                 map.CheckWhetherExisted();
@@ -83,7 +87,7 @@ namespace GOILauncher.ViewModels
             LCQuery<Map> query = new("Map");
             query.OrderByAscending("Name");
             ReadOnlyCollection<Map> maps = await query.Find();
-            bool levelPathExisted = (LevelPath != "未选择");
+            bool levelPathExisted = (LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）");
             foreach (Map map in maps)
             {
                 LCFile file;
@@ -99,7 +103,7 @@ namespace GOILauncher.ViewModels
                 {
                     map.CheckWhetherExisted();
                 }
-                map.Preview = file.GetThumbnailUrl((int)(19.2 * Setting.Instance.previewQuality), (int)(10.8 * Setting.Instance.previewQuality));
+                map.Preview = file.GetThumbnailUrl((int)(19.2 * PreviewQuality), (int)(10.8 * PreviewQuality));
                 AllMaps.Add(map);
             }
             await Task.Run(RefreshMapList);
@@ -239,24 +243,10 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref selectedLevelPathNoteHide, value, nameof(SelectedLevelPathNoteHide));
             }
         }
-
-        public string levelPath = "未选择";
-        public string LevelPath
-        {
-            get => Setting.Instance.levelPath;
-            set
-            {
-                if (value[0] != '未')
-                {
-                    this.RaiseAndSetIfChanged(ref levelPath, value, nameof(LevelPath));
-                    SelectedLevelPathNoteHide = true;
-                }
-            }
-        }
-        public string DownloadPath
-        {
-            get => Setting.Instance.downloadPath;
-        }
+        private Setting Setting { get; } = Setting.Instance;
+        private string LevelPath => Setting.LevelPath;
+        private string DownloadPath => Setting.DownloadPath;
+        private int PreviewQuality => Setting.PreviewQuality;
 
         private bool hideDownloadedMap;
         public bool HideDownloadedMap

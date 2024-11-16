@@ -19,10 +19,6 @@ namespace GOILauncher.ViewModels
     {
         public MainWindowViewModel()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
-            {
-                Setting.Load(System.AppDomain.CurrentDomain.BaseDirectory);
-            }
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
             LCLogger.LogDelegate = (LCLogLevel level, string info) =>
             {

@@ -48,10 +48,12 @@ namespace GOILauncher.Helpers
                     await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
                 }
             }
-            if (!Setting.Instance.saveMapZip)
+            if (!SaveMapZip)
             {
                 File.Delete(zipPath);
             }
         }
+        private static Setting Setting => Setting.Instance;
+        private static bool SaveMapZip => Setting.SaveMapZip;
     }
 }
