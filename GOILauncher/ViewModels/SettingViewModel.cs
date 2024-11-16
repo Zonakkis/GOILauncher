@@ -33,7 +33,7 @@ namespace GOILauncher.ViewModels
                 AllowMultiple = false,
                 Title = "选择游戏路径",
             };
-            var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
+            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
@@ -62,7 +62,7 @@ namespace GOILauncher.ViewModels
                 AllowMultiple = false,
                 Title = "选择地图路径",
             };
-            var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
+            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
@@ -77,7 +77,7 @@ namespace GOILauncher.ViewModels
                 AllowMultiple = false,
                 Title = "选择Steam路径",
             };
-            var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
+            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
@@ -105,7 +105,7 @@ namespace GOILauncher.ViewModels
                 AllowMultiple = false,
                 Title = "选择下载路径",
             };
-            var folder = await (Application.Current!.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.MainWindow!.StorageProvider.OpenFolderPickerAsync(dialog);
+            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
                 string path = folder[0].Path.ToString();
