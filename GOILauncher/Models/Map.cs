@@ -62,7 +62,7 @@ namespace GOILauncher.Models
                 if (TotalByte != 0)
                 {
                     ProgressPercentage = Convert.ToInt32((float)ReceivedBytes.Sum() / TotalByte * 100f);
-                    Status = $"下载中（{ProgressPercentage}%/{ConvertStorageUnit(DownloadSpeeds.Sum())}）";
+                    Status = $"下载中（{ProgressPercentage}%/{StorageUnitConvertHelper.FromBytetoOther(DownloadSpeeds.Sum())}）";
                     //百分比
                     //Trace.WriteLine(ProgressPercentage);
 
@@ -120,25 +120,6 @@ namespace GOILauncher.Models
         public override string ToString()
         {
             return Name;
-        }
-        public string ConvertStorageUnit(double bytes)
-        {
-            if(bytes == 0)
-            {
-                return "0.00B/s";
-            }
-            if(bytes < 1024)
-            {
-                return $"{bytes:0.00}B/s";
-            }
-            else if(bytes < 1048576)
-            {
-                return $"{bytes / 1024D:0.00}KB/s";
-            }
-            else
-            {
-                return $"{bytes / 1048576D:0.00}MB/s";
-            }
         }
 
         public string Name 
