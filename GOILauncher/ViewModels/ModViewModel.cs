@@ -5,6 +5,7 @@ using GOILauncher.Helpers;
 using GOILauncher.Models;
 using LeanCloud.Storage;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -86,14 +87,7 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<LevelLoader> LevelLoaders { get; } = new ObservableCollection<LevelLoader>();
         public ObservableCollection<ModpackandLevelLoader> ModpackandLevelLoaders { get; } = new ObservableCollection<ModpackandLevelLoader>();
         public ObservableCollection<OtherMod> OtherMods { get; } = new ObservableCollection<OtherMod>();
-
-        private bool selectedGamePathNoteHide;
-        public bool SelectedGamePathNoteHide
-        {
-            get => selectedGamePathNoteHide; set
-            {
-                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, "SelectedGamePathNoteHide");
-            }
-        }
+        [Reactive]
+        public bool SelectedGamePathNoteHide { get; set; }
     }
 }

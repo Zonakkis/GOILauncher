@@ -15,9 +15,6 @@
 			<Setter Property="FontFamily" Value="Microsoft YaHei"/>
 		</Style>
 	</UserControl.Styles>
-	<Design.DataContext>
-		<vm:DesignMapViewModel/>
-	</Design.DataContext>
 	<Grid ColumnDefinitions="480,*">
 		<Grid Grid.Column="0" RowDefinitions="auto,auto,*">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">

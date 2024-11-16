@@ -5,10 +5,12 @@ using GOILauncher.Helpers;
 using GOILauncher.Models;
 using LeanCloud.Storage;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
 using System.Security.Cryptography;
@@ -21,8 +23,9 @@ namespace GOILauncher.ViewModels
     {
         public SubmitSpeedrunViewModel()
         {
+            VID = string.Empty;
+            Player = string.Empty;
         }
-
         public override void Init()
         {
             LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
@@ -111,183 +114,33 @@ namespace GOILauncher.ViewModels
                 return false;
             }
         }
-        private bool selectSpeedrunType;
-        public bool SelectSpeedrunType
-        {
-            get
-            {
-                return selectSpeedrunType;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref selectSpeedrunType, value, nameof(SelectSpeedrunType));
-            }
-        }
-
-        private bool submitSpeedrun;
-        public bool SubmitSpeedrun
-        {
-            get
-            {
-                return submitSpeedrun;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref submitSpeedrun, value, nameof(SubmitSpeedrun));
-            }
-        }
-
-        private bool submitLevel;
-        public bool SubmitLevel
-        {
-            get
-            {
-                return submitLevel;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref submitLevel, value, nameof(SubmitLevel));
-            }
-        }
-
-        private string[] categories;
-        public string[] Categories
-        {
-            get
-            {
-                return categories;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref categories, value, nameof(Categories));
-            }
-        }
-
-        private string category;
-        public string Category
-        {
-            get
-            {
-                return category;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref category, value, nameof(Category));
-            }
-        }
-
-        private string[] platforms;
-        public string[] Platforms
-        {
-            get
-            {
-                return platforms;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref platforms, value, nameof(Platforms));
-            }
-        }
-
-        private string platform;
-        public string Platform
-        {
-            get
-            {
-                return platform;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref platform, value, nameof(Platform));
-            }
-        }
-        private int minute;
-        public int Minute
-        {
-            get
-            {
-                return minute;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref minute, value, nameof(Minute));
-            }
-        }
-        private int second;
-        public int Second
-        {
-            get
-            {
-                return second;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref second, value, nameof(Second));
-            }
-        }
-        private int millionSecond;
-        public int MillionSecond
-        {
-            get
-            {
-                return millionSecond;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref millionSecond, value, nameof(MillionSecond));
-            }
-        }
-        private string[] videoPlatforms;
-        public string[] VideoPlatforms
-        {
-            get
-            {
-                return videoPlatforms;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref videoPlatforms, value, nameof(VideoPlatforms));
-            }
-        }
-
-        private string videoPlatform;
-        public string VideoPlatform
-        {
-            get
-            {
-                return videoPlatform;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref videoPlatform, value, nameof(VideoPlatform));
-            }
-        }
-
-        private string vid = string.Empty;
-        public string VID
-        {
-            get
-            {
-                return vid;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref vid, value, nameof(VID));
-            }
-        }
-        private string player = string.Empty;
-        public string Player
-        {
-            get
-            {
-                return player;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref player, value, nameof(Player));
-            }
-        }
-
-
+        [Reactive]
+        public bool SelectSpeedrunType { get; set; }
+        [Reactive]
+        public bool SubmitSpeedrun { get; set; }
+        [Reactive]
+        public bool SubmitLevel { get; set; }
+        [Reactive]
+        public string[] Categories { get; set; }
+        [Reactive]
+        public string Category { get; set; }
+        [Reactive]
+        public string[] Platforms { get; set; }
+        [Reactive]
+        public string Platform { get; set; }
+        [Reactive]
+        public int Minute { get; set; }
+        [Reactive]
+        public int Second { get; set; }
+        [Reactive]
+        public int MillionSecond { get; set; }
+        [Reactive]
+        public string[] VideoPlatforms { get; set; }
+        [Reactive]
+        public string VideoPlatform { get; set; }
+        [Reactive]
+        public string VID { get; set; }
+        [Reactive]
+        public string Player { get; set; }
     }
 }

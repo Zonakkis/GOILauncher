@@ -5,6 +5,7 @@ using GOILauncher.Models;
 using LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -74,18 +75,8 @@ namespace GOILauncher.ViewModels
             value.View.OnSelectedViewChanged();
         }
         public static HttpClient HttpClient { get; private set; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
-        public ViewModelBase CurrentView
-        {
-            get
-            {
-                return currentView;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref currentView, value, nameof(CurrentView));
-            }
-        }
-
+        [Reactive]
+        public ViewModelBase CurrentView { get; set; }
         public Page SelectedPage
         {
             get
@@ -100,8 +91,6 @@ namespace GOILauncher.ViewModels
         }
 
         public ObservableCollection<Page> Views { get; }
-
-        private ViewModelBase currentView;
 
         private Page? selectedView;
         public ObservableCollection<Page> FooterViews { get; }

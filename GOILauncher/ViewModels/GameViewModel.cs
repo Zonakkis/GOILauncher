@@ -3,6 +3,7 @@ using Avalonia.OpenGL;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -61,16 +62,10 @@ namespace GOILauncher.ViewModels
 
         private Setting Setting { get; } = Setting.Instance;
         private string GamePath  => Setting.GamePath; 
-        private string SteamPath => Setting.SteamPath; 
+        private string SteamPath => Setting.SteamPath;
 
-        private bool selectedGamePathNoteHide;
-        public bool SelectedGamePathNoteHide
-        {
-            get => selectedGamePathNoteHide; set
-            {
-                this.RaiseAndSetIfChanged(ref selectedGamePathNoteHide, value, nameof(SelectedGamePathNoteHide));
-            }
-        }
+        [Reactive]
+        public bool SelectedGamePathNoteHide { get; set; }
         private GameInfo GameInfo { get; } = GameInfo.Instance;
         public string GameVersion => GameInfo.GameVersion;
         public string ModpackVersion => GameInfo.ModpackVersion;

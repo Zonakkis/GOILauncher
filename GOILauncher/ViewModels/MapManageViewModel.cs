@@ -1,6 +1,7 @@
 ﻿using FluentAvalonia.UI.Controls;
 using GOILauncher.Models;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -116,25 +117,10 @@ namespace GOILauncher.ViewModels
         }
         public ObservableCollection<Map> Maps { get; set; } = new ObservableCollection<Map>();
 
-        private int totalCount;
-        public int TotalCount
-        {
-            get => totalCount;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref totalCount, value, "TotalCount");
-            }
-        }
-
-        private int selectedCount;
-        public int SelectedCount
-        {
-            get => selectedCount;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref selectedCount, value, "SelectedCount");
-            }
-        }
+        [Reactive]
+        public int TotalCount { get; set; }
+        [Reactive]
+        public int SelectedCount { get; set; }
         public ReactiveCommand<Unit, Unit> DeleteCommand { get; set; }
 
         public class Map

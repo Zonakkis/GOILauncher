@@ -12,6 +12,7 @@ using LeanCloud;
 using LeanCloud.Storage;
 using Microsoft.VisualBasic;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -182,37 +183,16 @@ namespace GOILauncher.ViewModels
         }
 
         private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
-        public Map CurrentMap
-        {
-            get
-            {
-                return currentMap;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref currentMap, value, nameof(CurrentMap));
-            }
-        }
-
-        private Map currentMap;
-        public bool IsSelectedMap
-        {
-            get
-            {
-                return isSelectedMap;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref isSelectedMap, value, nameof(IsSelectedMap));
-            }
-        }
-
-        private bool isSelectedMap;
+        [Reactive]
+        public Map CurrentMap{ get; set; }
+        [Reactive]
+        public bool IsSelectedMap { get; set; }
         public ObservableCollection<Map> AllMaps { get; } = [];
         public ObservableCollection<Map> MapList { get; set; } = [];
         public string LastUpdateTime { get; set; }
 
         private Map selectedMap;
+        [Reactive]
         public Map SelectedMap
         {
             get => selectedMap;
@@ -222,27 +202,11 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref selectedMap, value, nameof(SelectedMap));
             }
         }
-
-        public string search;
-        public string Search
-        {
-            get => search;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref search, value, nameof(Search));
-            }
-        }
+        [Reactive]
+        public string Search { get; set; }
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; set; }
-
-        private bool selectedLevelPathNoteHide;
-        public bool SelectedLevelPathNoteHide
-        {
-            get => selectedLevelPathNoteHide;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref selectedLevelPathNoteHide, value, nameof(SelectedLevelPathNoteHide));
-            }
-        }
+        [Reactive]
+        public bool SelectedLevelPathNoteHide { get; set; }
         private Setting Setting { get; } = Setting.Instance;
         private string LevelPath => Setting.LevelPath;
         private string DownloadPath => Setting.DownloadPath;
@@ -258,84 +222,19 @@ namespace GOILauncher.ViewModels
                 this.RaiseAndSetIfChanged(ref hideDownloadedMap, value, nameof(HideDownloadedMap));
             }
         }
-
-        private bool filterSettingChanged;
-        public bool FilterSettingChanged
-        {
-            get => filterSettingChanged;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref filterSettingChanged, value, nameof(FilterSettingChanged));
-            }
-        }
+        [Reactive]
+        public bool FilterSettingChanged { get; set; }
         public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; set; }
-
-        private string[] forms;
-        public string[] Forms
-        {
-            get
-            {
-                return forms;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref forms, value, nameof(Forms));
-            }
-        }
-
-        private string form;
-        public string Form
-        {
-            get
-            {
-                return form;
-            }
-            set
-            {
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref form, value, nameof(Form));
-            }
-        }
-
-        private string[] styles;
-        public string[] Styles
-        {
-            get
-            {
-                return styles;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref styles, value, nameof(Styles));
-            }
-        }
-
-        private string style;
-        public string Style
-        {
-            get
-            {
-                return style;
-            }
-            set
-            {
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref style, value, nameof(Style));
-            }
-        }
-
-        private string[] difficulties;
-        public string[] Difficulties
-        {
-            get
-            {
-                return difficulties;
-            }
-            set
-            {
-                this.RaiseAndSetIfChanged(ref difficulties, value, nameof(Difficulties));
-            }
-        }
+        [Reactive]
+        public string[] Forms { get; set; }
+        [Reactive]
+        public string Form { get; set; }
+        [Reactive]
+        public string[] Styles { get; set; }
+        [Reactive]
+        public string Style { get; set; }
+        [Reactive]
+        public string[] Difficulties { get; set; }
 
         private string difficulty;
         public string Difficulty
