@@ -80,18 +80,9 @@ namespace GOILauncher.Models
             return Name;
         }
 
-        public string Name 
-        {
-            get=> (this[nameof(Name)] as string)!;
-        }
-        public string Author 
-        {
-            get => (this[nameof(Author)] as string)!;
-        }
-        public string Size 
-        { 
-            get => (this[nameof(Size)] as string)!;
-        }
+        public string Name => (this[nameof(Name)] as string)!;
+        public string Author => (this[nameof(Author)] as string)!;
+        public string Size => (this[nameof(Size)] as string)!;
         public string Preview 
         { 
             get => (this[nameof(Preview)] as string)!;
@@ -101,30 +92,9 @@ namespace GOILauncher.Models
             }
         }
         public string URL => (this[nameof(URL)] as string)!;
-        public string Form
-        {
-            get => (this[nameof(Form)] as string)!;
-            set
-            {
-                this[nameof(Form)] = value;
-            }
-        }
-        public string Style
-        {
-            get => (this[nameof(Style)] as string)!;
-            set
-            {
-                this[nameof(Style)] = value;
-            }
-        }
-        public string Difficulty
-        {
-            get => (this[nameof(Difficulty)] as string)!;
-            set
-            {
-                this[nameof(Difficulty)] = value;
-            }
-        }
+        public string Form => (this[nameof(Form)] as string)!;
+        public string Style => (this[nameof(Style)] as string)!;
+        public string Difficulty => (this[nameof(Difficulty)] as string)!;
         private bool downloaded;
         public bool Downloaded { 
             get => downloaded;
