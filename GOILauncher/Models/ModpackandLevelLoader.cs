@@ -39,7 +39,7 @@ namespace GOILauncher.Models
 
         public async void Download()
         {
-            if (!TargetGameVersion.Contains(GameInfo.Instance.GameVersion))
+            if (!TargetGameVersion.Contains(GameInfo.Instance.GameVersion) && !TargetGameVersion.Concatenate("/").Contains(GameInfo.Instance.GameVersion))
             {
                 await NotificationHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.Instance.GameVersion}\r\nMod所需版本：{TargetVersion}");
                 return;
