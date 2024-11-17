@@ -23,33 +23,10 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Helpers
 {
-    internal class LanzouyunDownloadHelper
+    internal class LanzouyunHelper
     {
         public static string prefix { get; set; } = string.Empty;
         public static HttpClient HttpClient => MainWindowViewModel.HttpClient;
-        public static async Task Download(string url,string fileName,EventHandler<DownloadStartedEventArgs> downloadStartedEvent, EventHandler<Downloader.DownloadProgressChangedEventArgs> downloadProgressChangedEventArgs, EventHandler<AsyncCompletedEventArgs>? downloadCompletedEvent,CancellationToken cancellationToken = default)
-        {
-            var downloadOpt = new DownloadConfiguration()
-            {
-                ChunkCount = 16,
-                ParallelDownload = true,
-                MaxTryAgainOnFailover = int.MaxValue,
-                Timeout = 60000,
-                //MaximumMemoryBufferBytes = 1024 * 1024 * 50,
-                RequestConfiguration =
-                {
-                    KeepAlive = true,
-                    UserAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
-                    ProtocolVersion = HttpVersion.Version11,
-                }
-            };
-            using DownloadService downloadService = new(downloadOpt);
-            downloadService.DownloadStarted += downloadStartedEvent;
-            downloadService.DownloadProgressChanged += downloadProgressChangedEventArgs;
-            downloadService.DownloadFileCompleted += downloadCompletedEvent;
-            await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
-        }
-
         public static async Task<string> GetDirectURLAsync(string code)
         {
             try

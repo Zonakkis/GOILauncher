@@ -46,11 +46,11 @@ namespace GOILauncher.Models
             }
             Status = "获取下载地址中";
             IsDownloading = true;
-            DownloadURL = await LanzouyunDownloadHelper.GetDirectURLAsync(DownloadURL);
+            DownloadURL = await LanzouyunHelper.GetDirectURLAsync(DownloadURL);
             Status = "启动下载中";
             CancellationTokenSource tokenSource = new();
             CancellationToken token = tokenSource.Token;
-            await LanzouyunDownloadHelper.Download(
+            await DownloadHelper.Download(
                     DownloadURL,
                     $"{Setting.Instance.DownloadPath}/{nameof(ModpackandLevelLoader)}{Build}.zip",
                     OnDownloadStarted,

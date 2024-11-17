@@ -4,12 +4,32 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:m="using:GOILauncher.Models"
+			 xmlns:cvt="using:GOILauncher.Converters"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.Views.MapView"
              x:DataType="vm:MapViewModel"
              FontSize="20">
-	<Grid ColumnDefinitions="480,*">
+	<UserControl.Resources>
+		<cvt:MultiplyConverter x:Key="MultiplyConverter"/>
+	</UserControl.Resources>
+	<UserControl.Styles>
+		<Style Selector="Image">
+			<Setter Property="MaxHeight">
+				<Setter.Value>
+					<MultiBinding Converter="{StaticResource MultiplyConverter}">
+						<Binding RelativeSource="{RelativeSource Mode=FindAncestor,AncestorType=Window}" Path="Height"/>
+						<Binding>
+							<Binding.Source>
+								<x:Double>0.6</x:Double>
+							</Binding.Source>
+						</Binding>
+					</MultiBinding>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
+	<Grid ColumnDefinitions="*,*">
 		<Grid Grid.Column="0" RowDefinitions="auto,auto,*">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">
 				<!--TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="5"/-->
@@ -22,7 +42,7 @@
 				</AutoCompleteBox>
 				<Button Grid.Column="1" Height="38" Content="搜索" Command="{Binding SearchMap}" Margin="10,10,5,10"/>
 			</Grid>
-			<Expander Header="筛选" FontSize="18" Grid.Row="1" Margin="10,0,5,0" IsExpanded="True">
+			<Expander Header="筛选" FontSize="18" Grid.Row="1" Margin="10,0,5,0">
 				<Grid RowDefinitions="auto,auto,auto,auto,auto,auto" ColumnDefinitions="auto,*">
 					<TextBlock Grid.Row="0" Grid.Column="0" Text="隐藏已下载的地图" />
 					<CheckBox  Grid.Row="0" Grid.Column="1" IsChecked="{Binding HideDownloadedMap}" HorizontalAlignment="Right" Margin="0,-4,0,0"/>
@@ -41,9 +61,9 @@
 						<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto,*">
 							<TextBlock Grid.Row="0" Grid.Column="0" FontSize="18" Text="{Binding Name}" VerticalAlignment="Center"/>
 							<TextBlock Grid.Row="0" Grid.Column="1" FontSize="18" Text="√" IsVisible="{Binding Downloaded}"/>
-							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-6,0,-10" IsVisible="{Binding IsDownloading}">
-								<TextBlock Grid.Row="0" FontSize="16" Text="{Binding Status}"  HorizontalAlignment="Center"/>
-								<ProgressBar Grid.Row="1" HorizontalAlignment="Right" ShowProgressText="True" Value="{Binding ProgressPercentage}"/>
+							<Grid RowDefinitions="auto,auto" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Margin="0,-5,0,-10" IsVisible="{Binding IsDownloading}">
+								<TextBlock Grid.Row="0" FontSize="15" Text="{Binding Status}"  HorizontalAlignment="Center"/>
+								<ProgressBar Grid.Row="1" HorizontalAlignment="Center" ShowProgressText="True" Value="{Binding ProgressPercentage}"/>
 							</Grid>
 						</Grid>
 					</DataTemplate>
@@ -52,11 +72,11 @@
 		</Grid>
 
 
-		<Grid Grid.Column="1" HorizontalAlignment="Center">
-			<Grid IsVisible="{Binding !IsSelectedMap}" HorizontalAlignment="Center">
+		<Grid RowDefinitions="*,*" Grid.Column="1" HorizontalAlignment="Center">
+			<Grid Grid.Row="0" IsVisible="{Binding !IsSelectedMap}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
 				<TextBlock Text="请选择一张地图" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			</Grid>
-			<Grid RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelectedMap}">
+			<Grid Grid.Row="0" RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelectedMap}">
 				<Image Grid.Row="0" asyncImageLoader:ImageLoader.Source="{Binding CurrentMap.Preview}" Margin="0,-1,0,0" HorizontalAlignment="Center"/>
 				<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
 				<Grid Grid.Row="2" RowDefinitions="auto,auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
@@ -70,7 +90,7 @@
 				<Button Grid.Row="3" Content="下载" HorizontalAlignment="Center" CornerRadius="5" Command="{Binding DownloadCommand}" IsEnabled="{Binding CurrentMap.Downloadable}"/>
 				<TextBlock Grid.Row="4" Foreground="Red" Text="未选择地图路径，请前往设置页面选择" HorizontalAlignment="Center" IsVisible="{Binding !SelectedLevelPathNoteHide}" Margin="0,10"/>
 			</Grid>
-			<Grid RowDefinitions="auto,auto" ColumnDefinitions="*" VerticalAlignment="Bottom">
+			<Grid Grid.Row="1" RowDefinitions="auto,auto" VerticalAlignment="Bottom">
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
 					<TextBlock Text="地图总数："/>
 					<TextBlock Text="{Binding AllMaps.Count}"/>

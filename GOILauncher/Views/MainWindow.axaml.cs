@@ -24,7 +24,7 @@ namespace GOILauncher.Views
         {
             LCQuery<LCObject> query = new("Config");
             LCObject prefixURLObject = await query.Get("6693d2d7209bbd07d16cfde9");
-            LanzouyunDownloadHelper.prefix = prefixURLObject["Value"] as string;
+            LanzouyunHelper.prefix = prefixURLObject["Value"] as string;
             query = new LCQuery<LCObject>("Update");
             LCObject update = await query.Get("65cf1c6c6599eb4f2882a8c5");
             Models.Version newVersion = new((update["Version"] as string)!);

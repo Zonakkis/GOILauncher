@@ -1,33 +1,20 @@
-﻿using Avalonia.Controls;
-using Avalonia.Markup.Xaml.Templates;
-using Avalonia.Threading;
-using Downloader;
+﻿using Avalonia.Threading;
 using DynamicData;
+using FluentAvalonia.Core;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
-using Ionic.Zip;
-using Ionic.Zlib;
-using LeanCloud;
 using LeanCloud.Storage;
-using Microsoft.VisualBasic;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Security.Policy;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace GOILauncher.ViewModels
 {
@@ -110,34 +97,37 @@ namespace GOILauncher.ViewModels
                 map.Preview = file.GetThumbnailUrl((int)(19.2 * PreviewQuality), (int)(10.8 * PreviewQuality));
                 AllMaps.Add(map);
             }
-            await Task.Run(RefreshMapList);
+            await RefreshMapList();
             query.OrderByDescending("updatedAt");
             query.Select("updatedAt");
             LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
         }
-        public void ApplyFilterSetting()
+        public async void ApplyFilterSetting()
         {
             FilterSettingChanged = false;
-            RefreshMapList();
+            await RefreshMapList();
         }
-        public void RefreshMapList()
+        public async Task RefreshMapList()
         {
-            MapList = [];
-            foreach (var map in AllMaps)
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                if (HideDownloadedMap && map.Downloaded)
+                MapList.Clear();
+                foreach (var map in AllMaps)
                 {
-                    continue;
+                    if (HideDownloadedMap && map.Downloaded)
+                    {
+                        continue;
+                    }
+                    if (Form != Forms[0] && map.Form != Form)
+                    {
+                        continue;
+                    }
+                    if (Style != Styles[0] && map.Style != Style) continue;
+                    if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
+                    MapList.Add(map);
                 }
-                if (Form != Forms[0] && map.Form != Form)
-                {
-                    continue;
-                }
-                if (Style != Styles[0] && map.Style != Style) continue;
-                if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
-                MapList.Add(map);
-            }
-            this.RaisePropertyChanged(nameof(MapList));
+                this.RaisePropertyChanged(nameof(MapList));
+            });
         }
         public void SearchMap()
         {
@@ -146,43 +136,27 @@ namespace GOILauncher.ViewModels
         }
         public async void Download()
         {
+
             if (SelectedMap == null) return;
             Map map = SelectedMap;
             map.Downloadable = false;
             CancellationTokenSource tokenSource = new();
             CancellationToken token = tokenSource.Token;
-            DownloadService[] downloader = new DownloadService[map.DownloadURL.Count];
-            map.Status = "获取下载地址中";
             map.IsDownloading = true;
-            map.DirectURLs = new string[map.DownloadURL.Count];
-            map.ReceivedBytes = new long[map.DownloadURL.Count];
-            map.DownloadSpeeds = new double[map.DownloadURL.Count];
-            for (int i = 0; i < map.DownloadURL.Count; i++)
-            {
-                map.DirectURLs[i] = await LanzouyunDownloadHelper.GetDirectURLAsync(map.DownloadURL[i]);
-            }
-            for (int i = 0; i < map.DownloadURL.Count; ++i)
-            {
-                map.DownloadTasks.Add(LanzouyunDownloadHelper.Download(
-                    map.DirectURLs[i],
-                    $"{DownloadPath}/{map.Name}.zip.{(i + 1):000}",
+            map.Status = "启动下载中";
+            await DownloadHelper.Download(
+                    map.URL, $"{DownloadPath}/{map.Name}.zip",
                     map.OnDownloadStarted,
                     map.OnDownloadProgressChanged,
                     map.OnDownloadCompleted,
                     token
-                    ));
-            }
-            map.Status = "启动下载中";
-            map.DownloadTasks.Add(map.WaitForDownloadFinish());
-            await Task.WhenAll(map.DownloadTasks);
-            map.Status = "合并中";
-            await ZipHelper.CombineZipSegment($"{DownloadPath}", $"{DownloadPath}/{map.Name}.zip", $"*{map.Name}.zip.*");
+                    );
             map.Status = "解压中";
             await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath, map.OnExtractProgressChanged);
             NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
-            await Task.Run(RefreshMapList);
+            await RefreshMapList();
         }
 
         private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
@@ -192,6 +166,8 @@ namespace GOILauncher.ViewModels
         public bool IsSelectedMap { get; set; }
         public ObservableCollection<Map> AllMaps { get; } = [];
         public ObservableCollection<Map> MapList { get; set; } = [];
+
+        public SourceList<Map> Maps { get; set; } = new();
         [Reactive]
         public string LastUpdateTime { get; set; }
 

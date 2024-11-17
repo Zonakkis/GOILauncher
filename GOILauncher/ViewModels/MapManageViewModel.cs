@@ -1,4 +1,5 @@
 ﻿using FluentAvalonia.UI.Controls;
+using GOILauncher.Helpers;
 using GOILauncher.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -43,52 +44,43 @@ namespace GOILauncher.ViewModels
                 SelectedCount--;
             }
         }
-        public string ConvertStorageUnit(long bytes)
-        {
-            if (bytes < 1024)
-            {
-                return $"{bytes.ToString("0.00")} B";
-            }
-            else if (bytes < 1048576)
-            {
-                return $"{(bytes / 1024D).ToString("0.00")} KB";
-            }
-            else
-            {
-                return $"{(bytes / 1048576D).ToString("0.00")} MB";
-            }
-        }
         private void GetMaps()
         {
             Maps = new ObservableCollection<Map>();
             SelectedCount = 0;
             if (Directory.Exists(Setting.Instance.LevelPath))
             {
-                foreach (string file in Directory.GetFiles(Setting.Instance.LevelPath))
+                string[] s = Directory.GetFiles(Setting.Instance.LevelPath, "*.scene", SearchOption.AllDirectories);
+                foreach (string file in Directory.GetFiles(Setting.Instance.LevelPath, "*.scene", SearchOption.AllDirectories))
                 {
-                    if (file.EndsWith(".scene"))
+                    string mapName = Path.GetFileNameWithoutExtension(file);
+                    if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
                     {
-                        string mapName = Path.GetFileNameWithoutExtension(file);
-                        if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
+                        try
                         {
-                            try
+                            Dictionary<string, string> settings = (from l in File.ReadAllLines(Path.ChangeExtension(file, File.Exists(Path.ChangeExtension(file, "txt")) ? "txt" : "mdata"))
+                                                                   select l.Split(new char[] { '=' })).ToDictionary((string[] s) => s[0].Trim(), (string[] s) => s[1].Trim());
+                            var map = new Map(mapName);
+                            if (settings.ContainsKey("credit"))
                             {
-                                Dictionary<string, string> settings = (from l in File.ReadAllLines(Path.ChangeExtension(file, File.Exists(Path.ChangeExtension(file, "txt")) ? "txt" : "mdata"))
-                                              select l.Split(new char[] { '=' })).ToDictionary((string[] s) => s[0].Trim(), (string[] s) => s[1].Trim());
-                                var map = new Map(mapName);
-                                if (settings.ContainsKey("credit"))
-                                {
-                                    map.Author = settings["credit"];
-                                }
-                                var fileInfo = new FileInfo(file);
-                                map.Size = ConvertStorageUnit(fileInfo.Length);
-                                map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
-                                Maps.Add(map);
+                                map.Author = settings["credit"];
                             }
-                            catch
-                            {
-                            }
+                            var fileInfo = new FileInfo(file);
+                            map.Size = StorageUnitConvertHelper.ByteTo(fileInfo.Length);
+                            map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
+                            Maps.Add(map);
                         }
+                        catch
+                        {
+                        }
+                    }
+                    else
+                    {
+                        var map = new Map(mapName);
+                        var fileInfo = new FileInfo(file);
+                        map.Size = StorageUnitConvertHelper.ByteTo(fileInfo.Length);
+                        map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
+                        Maps.Add(map);
                     }
                 }
                 TotalCount = Maps.Count;
@@ -147,7 +139,11 @@ namespace GOILauncher.ViewModels
 
             public void Delete()
             {
-                foreach(var path in Directory.GetFiles($"{Setting.Instance.LevelPath}/").Where(filename => filename.Contains(Name)))
+                foreach(var path in Directory.EnumerateDirectories($"{Setting.Instance.LevelPath}/").Where(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
+                {
+                    Directory.Delete(path,true);
+                }
+                foreach (var path in Directory.GetFiles($"{Setting.Instance.LevelPath}/").Where(filename => Path.GetFileName(filename).StartsWith(Name,StringComparison.InvariantCultureIgnoreCase)))
                 {
                     File.Delete(path);
                 }
