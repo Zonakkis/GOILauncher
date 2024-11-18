@@ -13,9 +13,10 @@
 		<TextBlock Grid.Row="2" Text="感谢以下玩家的支持：" HorizontalAlignment="Center" FontSize="20" Margin="0,10,0,0"/>
 		<TextBlock Grid.Row="3" Text="{Binding Thanks}"  TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="20" />
 		<StackPanel Grid.Row="4" HorizontalAlignment="Center" VerticalAlignment="Bottom"  Orientation="Horizontal">
-			<HyperlinkButton Content="哔哩哔哩" FontSize="15" NavigateUri="https://space.bilibili.com/292855911"/>
-			<HyperlinkButton Content="Github" FontSize="15" NavigateUri="https://github.com/Zonakkis/GOIMapManager"/>
-			<HyperlinkButton Content="爱发电" FontSize="15" NavigateUri="https://afdian.net/a/Zonakkis"/>
+			<HyperlinkButton Content="哔哩哔哩" FontSize="16" NavigateUri="https://space.bilibili.com/292855911"/>
+			<HyperlinkButton Content="Github" FontSize="16" NavigateUri="https://github.com/Zonakkis/GOIMapManager"/>
+			<HyperlinkButton Content="CGOI云" FontSize="16" NavigateUri="https://cloud.cgoi.cc"/>
+			<HyperlinkButton Content="爱发电" FontSize="16" NavigateUri="https://afdian.net/a/Zonakkis"/>
 		</StackPanel>
 	</Grid>
 </UserControl>

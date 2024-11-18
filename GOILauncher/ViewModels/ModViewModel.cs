@@ -27,18 +27,14 @@ namespace GOILauncher.ViewModels
 
         public override void Init()
         {
-            Task.Run(()=>
-            {
-                LCObject.RegisterSubclass("Modpack", () => new Modpack());
-                LCObject.RegisterSubclass("LevelLoader", () => new LevelLoader());
-                LCObject.RegisterSubclass("ModpackandLevelLoader", () => new ModpackandLevelLoader());
-                LCObject.RegisterSubclass(nameof(OtherMod), () => new OtherMod());
-                GetModpacks();
-                GetLevelLoaders();
-                GetModpackandLevelLoaders();
-                GetOtherMods();
-            }); 
-
+            LCObject.RegisterSubclass(nameof(Modpack), () => new Modpack());
+            LCObject.RegisterSubclass(nameof(LevelLoader), () => new LevelLoader());
+            LCObject.RegisterSubclass(nameof(ModpackandLevelLoader), () => new ModpackandLevelLoader());
+            LCObject.RegisterSubclass(nameof(OtherMod), () => new OtherMod());
+            GetModpacks();
+            GetLevelLoaders();
+            GetModpackandLevelLoaders();
+            GetOtherMods();
         }
         public override void OnSelectedViewChanged()
         {
