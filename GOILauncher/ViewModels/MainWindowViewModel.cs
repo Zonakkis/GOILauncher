@@ -1,18 +1,10 @@
-﻿using Avalonia.Interactivity;
-using FluentAvalonia.UI.Controls;
-using GOILauncher.Helpers;
-using GOILauncher.Models;
-using LeanCloud;
-using LeanCloud.Storage;
+﻿using LeanCloud;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
@@ -21,32 +13,14 @@ namespace GOILauncher.ViewModels
         public MainWindowViewModel()
         {
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
-            //EnableLeanCloudLog();
-            Views = [
-                new(typeof(GameViewModel), "游戏"),
-                new(typeof(ModViewModel), "Mod"),
-                //new Page(typeof(ModViewModel), "Mod",new ObservableCollection<Page>()
-                //{
-                //    new Page(typeof(ModpackManageViewModel), "Modpack配置"),
-                //}),
-                //new Page(typeof(MapViewModel), "地图"),
-                new(typeof(MapViewModel), "地图",[
-
-                    new(typeof(MapManageViewModel), "管理地图"),
-                ]),
-                new(typeof(LeaderBoardViewModel),"排行榜",[
-                    new(typeof(SubmitSpeedrunViewModel), "提交速通"),
-                    new(typeof(PendingViewModel), "待审核"),
-                ])
-            ];
-            FooterViews = [
-                new Page(typeof(AboutViewModel), "关于"),
-                new Page(typeof(SettingViewModel), "设置"),
-            ];
+#if DEBUG
+            EnableLeanCloudLog();
+#endif
+            CurrentView = Views[0].View;
             SelectedPage = Views[0];
         }
 #if DEBUG
-        private void EnableLeanCloudLog()
+        private static void EnableLeanCloudLog()
         {
             LCLogger.LogDelegate = (LCLogLevel level, string info) =>
             {
@@ -78,7 +52,7 @@ namespace GOILauncher.ViewModels
             }
             value.View.OnSelectedViewChanged();
         }
-        public static HttpClient HttpClient { get; private set; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
+        public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
         [Reactive]
         public ViewModelBase CurrentView { get; set; }
         public Page SelectedPage
@@ -89,15 +63,33 @@ namespace GOILauncher.ViewModels
             }
             set
             {
-                this.RaiseAndSetIfChanged(ref selectedView, value, "SelectedView");
+                this.RaiseAndSetIfChanged(ref selectedView, value, nameof(SelectedPage));
                 OnSelectedPageChanged(value);
             }
         }
 
-        public ObservableCollection<Page> Views { get; }
+        public ObservableCollection<Page> Views { get; } = [
+                new(typeof(GameViewModel), "游戏"),
+                new(typeof(ModViewModel), "Mod"),
+                //new Page(typeof(ModViewModel), "Mod",new ObservableCollection<Page>()
+                //{
+                //    new Page(typeof(ModpackManageViewModel), "Modpack配置"),
+                //}),
+                //new Page(typeof(MapViewModel), "地图"),
+                new(typeof(MapViewModel), "地图",[
+                    new(typeof(MapManageViewModel), "管理地图"),
+                ]),
+                new(typeof(LeaderBoardViewModel),"排行榜",[
+                    new(typeof(SubmitSpeedrunViewModel), "提交速通"),
+                    new(typeof(PendingViewModel), "待审核"),
+                ])
+            ];
 
         private Page? selectedView;
-        public ObservableCollection<Page> FooterViews { get; }
+        public ObservableCollection<Page> FooterViews { get; } = [
+                new Page(typeof(AboutViewModel), "关于"),
+                new Page(typeof(SettingViewModel), "设置"),
+            ];
     }
         public class Page
     {
