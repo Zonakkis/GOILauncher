@@ -52,7 +52,7 @@
 					<ComboBox Grid.Row="2" Grid.Column="1" ItemsSource="{Binding Styles}" SelectedValue="{Binding Style}" HorizontalAlignment="Right"/>
 					<TextBlock Grid.Row="3" Grid.Column="0" Text="地图难度" Margin="0,5,0,0"/>
 					<ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Difficulties}" SelectedValue="{Binding Difficulty}" HorizontalAlignment="Right"/>
-					<Button Grid.Row="4" Grid.Column="1" Content="应用" Command="{Binding ApplyFilterSettingCommand}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
+					<Button Grid.Row="4" Grid.Column="1" Content="应用" Command="{Binding ApplyFilterSetting}" IsEnabled="{Binding FilterSettingChanged}" HorizontalAlignment="Right" Margin="0,10,0,0"/>
 				</Grid>
 			</Expander>
 			<ListBox  Grid.Row="2" ItemsSource="{Binding MapList}" SelectedItem="{Binding SelectedMap}" >

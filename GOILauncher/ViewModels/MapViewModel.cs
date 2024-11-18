@@ -30,8 +30,6 @@ namespace GOILauncher.ViewModels
                 SelectedLevelPathNoteHide = true;
                 this.RaisePropertyChanged(nameof(LevelPath));
             };
-            var isApplyFilterSettingValid = this.WhenAnyValue(x => x.FilterSettingChanged);
-            ApplyFilterSettingCommand = ReactiveCommand.Create(ApplyFilterSetting, isApplyFilterSettingValid);
             var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
                     x => x != "未选择（选择游戏路径后自动选择，也可手动更改）");
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
@@ -39,22 +37,18 @@ namespace GOILauncher.ViewModels
             Form = Forms[0];
             Styles = ["不限", "挑战", "休闲"];
             Style = Styles[0];
-            Difficulties = ["不限", "地狱", "极难", "困难", "中等", "简单"];
+            Difficulties = ["不限", "简单", "中等", "困难", "极难", "地狱"];
             Difficulty = Difficulties[0];
             LastUpdateTime = "未知";
-            Search = string.Empty;
         }
         public override void Init()
         {
-            if (!Directory.Exists($"{directory}Download"))
+            if (!System.IO.Directory.Exists(Path.Combine(Directory, "Download")))
             {
-                Directory.CreateDirectory($"{directory}Download");
+                System.IO.Directory.CreateDirectory(Path.Combine(Directory, "Download"));
             }
-            Task.Run(() =>
-            {
-                LCObject.RegisterSubclass("Map", () => new Map());
-                GetMaps();
-            });
+            LCObject.RegisterSubclass("Map", () => new Map());
+            GetMaps();
             FilterSettingChanged = false;
         }
         public override void OnSelectedViewChanged()
@@ -75,21 +69,16 @@ namespace GOILauncher.ViewModels
         }
         public async void GetMaps()
         {
-            LCQuery<Map> query = new("Map");
+            LCQuery<Map> query = new(nameof(Map));
             query.OrderByAscending("Name");
             ReadOnlyCollection<Map> maps = await query.Find();
             bool levelPathExisted = (LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）");
             foreach (Map map in maps)
             {
-                LCFile file;
-                if (map.Preview != null && map.Preview != "")
-                {
-                    file = new LCFile("Preview.png", new Uri(map.Preview));
-                }
-                else
-                {
-                    file = new LCFile("Preview.png", new Uri("http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"));
-                }
+                LCFile file = new("Preview.png",
+                    new Uri(string.IsNullOrEmpty(map.Preview)
+                    ? "http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"
+                    : map.Preview));
                 if (levelPathExisted)
                 {
                     map.CheckWhetherExisted();
@@ -97,37 +86,34 @@ namespace GOILauncher.ViewModels
                 map.Preview = file.GetThumbnailUrl((int)(19.2 * PreviewQuality), (int)(10.8 * PreviewQuality));
                 AllMaps.Add(map);
             }
-            await RefreshMapList();
+            RefreshMapList();
             query.OrderByDescending("updatedAt");
             query.Select("updatedAt");
-            LastUpdateTime = (await query.Find()).First().UpdatedAt.ToLongDateString();
+            LastUpdateTime = (await query.First()).UpdatedAt.ToLongDateString();
         }
-        public async void ApplyFilterSetting()
+        public void ApplyFilterSetting()
         {
             FilterSettingChanged = false;
-            await RefreshMapList();
+            RefreshMapList();
         }
-        public async Task RefreshMapList()
+        public void RefreshMapList()
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            MapList.Clear();
+            foreach (var map in AllMaps)
             {
-                MapList.Clear();
-                foreach (var map in AllMaps)
+                if (HideDownloadedMap && map.Downloaded)
                 {
-                    if (HideDownloadedMap && map.Downloaded)
-                    {
-                        continue;
-                    }
-                    if (Form != Forms[0] && map.Form != Form)
-                    {
-                        continue;
-                    }
-                    if (Style != Styles[0] && map.Style != Style) continue;
-                    if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
-                    MapList.Add(map);
+                    continue;
                 }
-                this.RaisePropertyChanged(nameof(MapList));
-            });
+                if (Form != Forms[0] && map.Form != Form)
+                {
+                    continue;
+                }
+                if (Style != Styles[0] && map.Style != Style) continue;
+                if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
+                MapList.Add(map);
+            }
+            this.RaisePropertyChanged(nameof(MapList));
         }
         public void SearchMap()
         {
@@ -156,10 +142,10 @@ namespace GOILauncher.ViewModels
             NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
-            await RefreshMapList();
+            RefreshMapList();
         }
 
-        private readonly string directory = System.AppDomain.CurrentDomain.BaseDirectory;
+        private static string Directory => System.AppDomain.CurrentDomain.BaseDirectory;
         [Reactive]
         public Map CurrentMap{ get; set; }
         [Reactive]
@@ -182,7 +168,7 @@ namespace GOILauncher.ViewModels
             }
         }
         [Reactive]
-        public string Search { get; set; }
+        public string Search { get; set; } = string.Empty;
         public ReactiveCommand<Unit, Unit> DownloadCommand { get; set; }
         [Reactive]
         public bool SelectedLevelPathNoteHide { get; set; }
@@ -204,7 +190,6 @@ namespace GOILauncher.ViewModels
         }
         [Reactive]
         public bool FilterSettingChanged { get; set; }
-        public ReactiveCommand<Unit, Unit> ApplyFilterSettingCommand { get; set; }
         [Reactive]
         public string[] Forms { get; set; }
         public string form = "不限";
