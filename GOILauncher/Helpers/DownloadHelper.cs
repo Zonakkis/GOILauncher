@@ -1,4 +1,5 @@
 ﻿using Downloader;
+using GOILauncher.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +25,16 @@ namespace GOILauncher.Helpers
             downloadService.DownloadFileCompleted += downloadCompletedEvent;
             await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
         }
-
+        public static async Task Download(string fileName,
+            IDownloadable download,
+            CancellationToken cancellationToken = default)
+        {
+            using DownloadService downloadService = new(Configuration);
+            downloadService.DownloadStarted += download.OnDownloadStarted;
+            downloadService.DownloadProgressChanged += download.OnDownloadProgressChanged;
+            downloadService.DownloadFileCompleted += download.OnDownloadCompleted;
+            await downloadService.DownloadFileTaskAsync(download.URL, fileName, cancellationToken);
+        }
         private static DownloadConfiguration Configuration { get; } = new DownloadConfiguration()
         {
             ChunkCount = 16,
