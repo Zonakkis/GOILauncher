@@ -91,6 +91,7 @@ namespace GOILauncher.Models
                 this[nameof(Preview)] = value;
             }
         }
+        public bool HasPreview => Preview is string str && str.StartsWith("http");
         public string URL => (this[nameof(URL)] as string)!;
         public string Form => (this[nameof(Form)] as string)!;
         public string Style => (this[nameof(Style)] as string)!;
@@ -139,6 +140,7 @@ namespace GOILauncher.Models
         }
 
         public bool downloadable;
+
         public bool Downloadable
         {
             get => downloadable; 

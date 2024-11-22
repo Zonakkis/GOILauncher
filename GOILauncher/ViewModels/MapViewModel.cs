@@ -75,15 +75,19 @@ namespace GOILauncher.ViewModels
             bool levelPathExisted = (LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）");
             foreach (Map map in maps)
             {
-                LCFile file = new("Preview.png",
-                    new Uri(string.IsNullOrEmpty(map.Preview)
-                    ? "http://lc-3Dec7Zyj.cn-n1.lcfile.com/7B1JKdTscW56vNKj8LkmlzG9OEE6Ssep/No%20Image.png"
-                    : map.Preview));
                 if (levelPathExisted)
                 {
                     map.CheckWhetherExisted();
                 }
-                map.Preview = file.GetThumbnailUrl((int)(19.2 * PreviewQuality), (int)(10.8 * PreviewQuality));
+                if (string.IsNullOrEmpty(map.Preview))
+                {
+                    map.Preview = "avares://GOILauncher/Assets/No Preview.png";
+                }
+                else
+                {
+                    LCFile file = new("Preview.png", new Uri(map.Preview));
+                    map.Preview = file.GetThumbnailUrl((int)(19.2 * PreviewQuality), (int)(10.8 * PreviewQuality));
+                }
                 AllMaps.Add(map);
             }
             RefreshMapList();
@@ -114,6 +118,7 @@ namespace GOILauncher.ViewModels
                 MapList.Add(map);
             }
             this.RaisePropertyChanged(nameof(MapList));
+
         }
         public void SearchMap()
         {
@@ -131,10 +136,8 @@ namespace GOILauncher.ViewModels
             map.IsDownloading = true;
             map.Status = "启动下载中";
             await DownloadHelper.Download(
-                    map.URL, $"{DownloadPath}/{map.Name}.zip",
-                    map.OnDownloadStarted,
-                    map.OnDownloadProgressChanged,
-                    map.OnDownloadCompleted,
+                    $"{DownloadPath}/{map.Name}.zip",
+                    map,
                     token
                     );
             map.Status = "解压中";
