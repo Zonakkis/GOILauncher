@@ -13,11 +13,15 @@ namespace GOILauncher.Converters
     {
         public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
         {
-            if (values[0] is double factor1 && values[1] is double factor2)
+            double result = 1;
+            foreach(var val in values)
             {
-                return factor1 * factor2;
+                if(val is double v)
+                {
+                    result *= v;
+                }
             }
-            return AvaloniaProperty.UnsetValue;
+            return result;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
