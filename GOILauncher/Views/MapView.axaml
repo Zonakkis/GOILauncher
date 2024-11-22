@@ -6,11 +6,11 @@
 			 xmlns:m="using:GOILauncher.Models"
 			 xmlns:cvt="using:GOILauncher.Converters"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
-             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="550"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="570"
              x:Class="GOILauncher.Views.MapView"
              x:DataType="vm:MapViewModel"
              FontSize="20">
-	<Grid ColumnDefinitions="*,*">
+	<Grid ColumnDefinitions="480,*">
 		<Grid Grid.Column="0" RowDefinitions="auto,auto,*">
 			<Grid Grid.Row="0" ColumnDefinitions="*,auto">
 				<!--TextBox  Grid.Column="0" Height="38"  FontSize="18" Watermark="输入地图名......" Margin="10,0,0,0" CornerRadius="5"/-->
