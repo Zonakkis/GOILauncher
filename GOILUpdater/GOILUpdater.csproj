@@ -7,7 +7,6 @@
     <Nullable>enable</Nullable>
     <AssemblyName>GOILUpdater</AssemblyName>
     <RootNamespace>GOILUpdater</RootNamespace>
-    <BaseOutputPath>E:\My Project\GOI地图管理器\GOILauncher\bin</BaseOutputPath>
     <BaseIntermediateOutputPath>E:\My Project\GOI地图管理器\GOILauncher\bin\Release</BaseIntermediateOutputPath>
   </PropertyGroup>
 
@@ -21,25 +20,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Downloader" Version="3.3.0" />
   </ItemGroup>
 
-
-
-	<ItemGroup>
-		<Reference Include="Common">
-			<HintPath>Reference\LeanCloud\Common.dll</HintPath>
-		</Reference>
-		<Reference Include="LC.Newtonsoft.Json">
-			<HintPath>Reference\LeanCloud\LC.Newtonsoft.Json.dll</HintPath>
-		</Reference>
-		<Reference Include="Storage">
-			<HintPath>Reference\LeanCloud\Storage.dll</HintPath>
-		</Reference>
-		<Reference Include="Storage.Standard">
-			<HintPath>Reference\LeanCloud\Storage.Standard.dll</HintPath>
-		</Reference>
-	</ItemGroup>
+  <ItemGroup>
+    <Reference Include="Common">
+      <HintPath>Reference\LeanCloud\Common.dll</HintPath>
+    </Reference>
+    <Reference Include="LC.Newtonsoft.Json">
+      <HintPath>Reference\LeanCloud\LC.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage">
+      <HintPath>Reference\LeanCloud\Storage.dll</HintPath>
+    </Reference>
+    <Reference Include="Storage.Standard">
+      <HintPath>Reference\LeanCloud\Storage.Standard.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 
 </Project>

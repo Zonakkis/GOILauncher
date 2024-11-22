@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GOILauncher.Helpers
+namespace GOILUpdater.Helpers
 {
     public static class StorageUnitConvertHelper
     {

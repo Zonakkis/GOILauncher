@@ -5,15 +5,17 @@ using System.IO;
 using System.Net;
 using System;
 using System.Reflection;
-using Ionic.Zip;
 using System.Text;
 using System.Diagnostics;
+using GOILUpdater.Helpers;
+using System.Threading;
+using System.IO.Compression;
 
 namespace GOILUpdater
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             bool exited = false;
             while (!exited)
@@ -24,22 +26,13 @@ namespace GOILUpdater
                 }
                 Thread.Sleep(100);
             }
-            Console.WriteLine("下载中");
-            WebClient webClient = new();
-            webClient.DownloadFile(args[0], "GOILauncher.zip");
-            //webClient.DownloadFile("http://lc-3Dec7Zyj.cn-n1.lcfile.com/DdpBYgVeVx9feNJiFyGq6XhdXQe0J9dB/GOIL.zip", "GOIL.zip");
-            Console.WriteLine("解压中");
+            await DownloadHelper.Download(Path.Combine(Directory.GetCurrentDirectory(), "GOILauncher.zip"), new Update(args[0]));
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            using (ZipFile zip = ZipFile.Read($"{Environment.CurrentDirectory}/GOILauncher.zip", new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
-            {
-                foreach (ZipEntry entry in zip)
-                {
-                    entry.Extract(ExtractExistingFileAction.OverwriteSilently);
-                }
-            }
+            Console.WriteLine("准备解压……");
+            ZipFile.ExtractToDirectory(Path.Combine(Directory.GetCurrentDirectory(), "GOILauncher.zip"), Directory.GetCurrentDirectory(), Encoding.GetEncoding("GBK"), true);
+            Console.WriteLine("解压完成");
             File.Delete("GOILauncher.zip");
             Process.Start("GOILauncher.exe");
         }
-
     }
 }

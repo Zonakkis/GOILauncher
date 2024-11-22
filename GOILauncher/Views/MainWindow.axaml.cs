@@ -20,20 +20,17 @@ namespace GOILauncher.Views
             NotificationHelper.NotificationBar  = NotificationBar;
         }
 
-        private async void Loaded(object? sender, RoutedEventArgs e)
+        private new async void Loaded(object? sender, RoutedEventArgs e)
         {
-            LCQuery<LCObject> query = new("Config");
-            LCObject prefixURLObject = await query.Get("6693d2d7209bbd07d16cfde9");
-            LanzouyunHelper.prefix = prefixURLObject["Value"] as string;
-            query = new LCQuery<LCObject>("Update");
+            LCQuery<LCObject> query = new("Update");
             LCObject update = await query.Get("65cf1c6c6599eb4f2882a8c5");
-            Models.Version newVersion = new((update["Version"] as string)!);
-            if (newVersion > Models.Version.Instance)
+            Models.Version newVersion = new((update[nameof(Version)] as string)!);
+            if (newVersion > Version)
             {
                 var contentDialog = new ContentDialog
                 {
                     Title = "有新版本！！",
-                    Content = $"{Models.Version.Instance} -> {newVersion}\r\n{update["Description"]}",
+                    Content = $"{Version} -> {newVersion}\r\n{update["Description"]}",
                     PrimaryButtonText = "手动更新",
                     CloseButtonText = "自动更新",
                     PrimaryButtonCommand = ReactiveCommand.Create(() =>
@@ -43,14 +40,13 @@ namespace GOILauncher.Views
                     }),
                     CloseButtonCommand = ReactiveCommand.Create(() =>
                     {
-                        Process.Start("GOILUpdater.exe", (update["DownloadURL"] as string)!);
+                        Process.Start("GOILUpdater.exe", (update["URL"] as string)!);
                         Environment.Exit(0);
                     })
                 };
                 await contentDialog.ShowAsync();
             }
-
-
         }
+        private static Models.Version Version => Models.Version.Instance;
     }
 }

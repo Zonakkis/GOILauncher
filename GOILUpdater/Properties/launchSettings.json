@@ -2,7 +2,7 @@
   "profiles": {
     "GOILUpdater": {
       "commandName": "Project",
-      "commandLineArgs": "http://lc-3Dec7Zyj.cn-n1.lcfile.com/XwFc6UMlvO7wVSKmVlFfjWPMMw67WSDu/GOILauncher.zip"
+      "commandLineArgs": "https://cloud.cgoi.cc/d/GOILauncher/%E6%97%A0GOILUpdater/GOILauncher%200.1.1.zip?sign=AjmGHlKVVtx5eC3bPa1-5_dExhFijGeCCJSiqBzy_ig=:0"
     }
   }
 }

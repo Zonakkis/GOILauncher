@@ -1,5 +1,5 @@
 ﻿using Downloader;
-using GOILauncher.Interfaces;
+using GOILUpdater.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,22 +9,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GOILauncher.Helpers
+namespace GOILUpdater.Helpers
 {
     public class DownloadHelper
     {
-        public static async Task Download(string url, string fileName,
-            EventHandler<DownloadStartedEventArgs>? downloadStartedEvent = null,
-            EventHandler<Downloader.DownloadProgressChangedEventArgs>? downloadProgressChangedEventArgs = null,
-            EventHandler<AsyncCompletedEventArgs>? downloadCompletedEvent = null,
-            CancellationToken cancellationToken = default)
-        {
-            using DownloadService downloadService = new(Configuration);
-            downloadService.DownloadStarted += downloadStartedEvent;
-            downloadService.DownloadProgressChanged += downloadProgressChangedEventArgs;
-            downloadService.DownloadFileCompleted += downloadCompletedEvent;
-            await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
-        }
         public static async Task Download(string fileName,
             IDownloadable download,
             CancellationToken cancellationToken = default)
@@ -41,7 +29,6 @@ namespace GOILauncher.Helpers
             ParallelDownload = true,
             MaxTryAgainOnFailover = int.MaxValue,
             Timeout = 60000,
-            //MaximumMemoryBufferBytes = 1024 * 1024 * 50,
             RequestConfiguration =
                 {
                     KeepAlive = true,
