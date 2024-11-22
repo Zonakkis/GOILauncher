@@ -20,7 +20,7 @@ namespace GOILUpdater
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = eventArgs.ProgressPercentage;
-            Status = $"下载中({ProgressPercentage:00.0}%/{StorageUnitConvertHelper.ByteTo(eventArgs.BytesPerSecondSpeed)}/s)";
+            Status = $"下载中({ProgressPercentage:0.0}%/{StorageUnitConvertHelper.ByteTo(eventArgs.BytesPerSecondSpeed)}/s)";
             Console.WriteLine(Status);
         }
         public void OnDownloadCompleted(object? sender, AsyncCompletedEventArgs eventArgs)
