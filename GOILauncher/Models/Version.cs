@@ -8,11 +8,11 @@ namespace GOILauncher.Models
 {
     public class Version
     {
-        public Version(int x,int y,int z)
+        public Version(int x, int y, int z)
         {
-            this.X = x;
-            this.Y = y;
-            this.Z = z;
+            X = x;
+            Y = y;
+            Z = z;
         }
         public Version(string version)
         {
@@ -21,45 +21,26 @@ namespace GOILauncher.Models
             Y = int.Parse(v[1]);
             Z = int.Parse(v[2]);
         }
+        int X { get; }
+        int Y { get; }
+        int Z { get; }
 
-
-        int X{ get; }
-        int Y{ get; }
-        int Z{ get; }
-
-        public static readonly Version Instance = new(0,1,1);
-
+        public static readonly Version Instance = new(0, 2, 0);
         public int GetVersionValue()
         {
-            return Convert.ToInt32($"{X}{Y}{Z}");
+            return X * 10000 + Y * 100 + Z;
         }
-
         public override string ToString()
         {
             return $"{X}.{Y}.{Z}";
         }
-
         public static bool operator >(Version newVersion, Version oldVersion)
         {
-            if(newVersion.GetVersionValue() > oldVersion.GetVersionValue())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return newVersion.GetVersionValue() > oldVersion.GetVersionValue();
         }
         public static bool operator <(Version newVersion, Version oldVersion)
         {
-            if (newVersion.GetVersionValue() < oldVersion.GetVersionValue())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return newVersion.GetVersionValue() < oldVersion.GetVersionValue();
         }
     }
 }
