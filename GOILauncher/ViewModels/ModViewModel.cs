@@ -22,7 +22,7 @@ namespace GOILauncher.ViewModels
     {
         public ModViewModel()
         {
-            SelectedGamePathNoteHide = Setting.IsDefault(nameof(Setting.GamePath));
+            SelectedGamePathNoteHide = !Setting.IsDefault(nameof(Setting.GamePath));
             Setting.GamePathChanged += () =>
             {
                 SelectedGamePathNoteHide = true;
