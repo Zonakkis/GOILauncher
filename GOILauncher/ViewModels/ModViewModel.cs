@@ -22,7 +22,11 @@ namespace GOILauncher.ViewModels
     {
         public ModViewModel()
         {
-
+            SelectedGamePathNoteHide = Setting.LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）";
+            Setting.GamePathChanged += () =>
+            {
+                SelectedGamePathNoteHide = true;
+            };
         }
 
         public override void Init()
@@ -38,14 +42,12 @@ namespace GOILauncher.ViewModels
         }
         public override void OnSelectedViewChanged()
         {
-            if(!SelectedGamePathNoteHide && Setting.Instance.GamePath != "未选择")
-            {
-                SelectedGamePathNoteHide = true;
-            }
+
         }
         private async void GetModpacks()
         {
-            LCQuery<Modpack> query = new("Modpack");
+            LCQuery<Modpack> query = new(nameof(Modpack));
+            query.OrderByDescending(nameof(Modpack.Build));
             ReadOnlyCollection<Modpack> modpacks = await query.Find();
             foreach (Modpack modpack in modpacks)
             {
@@ -54,7 +56,8 @@ namespace GOILauncher.ViewModels
         }
         private async void GetLevelLoaders()
         {
-            LCQuery<LevelLoader> query = new("LevelLoader");
+            LCQuery<LevelLoader> query = new(nameof(LevelLoader));
+            query.OrderByDescending(nameof(LevelLoader.Build));
             ReadOnlyCollection<LevelLoader> levelLoaders = await query.Find();
             foreach (LevelLoader levelLoader in levelLoaders)
             {
@@ -63,7 +66,8 @@ namespace GOILauncher.ViewModels
         }
         private async void GetModpackandLevelLoaders()
         {
-            LCQuery<ModpackandLevelLoader> query = new("ModpackandLevelLoader");
+            LCQuery<ModpackandLevelLoader> query = new(nameof(ModpackandLevelLoader));
+            query.OrderByDescending(nameof(ModpackandLevelLoader.Build));
             ReadOnlyCollection<ModpackandLevelLoader> modpackandLevelLoaders = await query.Find();
             foreach (ModpackandLevelLoader modpackandLevelLoader in modpackandLevelLoaders)
             {
@@ -73,6 +77,7 @@ namespace GOILauncher.ViewModels
         private async void GetOtherMods()
         {
             LCQuery<OtherMod> query = new(nameof(OtherMod));
+            query.OrderByAscending(nameof(OtherMod.Name));
             ReadOnlyCollection<OtherMod> otherMods = await query.Find();
             foreach (OtherMod otherMod in otherMods)
             {
@@ -85,5 +90,6 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<OtherMod> OtherMods { get; } = [];
         [Reactive]
         public bool SelectedGamePathNoteHide { get; set; }
+        private static Setting Setting => Setting.Instance;
     }
 }
