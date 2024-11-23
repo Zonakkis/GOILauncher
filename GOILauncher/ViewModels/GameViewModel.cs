@@ -1,19 +1,8 @@
-﻿using Avalonia.Controls.Shapes;
-using Avalonia.OpenGL;
-using GOILauncher.Helpers;
-using GOILauncher.Models;
+﻿using GOILauncher.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Reflection;
-using System.Runtime.Loader;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
@@ -44,28 +33,45 @@ namespace GOILauncher.ViewModels
         {
 
     }
-        public void LaunchGOI(int para)
+        public void Launch(int para)
         {
             switch (para)
             {
                 case 1:
-                    Process.Start($"{GamePath}/GettingOverIt.exe");
-                    return;
+                    GameProcess = Process.Start($"{GamePath}/GettingOverIt.exe");
+                    break;
                 case 2:
-                    if (SteamPath != "未选择（需要通过Steam启动游戏时才选择，否则可不选）")
+                    if (!Setting.IsDefault(nameof(SteamPath)))
                     {
-                        Process.Start($"{GamePath}/steam.exe", "steam://rungameid/240720");
+                        GameProcess = Process.Start($"{GamePath}/steam.exe", "steam://rungameid/240720");
                     }
-                    return;
+                    break;
+            }
+            if(GameProcess is not null)
+            {
+                GameProcess.EnableRaisingEvents = true;
+                GameProcess.Exited += (sender, e) =>
+                {
+                    GameLaunched = false;
+                    GameProcess = null;
+                };
+                GameLaunched = true;
             }
         }
-
+        public void Close()
+        {
+            GameProcess?.Kill();
+            GameProcess = null;
+            GameLaunched = false;
+        }
         private Setting Setting { get; } = Setting.Instance;
         private string GamePath  => Setting.GamePath; 
         private string SteamPath => Setting.SteamPath;
-
         [Reactive]
         public bool SelectedGamePathNoteHide { get; set; }
+        [Reactive]
+        public bool GameLaunched { get; set; }
+        public Process? GameProcess { get; set; }
         private GameInfo GameInfo { get; } = GameInfo.Instance;
         public string GameVersion => GameInfo.GameVersion;
         public string ModpackVersion => GameInfo.ModpackVersion;
