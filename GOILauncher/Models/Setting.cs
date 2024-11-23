@@ -37,24 +37,65 @@ namespace GOILauncher.Models
             }
             else Instance = new()
             {
-                GamePath = "未选择",
-                LevelPath = "未选择（选择游戏路径后自动选择，也可手动更改）",
-                SteamPath = "未选择（需要通过Steam启动游戏时才选择，否则可不选）",
-                DownloadPath = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download",
-                SaveMapZip = false,
-                PreviewQuality = 40,
+                GamePath = GetDefaultValue<string>(nameof(GamePath)),
+                LevelPath = GetDefaultValue<string>(nameof(LevelPath)),
+                SteamPath = GetDefaultValue<string>(nameof(SteamPath)),
+                DownloadPath = GetDefaultValue<string>(nameof(DownloadPath)),
+                SaveMapZip = GetDefaultValue<bool>(nameof(SaveMapZip)),
+                PreviewQuality = GetDefaultValue<int>(nameof(PreviewQuality)),
             };
         }
         public Setting()
         {
-            gamePath = "未选择";
-            levelPath = "未选择（选择游戏路径后自动选择，也可手动更改）";
-            steamPath = "未选择（需要通过Steam启动游戏时才选择，否则可不选）";
-            downloadPath = $"{System.AppDomain.CurrentDomain.BaseDirectory}Download";
-            saveMapZip = false;
-            previewQuality = 40;
+            gamePath = GetDefaultValue<string>(nameof(GamePath));
+            levelPath = GetDefaultValue<string>(nameof(LevelPath));
+            steamPath = GetDefaultValue<string>(nameof(SteamPath));
+            downloadPath = GetDefaultValue<string>(nameof(DownloadPath));
+            saveMapZip = GetDefaultValue<bool>(nameof(SaveMapZip));
+            previewQuality = GetDefaultValue<int>(nameof(PreviewQuality));
         }
 
+        public bool IsDefault(string propertyName)
+        {
+            var property = typeof(Setting).GetProperty(propertyName) ?? throw new ArgumentException($"Property '{propertyName}' not found.");
+            var propertyValue = property.GetValue(this);
+            var defaultValue = typeof(Setting).GetMethod(nameof(GetDefaultValue))!
+                .MakeGenericMethod(property.PropertyType)
+                .Invoke(null, [propertyName]);
+            return propertyValue?.Equals(defaultValue) ?? defaultValue == null;
+        }
+        public static T GetDefaultValue<T>(string propertyName)
+        {
+            if (typeof(T) == typeof(string))
+            {
+                switch (propertyName)
+                {
+                    case nameof(GamePath):
+                        return (T)(object)"未选择";
+                    case nameof(LevelPath):
+                        return (T)(object)"未选择（选择游戏路径后自动选择，也可手动更改）";
+                    case nameof(SteamPath):
+                        return (T)(object)"未选择（需要通过Steam启动游戏时才选择，否则可不选）";
+                    case nameof(DownloadPath):
+                        return (T)(object)$"{System.AppDomain.CurrentDomain.BaseDirectory}Download";
+                }
+            }
+            else if (typeof(T) == typeof(bool))
+            {
+                if (propertyName == nameof(SaveMapZip))
+                {
+                    return (T)(object)false;
+                }
+            }
+            else if (typeof(T) == typeof(int))
+            {
+                if (propertyName == nameof(PreviewQuality))
+                {
+                    return (T)(object)40;
+                }
+            }
+            return default!;
+        }
         public string GamePath
         {
             get => gamePath; 

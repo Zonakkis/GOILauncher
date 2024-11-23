@@ -24,14 +24,12 @@ namespace GOILauncher.ViewModels
         {
             CurrentMap = new();
             hideDownloadedMap = true;
-            SelectedLevelPathNoteHide = LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）";
+            SelectedLevelPathNoteHide = !Setting.IsDefault(nameof(LevelPath));
             Setting.LevelPathChanged += () =>
             {
                 SelectedLevelPathNoteHide = true;
-                this.RaisePropertyChanged(nameof(LevelPath));
-            };
-            var isDownloadValid = this.WhenAnyValue(x => x.LevelPath,
-                    x => x != "未选择（选择游戏路径后自动选择，也可手动更改）");
+            }; 
+            var isDownloadValid = this.WhenAnyValue(x => x.SelectedLevelPathNoteHide);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
             Forms = ["不限", "原创", "移植"];
             Form = Forms[0];
@@ -72,7 +70,7 @@ namespace GOILauncher.ViewModels
             LCQuery<Map> query = new(nameof(Map));
             query.OrderByAscending("Name");
             ReadOnlyCollection<Map> maps = await query.Find();
-            bool levelPathExisted = (LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）");
+            bool levelPathExisted = SelectedLevelPathNoteHide;
             foreach (Map map in maps)
             {
                 if (levelPathExisted)

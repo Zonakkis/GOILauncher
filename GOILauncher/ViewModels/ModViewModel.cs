@@ -22,7 +22,7 @@ namespace GOILauncher.ViewModels
     {
         public ModViewModel()
         {
-            SelectedGamePathNoteHide = Setting.LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）";
+            SelectedGamePathNoteHide = Setting.IsDefault(nameof(Setting.GamePath));
             Setting.GamePathChanged += () =>
             {
                 SelectedGamePathNoteHide = true;

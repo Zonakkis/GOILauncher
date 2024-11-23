@@ -21,7 +21,7 @@ namespace GOILauncher.ViewModels
     {
         public GameViewModel()
         {
-            SelectedGamePathNoteHide = GamePath != "未选择";
+            SelectedGamePathNoteHide = !Setting.IsDefault(nameof(GamePath));
             GameInfo.Refreshed += () =>
             {
                 this.RaisePropertyChanged(nameof(GameVersion));

@@ -37,11 +37,11 @@ namespace GOILauncher.Models
         }
         public void CheckWhetherExisted()
         {
-            if (!IsDownloading && Setting.Instance.LevelPath != "未选择（选择游戏路径后自动选择，也可手动更改）")
+            if (!IsDownloading && !Setting.IsDefault(nameof(Setting.LevelPath)))
             {
-                if (Directory.GetDirectories(Setting.Instance.LevelPath)
+                if (Directory.GetDirectories(Setting.LevelPath)
                     .Any(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.OrdinalIgnoreCase))
-                    || File.Exists($"{Setting.Instance.LevelPath}/{Name}.scene"))
+                    || File.Exists($"{Setting.LevelPath}/{Name}.scene"))
                 {
                     Downloaded = true;
                     Downloadable = false;
@@ -150,6 +150,6 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(Downloadable));
             }
         }
-
+        private static Setting Setting => Setting.Instance;
     }
 }

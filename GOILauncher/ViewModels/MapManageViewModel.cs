@@ -48,9 +48,9 @@ namespace GOILauncher.ViewModels
         {
             Maps.Clear();
             SelectedCount = 0;
-            if (Directory.Exists(Setting.Instance.LevelPath))
+            if (Directory.Exists(Setting.LevelPath))
             {
-                foreach (string file in Directory.GetFiles(Setting.Instance.LevelPath, "*.scene", SearchOption.AllDirectories))
+                foreach (string file in Directory.GetFiles(Setting.LevelPath, "*.scene", SearchOption.AllDirectories))
                 {
                     string mapName = Path.GetFileNameWithoutExtension(file);
                     if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
@@ -112,7 +112,7 @@ namespace GOILauncher.ViewModels
         [Reactive]
         public int SelectedCount { get; set; }
         public ReactiveCommand<Unit, Unit> DeleteCommand { get; set; }
-
+        private static Setting Setting => Setting.Instance;
         public class Map(string name)
         {
             public string Name { get; set; } = name;
@@ -133,11 +133,11 @@ namespace GOILauncher.ViewModels
 
             public void Delete()
             {
-                foreach(var path in Directory.EnumerateDirectories($"{Setting.Instance.LevelPath}/").Where(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
+                foreach(var path in Directory.EnumerateDirectories($"{Setting.LevelPath}/").Where(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
                 {
                     Directory.Delete(path,true);
                 }
-                foreach (var path in Directory.GetFiles($"{Setting.Instance.LevelPath}/").Where(filename => Path.GetFileName(filename).StartsWith(Name,StringComparison.InvariantCultureIgnoreCase)))
+                foreach (var path in Directory.GetFiles($"{Setting.LevelPath}/").Where(filename => Path.GetFileName(filename).StartsWith(Name,StringComparison.InvariantCultureIgnoreCase)))
                 {
                     File.Delete(path);
                 }
@@ -146,6 +146,7 @@ namespace GOILauncher.ViewModels
             public delegate void OnMapSelectedChanged(bool selected);
 
             public event OnMapSelectedChanged? OnMapSeletcedChangedEvent;
+            private static Setting Setting => Setting.Instance;
         }
     }
 }
