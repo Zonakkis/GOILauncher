@@ -7,21 +7,31 @@
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="GOILauncher.Views.GameView"
 	         x:DataType="vm:GameViewModel"
-			 FontSize="20"
 			 >
+	<UserControl.Styles>
+		<Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="FontSize">18</Setter>
+				<Setter Property="Margin" Value="5,5"/>
+			</Style>
+			<Style Selector="AccessText">
+				<Setter Property="FontSize">20</Setter>
+			</Style>
+		</Styles>
+	</UserControl.Styles>
 	<Grid>
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}">
 			未选择游戏路径，请前往设置页面选择
 		</TextBlock>
 		<Grid RowDefinitions="auto,auto,auto,auto,*" ColumnDefinitions="auto,auto,*" IsVisible="{Binding SelectedGamePathNoteHide}" Margin="10,10">
-			<Label Grid.Row="0" Grid.Column="0">游戏版本：</Label>
-			<Label Grid.Row="0" Grid.Column="1" Content="{Binding GameVersion}"/>
-			<Label Grid.Row="1" Grid.Column="0">Modpack版本：</Label>
-			<Label Grid.Row="1" Grid.Column="1" Content="{Binding ModpackVersion}"/>
-			<Label Grid.Row="2" Grid.Column="0">LevelLoader版本：</Label>
-			<Label Grid.Row="2" Grid.Column="1" Content="{Binding LevelLoaderVersion}"/>
-			<Label Grid.Row="3" Grid.Column="0">BepInEx版本：</Label>
-			<Label Grid.Row="3" Grid.Column="1" Content="{Binding BepInExVersion}"/>
+			<TextBlock Grid.Row="0" Grid.Column="0">游戏版本：</TextBlock>
+			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}"/>
+			<TextBlock Grid.Row="1" Grid.Column="0">Modpack版本：</TextBlock>
+			<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ModpackVersion}"/>
+			<TextBlock Grid.Row="2" Grid.Column="0">LevelLoader版本：</TextBlock>
+			<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LevelLoaderVersion}"/>
+			<TextBlock Grid.Row="3" Grid.Column="0">BepInEx版本：</TextBlock>
+			<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding BepInExVersion}"/>
 			<SplitButton Grid.Row="4" Grid.Column="2" IsVisible="{Binding !GameLaunched}" BorderBrush="LightGray" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5"
 						 Command="{Binding Launch}" CommandParameter="1">
 				启动游戏

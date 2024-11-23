@@ -8,51 +8,61 @@
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.Views.SettingView"
              x:DataType="vm:SettingViewModel"
-			 FontSize="18"
 			>
+	<UserControl.Styles>
+		<Styles>
+			<Style Selector="ui|SettingsExpander">
+				<Setter Property="FontSize">20</Setter>
+			</Style>
+		</Styles>
+	</UserControl.Styles>
 	<ScrollViewer>
-		
-	<StackPanel Orientation="Vertical" Margin="10,10">
-		<ui:SettingsExpander Header="游戏">
-			<ui:SettingsExpanderItem Content="游戏路径：" Description="{Binding GamePath}">
-				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectGamePath}"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-			<ui:SettingsExpanderItem Content="地图路径：" Description="{Binding LevelPath}">
-				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectLevelPath}"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-			<ui:SettingsExpanderItem Content="Steam路径：" Description="{Binding SteamPath}">
-				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectSteamPath}"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-		</ui:SettingsExpander>
-		<ui:SettingsExpander Header="下载">
-
-			<ui:SettingsExpanderItem Content="地图预览质量" Description="范围：1-100，重启应用后生效">
-				<ui:SettingsExpanderItem.Footer>
-					<ui:NumberBox Value="{Binding PreviewQuality}" Maximum="100" Minimum="1"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-			<ui:SettingsExpanderItem Content="下载路径：" Description="{Binding DownloadPath}">
-				<ui:SettingsExpanderItem.Footer>
-					<Button Content="选择" Command="{Binding SelectDownloadPath}"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-			<ui:SettingsExpanderItem Content="下载后保存Zip文件：">
-				<ui:SettingsExpanderItem.Footer>
-					<ToggleSwitch  OnContent="开" OffContent="关"  IsChecked="{Binding SaveMapZip}"/>
-				</ui:SettingsExpanderItem.Footer>
-			</ui:SettingsExpanderItem>
-		</ui:SettingsExpander>
-		<ui:SettingsExpander Header="夜间模式">
-			<ui:SettingsExpander.Footer>
-				<ToggleSwitch  OnContent="开" OffContent="关"  IsChecked="{Binding NightMode}"/>
-			</ui:SettingsExpander.Footer>
-		</ui:SettingsExpander>
-	</StackPanel>
+		<StackPanel Orientation="Vertical" Margin="10,10">
+			<ui:SettingsExpander Header="游戏">
+				<ui:SettingsExpanderItem Description="{Binding GamePath}">
+					游戏路径：
+					<ui:SettingsExpanderItem.Footer>
+						<Button Command="{Binding SelectGamePath}">选择</Button>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+				<ui:SettingsExpanderItem Description="{Binding LevelPath}">
+					地图路径：
+					<ui:SettingsExpanderItem.Footer>
+						<Button Command="{Binding SelectLevelPath}">选择</Button>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+				<ui:SettingsExpanderItem Description="{Binding SteamPath}">
+					Steam路径：
+					<ui:SettingsExpanderItem.Footer>
+						<Button Command="{Binding SelectSteamPath}">选择</Button>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander Header="下载">
+				<ui:SettingsExpanderItem Description="范围：1-100，重启应用后生效">
+					地图预览质量
+					<ui:SettingsExpanderItem.Footer>
+						<ui:NumberBox Value="{Binding PreviewQuality}" Maximum="100" Minimum="1"/>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+				<ui:SettingsExpanderItem Description="{Binding DownloadPath}">
+					下载路径：
+					<ui:SettingsExpanderItem.Footer>
+						<Button Command="{Binding SelectDownloadPath}">选择</Button>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+				<ui:SettingsExpanderItem>
+					下载后保存Zip文件：
+					<ui:SettingsExpanderItem.Footer>
+						<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding SaveMapZip}"/>
+					</ui:SettingsExpanderItem.Footer>
+				</ui:SettingsExpanderItem>
+			</ui:SettingsExpander>
+			<ui:SettingsExpander Header="夜间模式">
+				<ui:SettingsExpander.Footer>
+					<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding NightMode}"/>
+				</ui:SettingsExpander.Footer>
+			</ui:SettingsExpander>
+		</StackPanel>
 	</ScrollViewer>
 </UserControl>
