@@ -61,8 +61,6 @@ namespace GOILauncher.ViewModels
         public void Close()
         {
             GameProcess?.Kill();
-            GameProcess = null;
-            GameLaunched = false;
         }
         private Setting Setting { get; } = Setting.Instance;
         private string GamePath  => Setting.GamePath; 
