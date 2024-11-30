@@ -69,6 +69,7 @@ namespace GOILauncher.ViewModels
         {
             LCQuery<Map> query = new(nameof(Map));
             query.OrderByAscending("Name");
+            query.WhereEqualTo("Platform", "PC");
             ReadOnlyCollection<Map> maps = await query.Find();
             bool levelPathExisted = SelectedLevelPathNoteHide;
             foreach (Map map in maps)
