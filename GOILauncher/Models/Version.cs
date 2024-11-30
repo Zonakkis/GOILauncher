@@ -25,7 +25,7 @@ namespace GOILauncher.Models
         int Y { get; }
         int Z { get; }
 
-        public static readonly Version Instance = new(0, 2, 0);
+        public static readonly Version Instance = new(0, 2, 1);
         public int GetVersionValue()
         {
             return X * 10000 + Y * 100 + Z;
