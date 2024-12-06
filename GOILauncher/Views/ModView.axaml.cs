@@ -12,11 +12,5 @@ namespace GOILauncher.Views
         {
             InitializeComponent();
         }
-
-        void SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var listbox = sender as ListBox;
-            listbox!.SelectedItem = null;
-        }
     }
 }

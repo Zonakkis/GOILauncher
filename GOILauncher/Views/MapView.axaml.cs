@@ -11,20 +11,6 @@ namespace GOILauncher.Views
         public MapView()
         {
             InitializeComponent();
-            MapSearcher.ItemFilter += SearchEmployees;
         }
-
-        bool SearchEmployees(string search, object value)
-        {
-            if (value is Map emp)
-            {
-                if (emp.Name.Contains(search, System.StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
     }
 }

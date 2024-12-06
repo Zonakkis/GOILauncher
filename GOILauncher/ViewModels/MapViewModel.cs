@@ -1,7 +1,4 @@
-﻿using Avalonia.Threading;
-using DynamicData;
-using FluentAvalonia.Core;
-using FluentAvalonia.UI.Controls;
+﻿using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
 using LeanCloud.Storage;
@@ -10,9 +7,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,61 +17,50 @@ namespace GOILauncher.ViewModels
     {
         public MapViewModel()
         {
-            CurrentMap = new();
-            hideDownloadedMap = true;
-            SelectedLevelPathNoteHide = !Setting.IsDefault(nameof(LevelPath));
+            UnselectedLevelPath = !Setting.IsDefault(nameof(LevelPath));
             Setting.LevelPathChanged += () =>
             {
-                SelectedLevelPathNoteHide = true;
+                UnselectedLevelPath = true;
             }; 
-            var isDownloadValid = this.WhenAnyValue(x => x.SelectedLevelPathNoteHide);
+            var isDownloadValid = this.WhenAnyValue(x => x.UnselectedLevelPath);
             DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
-            Forms = ["不限", "原创", "移植"];
-            Form = Forms[0];
-            Styles = ["不限", "挑战", "休闲"];
-            Style = Styles[0];
-            Difficulties = ["不限", "简单", "中等", "困难", "极难", "地狱"];
-            Difficulty = Difficulties[0];
-            LastUpdateTime = "未知";
         }
         public override void Init()
         {
-            if (!System.IO.Directory.Exists(Path.Combine(Directory, "Download")))
+            if (!Directory.Exists(Path.Combine(BaseDirectory, nameof(Download))))
             {
-                System.IO.Directory.CreateDirectory(Path.Combine(Directory, "Download"));
+                Directory.CreateDirectory(Path.Combine(BaseDirectory, nameof(Download)));
             }
-            LCObject.RegisterSubclass("Map", () => new Map());
-            GetMaps();
-            FilterSettingChanged = false;
+            LCObject.RegisterSubclass(nameof(Map), () => new Map());
+            _ = GetMaps();
         }
         public override void OnSelectedViewChanged()
         {
             foreach (var map in AllMaps)
             {
-                map.CheckWhetherExisted();
+                map.CheckMapExists();
             }
-            RefreshMapList();
+            Refresh();
         }
-        public void OnSelectedMapChanged(Map map)
+        public void OnSelectedMapChanged(Map? map)
         {
-            IsSelectedMap = (map != null);
+            IsSelectedMap = map is not null;
             if (IsSelectedMap)
             {
                 CurrentMap = map!;
             }
         }
-        public async void GetMaps()
+        public async Task GetMaps()
         {
             LCQuery<Map> query = new(nameof(Map));
-            query.OrderByAscending("Name");
+            query.OrderByAscending(nameof(Map.Name));
             query.WhereEqualTo("Platform", "PC");
-            ReadOnlyCollection<Map> maps = await query.Find();
-            bool levelPathExisted = SelectedLevelPathNoteHide;
-            foreach (Map map in maps)
+            var maps = await query.Find();
+            foreach (var map in maps)
             {
-                if (levelPathExisted)
+                if (UnselectedLevelPath)
                 {
-                    map.CheckWhetherExisted();
+                    map.CheckMapExists();
                 }
                 if (string.IsNullOrEmpty(map.Preview))
                 {
@@ -89,51 +73,30 @@ namespace GOILauncher.ViewModels
                 }
                 AllMaps.Add(map);
             }
-            RefreshMapList();
+            Refresh();
             query.OrderByDescending("updatedAt");
             query.Select("updatedAt");
             LastUpdateTime = (await query.First()).UpdatedAt.ToLongDateString();
         }
-        public void ApplyFilterSetting()
+        public void Refresh()
         {
-            FilterSettingChanged = false;
-            RefreshMapList();
-        }
-        public void RefreshMapList()
-        {
-            MapList.Clear();
+            Maps.Clear();
             foreach (var map in AllMaps)
             {
-                if (HideDownloadedMap && map.Downloaded)
-                {
-                    continue;
-                }
-                if (Form != Forms[0] && map.Form != Form)
-                {
-                    continue;
-                }
+                if (HideDownloadedMap && map.Downloaded) continue;
+                if (!map.Name.Contains(FilterMapName, StringComparison.InvariantCultureIgnoreCase)) continue;
+                if (Form != Forms[0] && map.Form != Form) continue;
                 if (Style != Styles[0] && map.Style != Style) continue;
                 if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
-                MapList.Add(map);
+                Maps.Add(map);
             }
-            this.RaisePropertyChanged(nameof(MapList));
-
         }
-        public void SearchMap()
+        public async Task Download()
         {
-            Map? map = MapList.ToList().Find(t => t.Name == Search);
-            SelectedMap = map;
-        }
-        public async void Download()
-        {
-
             if (SelectedMap == null) return;
-            Map map = SelectedMap;
-            map.Downloadable = false;
-            CancellationTokenSource tokenSource = new();
-            CancellationToken token = tokenSource.Token;
-            map.IsDownloading = true;
-            map.Status = "启动下载中";
+            var map = SelectedMap;
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
             await DownloadHelper.Download(
                     $"{DownloadPath}/{map.Name}.zip",
                     map,
@@ -144,20 +107,18 @@ namespace GOILauncher.ViewModels
             NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
-            RefreshMapList();
+            Refresh();
         }
-
-        private static string Directory => System.AppDomain.CurrentDomain.BaseDirectory;
+        private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         [Reactive]
-        public Map CurrentMap{ get; set; }
+        public Map CurrentMap{ get; set; } = new();
+
         [Reactive]
         public bool IsSelectedMap { get; set; }
         public ObservableCollection<Map> AllMaps { get; } = [];
-        public ObservableCollection<Map> MapList { get; set; } = [];
-
-        public SourceList<Map> Maps { get; set; } = new();
+        public ObservableCollection<Map> Maps { get; set; } = [];
         [Reactive]
-        public string LastUpdateTime { get; set; }
+        public string LastUpdateTime { get; set; } = "未知";
 
         private Map? selectedMap;
         public Map? SelectedMap
@@ -165,72 +126,80 @@ namespace GOILauncher.ViewModels
             get => selectedMap;
             set
             {
-                OnSelectedMapChanged(value!);
-                this.RaiseAndSetIfChanged(ref selectedMap, value, nameof(SelectedMap));
+                OnSelectedMapChanged(value);
+                this.RaiseAndSetIfChanged(ref selectedMap, value);
             }
         }
+        public ReactiveCommand<Unit, Task> DownloadCommand { get; set; }
         [Reactive]
-        public string Search { get; set; } = string.Empty;
-        public ReactiveCommand<Unit, Unit> DownloadCommand { get; set; }
-        [Reactive]
-        public bool SelectedLevelPathNoteHide { get; set; }
+        public bool UnselectedLevelPath { get; set; }
         private Setting Setting { get; } = Setting.Instance;
         private string LevelPath => Setting.LevelPath;
         private string DownloadPath => Setting.DownloadPath;
         private int PreviewQuality => Setting.PreviewQuality;
 
-        private bool hideDownloadedMap;
+        private bool hideDownloadedMap = true;
         public bool HideDownloadedMap
         {
             get => hideDownloadedMap;
             set
             {
                 if (HideDownloadedMap == value) return;
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref hideDownloadedMap, value, nameof(HideDownloadedMap));
+                this.RaiseAndSetIfChanged(ref hideDownloadedMap, value);
+                Refresh();
             }
         }
+        private string filterMapName = string.Empty;
+        public string FilterMapName
+        {
+            get => filterMapName;
+            set 
+            {
+                if(FilterMapName == value) return;
+                this.RaiseAndSetIfChanged(ref filterMapName, value);
+                Refresh();
+            }
+        }
+
         [Reactive]
-        public bool FilterSettingChanged { get; set; }
-        [Reactive]
-        public string[] Forms { get; set; }
-        public string form = "不限";
-        public string Form
+        public string[] Forms { get; set; } = ["不限", "原创", "移植"];
+        private string? form = "不限";
+        public string? Form
         {
             get => form;
             set
             {
-                if (value is not string val || val == Form) return;
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref form, value, nameof(Form));
+                if (value is null || value == Form) return;
+                this.RaiseAndSetIfChanged(ref form, value);
+                Refresh();
             }
         }
         [Reactive]
-        public string[] Styles { get; set; }
-        private string style = "不限";
-        public string Style
+        public string[] Styles { get; set; } = ["不限", "挑战", "休闲"];
+        private string? style = "不限";
+        public string? Style
         {
             get => style;
             set
             {
-                if (value is not string val || val == Style) return;
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref style, value, nameof(Style));
+                if (value is null || value == Style) return;
+                this.RaiseAndSetIfChanged(ref style, value);
+                Refresh();
             }
         }
         [Reactive]
-        public string[] Difficulties { get; set; }
+        public string[] Difficulties { get; set; } = ["不限", "简单", "中等", "困难", "极难", "地狱"];
 
-        private string difficulty = "不限";
+        private string? difficulty = "不限";
 
-        public string Difficulty
+        public string? Difficulty
         {
             get => difficulty;
             set
             {
-                if (value is not string val || val == Difficulty) return;
-                FilterSettingChanged = true;
-                this.RaiseAndSetIfChanged(ref difficulty, value, nameof(Difficulty));
+                if (value is null || value == Difficulty) return;
+                this.RaiseAndSetIfChanged(ref difficulty, value);
+                Refresh();
             }
         }
     }

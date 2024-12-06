@@ -1,19 +1,7 @@
-﻿using Downloader;
-using DynamicData;
-using FluentAvalonia.UI.Controls;
-using GOILauncher.Helpers;
-using GOILauncher.Models;
+﻿using GOILauncher.Models;
 using LeanCloud.Storage;
-using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
@@ -22,10 +10,10 @@ namespace GOILauncher.ViewModels
     {
         public ModViewModel()
         {
-            SelectedGamePathNoteHide = !Setting.IsDefault(nameof(Setting.GamePath));
+            UnselectedGamePath = !Setting.IsDefault(nameof(Setting.GamePath));
             Setting.GamePathChanged += () =>
             {
-                SelectedGamePathNoteHide = true;
+                UnselectedGamePath = true;
             };
         }
 
@@ -35,51 +23,51 @@ namespace GOILauncher.ViewModels
             LCObject.RegisterSubclass(nameof(LevelLoader), () => new LevelLoader());
             LCObject.RegisterSubclass(nameof(ModpackandLevelLoader), () => new ModpackandLevelLoader());
             LCObject.RegisterSubclass(nameof(OtherMod), () => new OtherMod());
-            GetModpacks();
-            GetLevelLoaders();
-            GetModpackandLevelLoaders();
-            GetOtherMods();
+            _ = GetModpacks();
+            _ = GetLevelLoaders();
+            _ = GetModpackandLevelLoaders();
+            _ = GetOtherMods();
         }
         public override void OnSelectedViewChanged()
         {
 
         }
-        private async void GetModpacks()
+        private async Task GetModpacks()
         {
-            LCQuery<Modpack> query = new(nameof(Modpack));
+            var query = new LCQuery<Modpack>(nameof(Modpack));
             query.OrderByDescending(nameof(Modpack.Build));
-            ReadOnlyCollection<Modpack> modpacks = await query.Find();
-            foreach (Modpack modpack in modpacks)
+            var modpacks = await query.Find();
+            foreach (var modpack in modpacks)
             {
                 Modpacks.Add(modpack);
             }
         }
-        private async void GetLevelLoaders()
+        private async Task GetLevelLoaders()
         {
-            LCQuery<LevelLoader> query = new(nameof(LevelLoader));
+            var query = new LCQuery<LevelLoader>(nameof(LevelLoader));
             query.OrderByDescending(nameof(LevelLoader.Build));
-            ReadOnlyCollection<LevelLoader> levelLoaders = await query.Find();
-            foreach (LevelLoader levelLoader in levelLoaders)
+            var levelLoaders = await query.Find();
+            foreach (var levelLoader in levelLoaders)
             {
                 LevelLoaders.Add(levelLoader);
             }
         }
-        private async void GetModpackandLevelLoaders()
+        private async Task GetModpackandLevelLoaders()
         {
-            LCQuery<ModpackandLevelLoader> query = new(nameof(ModpackandLevelLoader));
+            var query = new LCQuery<ModpackandLevelLoader>(nameof(ModpackandLevelLoader));
             query.OrderByDescending(nameof(ModpackandLevelLoader.Build));
-            ReadOnlyCollection<ModpackandLevelLoader> modpackandLevelLoaders = await query.Find();
-            foreach (ModpackandLevelLoader modpackandLevelLoader in modpackandLevelLoaders)
+            var modpackandLevelLoaders = await query.Find();
+            foreach (var modpackandLevelLoader in modpackandLevelLoaders)
             {
                 ModpackandLevelLoaders.Add(modpackandLevelLoader);
             }
         }
-        private async void GetOtherMods()
+        private async Task GetOtherMods()
         {
-            LCQuery<OtherMod> query = new(nameof(OtherMod));
+            var  query = new LCQuery<OtherMod>(nameof(OtherMod));
             query.OrderByAscending(nameof(OtherMod.Name));
-            ReadOnlyCollection<OtherMod> otherMods = await query.Find();
-            foreach (OtherMod otherMod in otherMods)
+            var otherMods = await query.Find();
+            foreach (var otherMod in otherMods)
             {
                 OtherMods.Add(otherMod);
             }
@@ -89,7 +77,7 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<ModpackandLevelLoader> ModpackandLevelLoaders { get; } = [];
         public ObservableCollection<OtherMod> OtherMods { get; } = [];
         [Reactive]
-        public bool SelectedGamePathNoteHide { get; set; }
+        public bool UnselectedGamePath { get; set; }
         private static Setting Setting => Setting.Instance;
     }
 }

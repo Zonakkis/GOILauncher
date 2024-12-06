@@ -1,11 +1,6 @@
 ﻿using Downloader;
 using GOILauncher.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,27 +8,15 @@ namespace GOILauncher.Helpers
 {
     public class DownloadHelper
     {
-        public static async Task Download(string url, string fileName,
-            EventHandler<DownloadStartedEventArgs>? downloadStartedEvent = null,
-            EventHandler<Downloader.DownloadProgressChangedEventArgs>? downloadProgressChangedEventArgs = null,
-            EventHandler<AsyncCompletedEventArgs>? downloadCompletedEvent = null,
-            CancellationToken cancellationToken = default)
-        {
-            using DownloadService downloadService = new(Configuration);
-            downloadService.DownloadStarted += downloadStartedEvent;
-            downloadService.DownloadProgressChanged += downloadProgressChangedEventArgs;
-            downloadService.DownloadFileCompleted += downloadCompletedEvent;
-            await downloadService.DownloadFileTaskAsync(url, fileName, cancellationToken);
-        }
         public static async Task Download(string fileName,
             IDownloadable download,
             CancellationToken cancellationToken = default)
         {
-            using DownloadService downloadService = new(Configuration);
+            await using DownloadService downloadService = new(Configuration);
             downloadService.DownloadStarted += download.OnDownloadStarted;
             downloadService.DownloadProgressChanged += download.OnDownloadProgressChanged;
             downloadService.DownloadFileCompleted += download.OnDownloadCompleted;
-            await downloadService.DownloadFileTaskAsync(download.URL, fileName, cancellationToken);
+            await downloadService.DownloadFileTaskAsync(download.Url, fileName, cancellationToken);
         }
         private static DownloadConfiguration Configuration { get; } = new DownloadConfiguration()
         {

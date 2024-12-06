@@ -2,12 +2,9 @@
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
 using LeanCloud.Storage;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +21,7 @@ namespace GOILauncher.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        public async void Download()
+        public async Task Download()
         {
             if (!TargetGameVersion.Contains(GameInfo.GameVersion) && !TargetGameVersion.Concatenate("/").Contains(GameInfo.GameVersion))
             {
@@ -32,10 +29,8 @@ namespace GOILauncher.Models
                 return;
             }
             Downloadable = false;
-            IsDownloading = true;
-            Status = "启动下载中";
-            CancellationTokenSource tokenSource = new();
-            CancellationToken token = tokenSource.Token;
+            var tokenSource = new CancellationTokenSource();
+            var token = tokenSource.Token;
             await DownloadHelper.Download(
                     $"{Setting.DownloadPath}/{Name}{Build}.zip",
                     this,
@@ -46,40 +41,34 @@ namespace GOILauncher.Models
             await ZipHelper.Extract($"{Setting.DownloadPath}/{Name}{Build}.zip", Setting.GamePath);
             GameInfo.Refresh(Setting.GamePath);
             IsExtracting = false;
-            IsDownloading = false;
-            Downloadable =  true;
+            Downloadable = true;
             await NotificationHelper.ShowContentDialog("提示", $"已经安装{Name}{Build}！");
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
-
+            IsDownloading = true;
+            Status = "下载中";
         }
-
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = eventArgs.ProgressPercentage;
             Status = $"({ProgressPercentage:0.0}%/{StorageUnitConvertHelper.ByteTo(eventArgs.BytesPerSecondSpeed)}/s)下载中";
         }
-
-        public void OnDownloadCompleted(object? sender, AsyncCompletedEventArgs eventArgs)
-        {
-
-        }
         protected static event Action? DownloadableChanged;
-        private static bool isDownloadable = true;
+        private static bool _isDownloadable = true;
         protected static bool IsDownloadable
         {
-            get => isDownloadable;
+            get => _isDownloadable;
             set
             {
-                isDownloadable = value;
+                _isDownloadable = value;
                 DownloadableChanged?.Invoke();
             }
         }
         public string Name => (this[nameof(Name)] as string)!;
         public string Author => (this[nameof(Author)] as string)!;
         public string Build => (this[nameof(Build)] as string)!;
-        public string URL => (this[nameof(URL)] as string)!;
+        public string Url => (this[nameof(Url)] as string)!;
         public List<string> TargetGameVersion => (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
         public string TargetVersion => TargetGameVersion.Concatenate("/");
         private double progressPercentage;

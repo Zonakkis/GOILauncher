@@ -1,24 +1,12 @@
-﻿using Avalonia.Controls;
-using Avalonia.Media.Imaging;
-using Downloader;
-using FluentAvalonia.UI.Controls;
+﻿using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
 using Ionic.Zip;
-using LC.Newtonsoft.Json.Linq;
 using LeanCloud.Storage;
-using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using static GOILauncher.ViewModels.MapManageViewModel;
 
 namespace GOILauncher.Models
 {
@@ -28,14 +16,13 @@ namespace GOILauncher.Models
         {
             Downloadable = true;
         }
-
         public event PropertyChangedEventHandler? PropertyChanged;
         private void NotifyPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         }
-        public void CheckWhetherExisted()
+        public bool CheckMapExists()
         {
             if (!IsDownloading && !Setting.IsDefault(nameof(Setting.LevelPath)))
             {
@@ -45,17 +32,16 @@ namespace GOILauncher.Models
                 {
                     Downloaded = true;
                     Downloadable = false;
+                    return true;
                 }
                 else
                 {
                     Downloaded = false;
                     Downloadable = true;
+                    return false;
                 }
             }
-        }
-        public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
-        {
-
+            return false;
         }
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
@@ -75,24 +61,16 @@ namespace GOILauncher.Models
             }
             ProgressPercentage = Convert.ToInt32((float)eventArgs.BytesTransferred / eventArgs.TotalBytesToTransfer * 100f);
         }
-        public override string ToString()
-        {
-            return Name;
-        }
-
         public string Name => (this[nameof(Name)] as string)!;
         public string Author => (this[nameof(Author)] as string)!;
         public string Size => (this[nameof(Size)] as string)!;
         public string Preview 
         { 
             get => (this[nameof(Preview)] as string)!;
-            set
-            {
-                this[nameof(Preview)] = value;
-            }
+            set => this[nameof(Preview)] = value;
         }
-        public bool HasPreview => Preview is string str && str.StartsWith("http");
-        public string URL => (this[nameof(URL)] as string)!;
+        public bool HasPreview => Preview is { } str && str.StartsWith("http");
+        public string Url => (this[nameof(Url)] as string)!;
         public string Form => (this[nameof(Form)] as string)!;
         public string Style => (this[nameof(Style)] as string)!;
         public string Difficulty => (this[nameof(Difficulty)] as string)!;
@@ -105,8 +83,7 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(Downloaded));
             }
         }
-
-        public bool isDownloading;
+        private bool isDownloading;
         public bool IsDownloading
         {
             get => isDownloading; 
@@ -116,8 +93,7 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(IsDownloading));
             }
         }
-
-        public double progressPercentage;
+        private double progressPercentage;
         public double ProgressPercentage
         {
             get => progressPercentage; 
@@ -127,8 +103,7 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(ProgressPercentage));
             }
         }
-
-        public string status = string.Empty;
+        private string status = string.Empty;
         public string Status
         {
             get => status; 
@@ -138,9 +113,7 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(Status));
             }
         }
-
-        public bool downloadable;
-
+        private bool downloadable;
         public bool Downloadable
         {
             get => downloadable; 

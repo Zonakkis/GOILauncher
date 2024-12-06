@@ -16,17 +16,17 @@
 			<Style Selector="AccessText">
 				<Setter Property="FontSize">20</Setter>
 			</Style>
-			<Style Selector="TextBlock[Tag=DownloadStatu]">
+			<Style Selector="TextBlock[Tag=DownloadStatus]">
 				<Setter Property="FontSize">16</Setter>
 			</Style>
 		</Styles>
 	</UserControl.Styles>
 	<ScrollViewer>
 		<Grid>
-			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SelectedGamePathNoteHide}">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !UnselectedGamePath}">
 				未选择游戏路径，请前往设置页面选择
 			</TextBlock>
-			<StackPanel Margin="10,10,10,0" IsVisible="{Binding SelectedGamePathNoteHide}">
+			<StackPanel Margin="10,10,10,0" IsVisible="{Binding UnselectedGamePath}">
 				<Expander>
 					<Expander.Header>
 						<TextBlock>
@@ -35,8 +35,8 @@
 							<Run FontSize="20">Anjo2</Run>
 						</TextBlock>
 					</Expander.Header>
-					<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding Modpacks}">
-						<ListBox.ItemTemplate>
+					<ItemsControl ItemsSource="{Binding Modpacks}">
+						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:Modpack">
 								<Grid ColumnDefinitions="auto,*">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
@@ -44,15 +44,15 @@
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 									</TextBlock>
 									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatu" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
 										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
 												 Command="{Binding Download}">下载</Button>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 				</Expander>
 				<Expander Margin="0,10,0,0">
 					<Expander.Header>
@@ -62,8 +62,8 @@
 							<Run FontSize="20">Jor02</Run>
 						</TextBlock>
 					</Expander.Header>
-					<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding LevelLoaders}">
-						<ListBox.ItemTemplate>
+					<ItemsControl ItemsSource="{Binding LevelLoaders}">
+						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:LevelLoader">
 								<Grid ColumnDefinitions="auto,*">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
@@ -71,16 +71,16 @@
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 									</TextBlock>
 									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatu" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
 										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
 												 Command="{Binding Download}">下载</Button>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Expander>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+			</Expander>
 				<Expander Margin="0,10,0,0">
 					<Expander.Header>
 						<TextBlock>
@@ -89,8 +89,8 @@
 							<Run FontSize="20">Nameless＆Jor02</Run>
 						</TextBlock>
 					</Expander.Header>
-					<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding ModpackandLevelLoaders}">
-						<ListBox.ItemTemplate>
+					<ItemsControl ItemsSource="{Binding ModpackandLevelLoaders}">
+						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:ModpackandLevelLoader">
 								<Grid ColumnDefinitions="auto,*">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
@@ -98,22 +98,22 @@
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 									</TextBlock>
 									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatu" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
 										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
 												 Command="{Binding Download}">下载</Button>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
 				</Expander>
-				<Expander Margin="0,10,0,0">
-					<Expander.Header>
-						<TextBlock Text="其他Mod" FontSize="24" FontWeight="Bold"/>
-					</Expander.Header>
-					<ListBox SelectionChanged="SelectionChanged" ItemsSource="{Binding OtherMods}">
-						<ListBox.ItemTemplate>
+                <Expander Margin="0,10,0,0">
+                    <Expander.Header>
+                        <TextBlock Text="其他Mod" FontSize="24" FontWeight="Bold"/>
+                    </Expander.Header>
+					<ItemsControl ItemsSource="{Binding OtherMods}">
+						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:OtherMod">
 								<Grid ColumnDefinitions="auto,*">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
@@ -124,16 +124,16 @@
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
 									</TextBlock>
 									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatu" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
 										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
 										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-												 Command="{Binding Download}">下载</Button>
+                                                Command="{Binding Download}">下载</Button>
 									</StackPanel>
 								</Grid>
 							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Expander>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+                </Expander>
 			</StackPanel>
 		</Grid>
 	</ScrollViewer>
