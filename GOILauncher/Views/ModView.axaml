@@ -38,7 +38,7 @@
 					<ItemsControl ItemsSource="{Binding Modpacks}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:Modpack">
-								<Grid ColumnDefinitions="auto,*">
+								<Grid ColumnDefinitions="auto,*" Margin="0,2">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
 										<Run Text="{Binding Build}"/>
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
@@ -65,7 +65,7 @@
 					<ItemsControl ItemsSource="{Binding LevelLoaders}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:LevelLoader">
-								<Grid ColumnDefinitions="auto,*">
+								<Grid ColumnDefinitions="auto,*" Margin="0,2">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
 										<Run Text="{Binding Build}"/>
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
@@ -92,7 +92,7 @@
 					<ItemsControl ItemsSource="{Binding ModpackandLevelLoaders}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:ModpackandLevelLoader">
-								<Grid ColumnDefinitions="auto,*">
+								<Grid ColumnDefinitions="auto,*" Margin="0,2">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
 										<Run Text="{Binding Build}"/>
 										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
@@ -115,7 +115,7 @@
 					<ItemsControl ItemsSource="{Binding OtherMods}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate x:DataType="m:OtherMod">
-								<Grid ColumnDefinitions="auto,*">
+								<Grid ColumnDefinitions="auto,*" Margin="0,2">
 									<TextBlock Grid.Column="0" VerticalAlignment="Center">
 										<Run Text="{Binding Name}"/>
 										<Run Text="{Binding Build}"/>
