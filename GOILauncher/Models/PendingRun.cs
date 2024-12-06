@@ -1,20 +1,9 @@
 ﻿using LeanCloud.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    internal class PendingRun : LCObject
+    internal class PendingRun() : LCObject(nameof(PendingRun))
     {
-        public PendingRun() : base(nameof(PendingRun))
-        {
-
-        }
-
-
         public string Category
         {
             get => (this[nameof(Category)] as string)!;
@@ -22,22 +11,22 @@ namespace GOILauncher.Models
         }
         public string Player
         {
-            get => (this["Player"] as string)!;
+            get => (this[nameof(Player)] as string)!;
             set => this[nameof(Player)] = value;
         }
-        public string UID
+        public string? UID
         {
-            get => (this["UID"] as string)!;
+            get => (this[nameof(UID)] as string)!;
             set => this[nameof(UID)] = value;
         }
         public string Platform
         {
-            get => (this["Platform"] as string)!;
+            get => (this[nameof(Platform)] as string)!;
             set => this[nameof(Platform)] = value;
         }
         public string Time
         {
-            get => (this["Time"] as string)!;
+            get => (this[nameof(Time)] as string)!;
             set => this[nameof(Time)] = value;
         }
         public int Minute
@@ -57,16 +46,16 @@ namespace GOILauncher.Models
         }
         public string VideoPlatform
         {
-            get => (this["VideoPlatform"] as string)!;
+            get => (this[nameof(VideoPlatform)] as string)!;
             set => this[nameof(VideoPlatform)] = value;
         }
         public string VID
         {
-            get => (this["VID"] as string)!;
+            get => (this[nameof(VID)] as string)!;
             set => this[nameof(VID)] = value;
         }
 
-        public string VideoURL { get; set; }
-        public string PlayerURL { get; set; }
+        public string? VideoURL { get; set; }
+        public string? PlayerURL { get; set; }
     }
 }

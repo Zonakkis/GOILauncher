@@ -6,21 +6,17 @@
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="570"
 		Width="1050" Height="570"
         xmlns:vm="using:GOILauncher.ViewModels"
-        xmlns:views="using:GOILauncher.Views"
         x:Class="GOILauncher.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/GOIL.ico"
+        Icon="/Assets/GOILauncher.ico"
         Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
 		Loaded="Loaded"
 		Name="Window"
 		>
 	<Design.DataContext>
-		<!-- This only sets the DataContext for the previewer in an IDE,
-             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
 		<vm:MainWindowViewModel/>
 	</Design.DataContext>
-
 	<Grid>
 		<ui:NavigationView MenuItemsSource="{Binding Views}" FooterMenuItemsSource="{Binding FooterViews}" Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}" OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"  PaneTitle=" GOILauncher" IsSettingsVisible="False">
 			<ui:NavigationView.MenuItemTemplate>

@@ -1,15 +1,7 @@
 ﻿using Avalonia;
-using Avalonia.Controls.Shapes;
 using GOILauncher.Helpers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
@@ -27,9 +19,9 @@ namespace GOILauncher.Models
 
         static Setting()
         {
-            if (File.Exists($"{System.AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+            if (File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
             {
-                Instance = StorageHelper.LoadJSON<Setting>(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+                Instance = StorageHelper.LoadJson<Setting>(AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
                 if (Instance.NightMode)
                 {
                     Application.Current!.RequestedThemeVariant = Avalonia.Styling.ThemeVariant.Dark;
@@ -77,7 +69,7 @@ namespace GOILauncher.Models
                     case nameof(SteamPath):
                         return (T)(object)"未选择（需要通过Steam启动游戏时才选择，否则可不选）";
                     case nameof(DownloadPath):
-                        return (T)(object)$"{System.AppDomain.CurrentDomain.BaseDirectory}Download";
+                        return (T)(object)$"{AppDomain.CurrentDomain.BaseDirectory}Download";
                 }
             }
             else if (typeof(T) == typeof(bool))
@@ -171,7 +163,7 @@ namespace GOILauncher.Models
         public static Setting Instance { get; private set; }
         public void Save()
         {
-            StorageHelper.SaveJSON(System.AppDomain.CurrentDomain.BaseDirectory, "Settings.json", this, true);
+            StorageHelper.SaveJson(AppDomain.CurrentDomain.BaseDirectory, "Settings.json", this, true);
         }
     }
 }

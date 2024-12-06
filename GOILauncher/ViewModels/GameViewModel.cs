@@ -50,7 +50,7 @@ namespace GOILauncher.ViewModels
             if(GameProcess is not null)
             {
                 GameProcess.EnableRaisingEvents = true;
-                GameProcess.Exited += (sender, e) =>
+                GameProcess.Exited += (_, _) =>
                 {
                     GameLaunched = false;
                     GameProcess = null;

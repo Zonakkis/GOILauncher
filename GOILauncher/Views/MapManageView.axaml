@@ -2,8 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		     xmlns:ui="using:FluentAvalonia.UI.Controls"
-			 xmlns:vm="using:GOILauncher.ViewModels"
+             xmlns:vm="using:GOILauncher.ViewModels"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.Views.MapManageView"
 			 x:DataType="vm:MapManageViewModel"
@@ -13,7 +12,7 @@
 		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" Focusable="False" CanUserResizeColumns="True"  >
 			<DataGrid.Columns>
 				<DataGridTemplateColumn Header="" Width="auto" IsReadOnly="True">
-					<DataTemplate>
+					<DataTemplate x:DataType="vm:MapInfo">
 						<CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>

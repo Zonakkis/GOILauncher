@@ -3,8 +3,6 @@ using Ionic.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reactive.Joins;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,25 +22,26 @@ namespace GOILauncher.Helpers
                 File.Move(zipFiles[0], zipName);
                 return;
             }
-            using Stream zipStream = File.OpenWrite(Path.Combine(path, zipName));
-            for (int i = 0; i < zipFiles.Count; i++)
+
+            await using Stream zipStream = File.OpenWrite(Path.Combine(path, zipName));
+            foreach (var zipFile in zipFiles)
             {
-                using (Stream stream = File.OpenRead(zipFiles[i]))
+                await using (Stream stream = File.OpenRead(zipFile))
                 {
                     await Task.Run(() => stream.CopyTo(zipStream));
                 }
-                File.Delete(zipFiles[i]);
+                File.Delete(zipFile);
             }
         }
         public static async Task Extract(string zipPath, string destinationPath,EventHandler<ExtractProgressEventArgs>? progressHandler = null)
         {
-            using (ZipFile zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
+            using (var zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
             {
                 if(progressHandler is not null)
                 {
                     zip.ExtractProgress += progressHandler;
                 }
-                foreach (ZipEntry entry in zip)
+                foreach (var entry in zip)
                 {
 
                     await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
@@ -16,14 +12,15 @@ namespace GOILauncher.Models
         }
         public Version(string version)
         {
-            string[] v = version.Split('.', StringSplitOptions.RemoveEmptyEntries);
+            var v = version.Split('.', StringSplitOptions.RemoveEmptyEntries);
             X = int.Parse(v[0]);
             Y = int.Parse(v[1]);
             Z = int.Parse(v[2]);
         }
-        int X { get; }
-        int Y { get; }
-        int Z { get; }
+
+        private int X { get; }
+        private int Y { get; }
+        private int Z { get; }
 
         public static readonly Version Instance = new(0, 2, 1);
         public int GetVersionValue()

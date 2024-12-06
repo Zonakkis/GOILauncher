@@ -1,26 +1,20 @@
-﻿using Avalonia.Automation;
-using LC.Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using LC.Newtonsoft.Json;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Helpers
 {
     internal class BilibiliHelper
     {
-        public async static Task<BlibiliResult> GetResultFromBVID(string bvid)
+        public static async Task<BilibiliResult> GetResultFromBVID(string bvid)
         {
             using HttpClient client = new();
             var response = await client.GetAsync($"https://api.bilibili.com/x/web-interface/view?bvid={bvid}");
-            string content = await response.Content.ReadAsStringAsync();
+            var content = await response.Content.ReadAsStringAsync();
             var bilibiliResponse = JsonConvert.DeserializeObject<BilibiliResponse>(content);
             if (bilibiliResponse.code == 0)
             {
-                return new BlibiliResult()
+                return new BilibiliResult()
                 {
                     UID = bilibiliResponse.data.owner.mid,
                     Name = bilibiliResponse.data.owner.name
@@ -28,7 +22,7 @@ namespace GOILauncher.Helpers
             }
             else
             {
-                return new BlibiliResult();
+                return new BilibiliResult() { UID = string.Empty };
             }
         }
         public class BilibiliResponse
@@ -45,9 +39,9 @@ namespace GOILauncher.Helpers
             public string? mid;
             public string? name;
         }
-        public class BlibiliResult
+        public class BilibiliResult
         {
-            public string UID { get; set; }
+            public required string? UID { get; set; }
             public string? Name { get; set; }
         }
     }

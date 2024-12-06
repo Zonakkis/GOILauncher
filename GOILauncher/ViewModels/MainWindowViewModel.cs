@@ -12,7 +12,7 @@ namespace GOILauncher.ViewModels
     {
         public MainWindowViewModel()
         {
-            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com", null);
+            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com");
 #if DEBUG
             EnableLeanCloudLog();
 #endif
@@ -22,7 +22,7 @@ namespace GOILauncher.ViewModels
 #if DEBUG
         private static void EnableLeanCloudLog()
         {
-            LCLogger.LogDelegate = (LCLogLevel level, string info) =>
+            LCLogger.LogDelegate = (level, info) =>
             {
                 switch (level)
                 {
@@ -57,13 +57,10 @@ namespace GOILauncher.ViewModels
         public ViewModelBase CurrentView { get; set; }
         public Page SelectedPage
         {
-            get
-            {
-                return selectedView!;
-            }
+            get => selectedView!;
             set
             {
-                this.RaiseAndSetIfChanged(ref selectedView, value, nameof(SelectedPage));
+                this.RaiseAndSetIfChanged(ref selectedView, value);
                 OnSelectedPageChanged(value);
             }
         }
@@ -87,8 +84,8 @@ namespace GOILauncher.ViewModels
 
         private Page? selectedView;
         public ObservableCollection<Page> FooterViews { get; } = [
-                new Page(typeof(AboutViewModel), "关于"),
-                new Page(typeof(SettingViewModel), "设置"),
+                new(typeof(AboutViewModel), "关于"),
+                new(typeof(SettingViewModel), "设置"),
             ];
     }
         public class Page

@@ -18,7 +18,7 @@ namespace GOILauncher.Helpers
             downloadService.DownloadFileCompleted += download.OnDownloadCompleted;
             await downloadService.DownloadFileTaskAsync(download.Url, fileName, cancellationToken);
         }
-        private static DownloadConfiguration Configuration { get; } = new DownloadConfiguration()
+        private static DownloadConfiguration Configuration { get; } = new()
         {
             ChunkCount = 16,
             ParallelDownload = true,

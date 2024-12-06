@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Helpers
 {
     internal static class Extensions
     {
-        public static string Concatenate(this List<string> list, string separator)
+        public static string Concatenate(this List<string>? list, string separator)
         {
             if(list is null ||list.Count==0)
             {
@@ -16,13 +13,12 @@ namespace GOILauncher.Helpers
             }
             StringBuilder sb = new();
             sb.Append(list[0]);
-            for (int i = 1; i < list.Count; i++) 
+            for (var i = 1; i < list.Count; i++) 
             {
                 sb.Append(separator);
                 sb.Append(list[i]);
             }
             return sb.ToString();
         }
-
     }
 }

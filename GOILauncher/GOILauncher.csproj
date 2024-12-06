@@ -11,7 +11,7 @@
     <Authors>Zonakkis</Authors>
     <Product>GOILauncher</Product>
     <AssemblyName>GOILauncher</AssemblyName>
-    <ApplicationIcon>Assets\GOIL.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\GOILauncher.ico</ApplicationIcon>
     <PackageProjectUrl>https://space.bilibili.com/292855911</PackageProjectUrl>
     <NeutralLanguage>zh-CN</NeutralLanguage>
   </PropertyGroup>

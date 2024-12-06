@@ -3,8 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="using:GOILauncher.ViewModels"
+             xmlns:v="using:GOILauncher.Models"
              x:Class="GOILauncher.Views.LeaderBoardView"
 			 x:DataType="vm:LeaderBoardViewModel"
              FontSize="20"
@@ -14,14 +14,14 @@
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="排名" Binding="{Binding Rank}"  FontSize="18"  Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
-					<DataTemplate>
+                    <DataTemplate x:DataType="v:Speedrun">
 						<HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="平台" Binding="{Binding Platform}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTextColumn Header="时间" Binding="{Binding Time}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="视频地址" Width="auto" IsReadOnly="True">
-					<DataTemplate>
+					<DataTemplate x:DataType="v:Speedrun">
 						<HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>

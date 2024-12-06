@@ -1,7 +1,4 @@
-﻿using Avalonia.Controls.Mixins;
-using ReactiveUI;
-using System;
-using System.Diagnostics;
+﻿using ReactiveUI;
 
 namespace GOILauncher.ViewModels
 {
@@ -9,11 +6,9 @@ namespace GOILauncher.ViewModels
     {
         public virtual void OnSelectedViewChanged()
         {
-            return;
         }
         public virtual void Init()
         {
-            return;
         }
 
         public bool Initialized;

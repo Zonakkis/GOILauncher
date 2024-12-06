@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="570"
              xmlns:vm="using:GOILauncher.ViewModels"
-			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="GOILauncher.Views.GameView"
 	         x:DataType="vm:GameViewModel"
 			 >

@@ -4,7 +4,6 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using GOILauncher.ViewModels;
 using GOILauncher.Views;
-using System.Diagnostics.CodeAnalysis;
 
 namespace GOILauncher
 {

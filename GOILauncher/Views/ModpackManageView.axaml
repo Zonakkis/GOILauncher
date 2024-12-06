@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              xmlns:vm="using:GOILauncher.ViewModels"
-			 xmlns:m="using:GOILauncher.Models"
              x:Class="GOILauncher.Views.ModpackManageView"
 			 x:DataType="vm:ModpackManageViewModel"
 			 FontSize="20"

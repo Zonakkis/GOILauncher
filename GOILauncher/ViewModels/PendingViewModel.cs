@@ -1,23 +1,13 @@
 ﻿using GOILauncher.Models;
 using LeanCloud.Storage;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
     internal class PendingViewModel : ViewModelBase
     {
-        public PendingViewModel()
-        {
-
-        }
         public override void Init()
         {
             LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());

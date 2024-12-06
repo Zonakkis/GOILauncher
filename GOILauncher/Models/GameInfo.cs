@@ -1,29 +1,24 @@
 ﻿using GOILauncher.Helpers;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
     public class GameInfo
     {
         public event Action? Refreshed;
-        public void Refresh(string gamepath)
+        public void Refresh(string gamePath)
         {
-            GetGameVersion(new FileInfo($"{gamepath}/GettingOverIt.exe").Length);
-            GetModpackandLevelLoaderVersion(gamepath);
-            GetBepinExVersion(gamepath);
+            GetGameVersion(new FileInfo($"{gamePath}/GettingOverIt.exe").Length);
+            GetModpackandLevelLoaderVersion(gamePath);
+            GetBepinExVersion(gamePath);
             Refreshed?.Invoke();
         }
-        public Assembly LoadAssembly(string path)
+        public static Assembly LoadAssembly(string path)
         {
-            byte[]? assemblyData = null;
-            using (FileStream fileStream = File.OpenRead(path))
+            byte[]? assemblyData;
+            using (var fileStream = File.OpenRead(path))
             {
                 using BinaryReader binaryReader = new(fileStream);
                 assemblyData = binaryReader.ReadBytes((int)fileStream.Length);
@@ -55,21 +50,14 @@ namespace GOILauncher.Models
                     break;
             }
         }
-        public void GetModpackandLevelLoaderVersion(string gamepath)
+        public void GetModpackandLevelLoaderVersion(string gamePath)
         {
             try
             {
-                Assembly assembly = LoadAssembly($"{gamepath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
-                Type modPackType = assembly.GetType("JsonConvertEx");
-                Type levelLoaderType = assembly.GetType("GOILevelImporter.ModInfo");
-                if (modPackType != null)
-                {
-                    ModpackVersion = "已安装";
-                }
-                else
-                {
-                    ModpackVersion = "未安装";
-                }
+                var assembly = LoadAssembly($"{gamePath}/GettingOverIt_Data/Managed/Assembly-CSharp.dll");
+                var modPackType = assembly.GetType("JsonConvertEx");
+                var levelLoaderType = assembly.GetType("GOILevelImporter.ModInfo");
+                ModpackVersion = modPackType != null ? "已安装" : "未安装";
                 if (levelLoaderType != null)
                 {
                     LevelLoaderVersion = (string)levelLoaderType.GetProperty("FULLVERSION")!.GetValue(typeof(string), null)!;
@@ -81,7 +69,7 @@ namespace GOILauncher.Models
             }
             catch(Exception ex)
             {
-                NotificationHelper.ShowNotification("获取Modpack版本失败", ex.Message, FluentAvalonia.UI.Controls.InfoBarSeverity.Error);
+                _ = NotificationHelper.ShowNotification("获取Modpack版本失败", ex.Message, FluentAvalonia.UI.Controls.InfoBarSeverity.Error);
             }
             //尝试通过Modpack版本变化推断版本，但因为无法创建unity实例失败
             //Type type = assembly.GetType("ModPotCustomizer");
@@ -99,26 +87,25 @@ namespace GOILauncher.Models
             //}
 
         }
-        public void GetBepinExVersion(string gamepath)
+        public void GetBepinExVersion(string gamePath)
         {
-            if (!Directory.Exists($"{gamepath}/BepInEx/core"))
+            if (!Directory.Exists($"{gamePath}/BepInEx/core"))
             {
                 BepInExVersion = "未安装";
             }
-            else if (File.Exists($"{gamepath}/BepInEx/core/BepInEx.Preloader.Unity.dll"))
+            else if (File.Exists($"{gamePath}/BepInEx/core/BepInEx.Preloader.Unity.dll"))
             {
-                Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.Unity.dll");
-                AssemblyInformationalVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)));
-                BepInExVersion = assemblyInformationalVersionAttribute!.InformationalVersion;
+                var assembly = LoadAssembly($"{gamePath}/BepInEx/core/BepInEx.Preloader.Unity.dll");
+                var assemblyInformationalVersionAttribute = (AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute))!;
+                BepInExVersion = assemblyInformationalVersionAttribute.InformationalVersion;
             }
             else
             {
-                Assembly assembly = LoadAssembly($"{gamepath}/BepInEx/core/BepInEx.Preloader.dll");
-                AssemblyFileVersionAttribute assemblyInformationalVersionAttribute = ((AssemblyFileVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute)));
-                BepInExVersion =  assemblyInformationalVersionAttribute!.Version;
+                var assembly = LoadAssembly($"{gamePath}/BepInEx/core/BepInEx.Preloader.dll");
+                var assemblyInformationalVersionAttribute = ((AssemblyFileVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute))!);
+                BepInExVersion =  assemblyInformationalVersionAttribute.Version;
             }
         }
-
         public string GameVersion { get; private set; } = string.Empty;
         public string ModpackVersion { get; private set; } = string.Empty;
         public string LevelLoaderVersion { get; private set; } = string.Empty;

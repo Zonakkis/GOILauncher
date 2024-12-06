@@ -1,32 +1,15 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Shapes;
-using Avalonia.Platform.Storage;
+﻿using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
-using GOILauncher.Helpers;
 using GOILauncher.Models;
-using GOILauncher.Views;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reactive;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
     internal class SettingViewModel : ViewModelBase
     {
-        public SettingViewModel()
-        {
-
-        }
-        
-        public async void SelectGamePath()
+        public async Task SelectGamePath()
         {
             var dialog = new FolderPickerOpenOptions
             {
@@ -36,7 +19,7 @@ namespace GOILauncher.ViewModels
             var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
-                string path = folder[0].Path.ToString();
+                var path = folder[0].Path.ToString();
                 path = path[8..];
                 if (File.Exists($"{path}/GettingOverIt.exe"))
                 {
@@ -55,7 +38,7 @@ namespace GOILauncher.ViewModels
                 }
             }
         }
-        public async void SelectLevelPath()
+        public async Task SelectLevelPath()
         {
             var dialog = new FolderPickerOpenOptions
             {
@@ -65,12 +48,12 @@ namespace GOILauncher.ViewModels
             var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
-                string path = folder[0].Path.ToString();
+                var path = folder[0].Path.ToString();
                 path = path[8..];
                 LevelPath = path;
             }
         }
-        public async void SelectSteamPath()
+        public async Task SelectSteamPath()
         {
             var dialog = new FolderPickerOpenOptions
             {
@@ -98,7 +81,7 @@ namespace GOILauncher.ViewModels
                 }
             }
         }
-        public async void SelectDownloadPath()
+        public async Task SelectDownloadPath()
         {
             var dialog = new FolderPickerOpenOptions
             {
@@ -108,7 +91,7 @@ namespace GOILauncher.ViewModels
             var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
             if (folder.Count > 0)
             {
-                string path = folder[0].Path.ToString();
+                var path = folder[0].Path.ToString();
                 path = path[8..];
                 DownloadPath = path;
             }
@@ -120,7 +103,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.GamePath = value;
-                this.RaisePropertyChanged(nameof(GamePath));
+                this.RaisePropertyChanged();
             }
         }
         public string LevelPath
@@ -129,7 +112,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.LevelPath = value;
-                this.RaisePropertyChanged(nameof(LevelPath));
+                this.RaisePropertyChanged();
             }
         }
         public string SteamPath
@@ -138,7 +121,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.SteamPath = value;
-                this.RaisePropertyChanged(nameof(SteamPath));
+                this.RaisePropertyChanged();
             }
         }
         public string DownloadPath
@@ -147,7 +130,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.DownloadPath = value;
-                this.RaisePropertyChanged(nameof(DownloadPath));
+                this.RaisePropertyChanged();
             }
         }
         public bool SaveMapZip
@@ -156,7 +139,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.SaveMapZip = value;
-                this.RaisePropertyChanged(nameof(SaveMapZip));
+                this.RaisePropertyChanged();
             }
         }
         public bool NightMode
@@ -165,7 +148,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.NightMode = value;
-                this.RaisePropertyChanged(nameof(NightMode));
+                this.RaisePropertyChanged();
             }
         }
         public int PreviewQuality
@@ -174,7 +157,7 @@ namespace GOILauncher.ViewModels
             set
             {
                 Setting.PreviewQuality = value;
-                this.RaisePropertyChanged(nameof(PreviewQuality));
+                this.RaisePropertyChanged();
             }
         }
     }

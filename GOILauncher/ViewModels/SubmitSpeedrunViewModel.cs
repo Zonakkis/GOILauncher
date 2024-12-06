@@ -1,20 +1,7 @@
-﻿using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using GOILauncher.Helpers;
+﻿using GOILauncher.Helpers;
 using GOILauncher.Models;
 using LeanCloud.Storage;
-using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reactive;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
@@ -57,7 +44,7 @@ namespace GOILauncher.ViewModels
             }
         }
 
-        public async void Submit(int para)
+        public async Task Submit(int para)
         { 
             switch (para)
             {
@@ -81,7 +68,7 @@ namespace GOILauncher.ViewModels
                     {
                         Category = Category,
                         Platform = Platform,
-                        Player = Player!,
+                        Player = Player,
                         UID = (await BilibiliHelper.GetResultFromBVID(VID)).UID,
                         VideoPlatform = VideoPlatform,
                         VID = VID,

@@ -1,52 +1,21 @@
 ﻿using LeanCloud.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    internal class Speedrun : LCObject
+    internal class Speedrun() : LCObject(nameof(Speedrun))
     {
-        public Speedrun() : base("Speedrun")
-        {
-
-        }
-
-
         public int Rank
         {
-            get => (int)this["Rank"];
+            get => (int)this[nameof(Rank)];
             set => this[nameof(Rank)] = value;
         }
-
-        public string Player
-        {
-            get => (this["Player"] as string)!;
-        }
-        public string UID
-        {
-            get => (this["UID"] as string)!;
-        }
-        public string Platform
-        {
-            get => (this["Platform"] as string)!;
-        }
-        public string Time
-        {
-            get => (this["Time"] as string)!;
-        }
-        public string VideoPlatform
-        {
-            get => (this["VideoPlatform"] as string)!;
-        }
-        public string VID
-        {
-            get => (this["VID"] as string)!;
-        }
-
-        public string VideoURL { get; set; }
-        public string PlayerURL { get; set; }
+        public string Player => (this[nameof(Player)] as string)!;
+        public string UID => (this[nameof(UID)] as string)!;
+        public string Platform => (this[nameof(Platform)] as string)!;
+        public string Time => (this[nameof(Time)] as string)!;
+        public string VideoPlatform => (this[nameof(VideoPlatform)] as string)!;
+        public string VID => (this[nameof(VID)] as string)!;
+        public string? VideoURL { get; set; }
+        public string? PlayerURL { get; set; }
     }
 }

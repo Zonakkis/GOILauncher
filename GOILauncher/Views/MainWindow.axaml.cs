@@ -2,9 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
-using GOILauncher.Models;
 using LeanCloud.Storage;
-using Microsoft.CodeAnalysis;
 using ReactiveUI;
 using System;
 using System.Diagnostics;
@@ -20,10 +18,10 @@ namespace GOILauncher.Views
             NotificationHelper.NotificationBar  = NotificationBar;
         }
 
-        private new async void Loaded(object? sender, RoutedEventArgs e)
+        public new async void Loaded(object? sender, RoutedEventArgs e)
         {
-            LCQuery<LCObject> query = new("Update");
-            LCObject update = await query.Get("65cf1c6c6599eb4f2882a8c5");
+            var query = new LCQuery<LCObject>("Update");
+            var update = await query.Get("65cf1c6c6599eb4f2882a8c5");
             Models.Version newVersion = new((update[nameof(Version)] as string)!);
             if (newVersion > Version)
             {

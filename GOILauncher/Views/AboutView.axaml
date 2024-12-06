@@ -2,7 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:ui="using:FluentAvalonia.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              xmlns:vm="using:GOILauncher.ViewModels"
              x:Class="GOILauncher.Views.AboutView"
@@ -18,8 +17,8 @@
 		</Styles>
 	</UserControl.Styles>
 	<Grid RowDefinitions="auto,auto,auto,auto,*">
-		<Image Grid.Row="0" Source="/Assets/GOIL.ico" Width="200" Margin="0,50,0,0"/>
-		<TextBlock Grid.Row="1" Text="{Binding GOILVerison}" FontWeight="Bold" HorizontalAlignment="Center"/>
+		<Image Grid.Row="0" Source="/Assets/GOILauncher.ico" Width="200" Margin="0,50,0,0"/>
+		<TextBlock Grid.Row="1" Text="{Binding GOILauncherVersion}" FontWeight="Bold" HorizontalAlignment="Center"/>
 		<TextBlock Grid.Row="2" HorizontalAlignment="Center" Margin="0,10,0,0">
 			感谢以下玩家的支持：
 		</TextBlock>

@@ -4,14 +4,10 @@ using GOILauncher.Models;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
@@ -19,8 +15,6 @@ namespace GOILauncher.ViewModels
     {
         public MapManageViewModel()
         {
-            var isDownloadValid = this.WhenAnyValue(x => x.SelectedCount,
-                                                    x => x > 0);
             DeleteCommand = ReactiveCommand.Create(DeleteMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
         }
 
@@ -50,17 +44,17 @@ namespace GOILauncher.ViewModels
             SelectedCount = 0;
             if (Directory.Exists(Setting.LevelPath))
             {
-                foreach (string file in Directory.GetFiles(Setting.LevelPath, "*.scene", SearchOption.AllDirectories))
+                foreach (var file in Directory.GetFiles(Setting.LevelPath, "*.scene", SearchOption.AllDirectories))
                 {
-                    string mapName = Path.GetFileNameWithoutExtension(file);
+                    var mapName = Path.GetFileNameWithoutExtension(file);
                     if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
                     {
                         try
                         {
-                            Dictionary<string, string> settings = (from l in File.ReadAllLines(Path.ChangeExtension(file, File.Exists(Path.ChangeExtension(file, "txt")) ? "txt" : "mdata"))
-                                                                   select l.Split(['='])).ToDictionary((string[] s) => s[0].Trim(), (string[] s) => s[1].Trim());
-                            var map = new Map(mapName);
-                            if (settings.TryGetValue("credit", out string? value))
+                            var settings = (from l in File.ReadAllLines(Path.ChangeExtension(file, File.Exists(Path.ChangeExtension(file, "txt")) ? "txt" : "mdata"))
+                                                                   select l.Split(['='])).ToDictionary(s => s[0].Trim(), s => s[1].Trim());
+                            var map = new MapInfo(mapName);
+                            if (settings.TryGetValue("credit", out var value))
                             {
                                 map.Author = value;
                             }
@@ -69,13 +63,14 @@ namespace GOILauncher.ViewModels
                             map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
                             Maps.Add(map);
                         }
-                        catch
+                        catch(Exception ex)
                         {
+                            _ = NotificationHelper.ShowNotification("错误",$"扫描地图时出错：{ex.Message}",InfoBarSeverity.Error);
                         }
                     }
                     else
                     {
-                        var map = new Map(mapName);
+                        var map = new MapInfo(mapName);
                         var fileInfo = new FileInfo(file);
                         map.Size = StorageUnitConvertHelper.ByteTo(fileInfo.Length);
                         map.OnMapSeletcedChangedEvent += OnMapSelectedChanged;
@@ -95,7 +90,7 @@ namespace GOILauncher.ViewModels
                 CloseButtonText = "取消",
                 PrimaryButtonCommand = ReactiveCommand.Create(() =>
                 {
-                    foreach (var map in Maps.Where(map => map.IsSelected == true))
+                    foreach (var map in Maps.Where(map => map.IsSelected))
                     {
                         map.Delete();
                     }
@@ -105,7 +100,7 @@ namespace GOILauncher.ViewModels
             await contentDialog.ShowAsync();
             
         }
-        public ObservableCollection<Map> Maps { get; set; } = [];
+        public ObservableCollection<MapInfo> Maps { get; set; } = [];
 
         [Reactive]
         public int TotalCount { get; set; }
@@ -113,40 +108,39 @@ namespace GOILauncher.ViewModels
         public int SelectedCount { get; set; }
         public ReactiveCommand<Unit, Unit> DeleteCommand { get; set; }
         private static Setting Setting => Setting.Instance;
-        public class Map(string name)
+    }
+    public class MapInfo(string name)
+    {
+        public string Name { get; set; } = name;
+        public string Author { get; set; } = string.Empty;
+        public string Size { get; set; } = string.Empty;
+
+        private bool isSelected;
+        public bool IsSelected
         {
-            public string Name { get; set; } = name;
-            public string Author { get; set; } = string.Empty;
-            public string Size { get; set; } = string.Empty;
-
-            private bool isSelected;
-            public bool IsSelected 
-            { 
-                get => isSelected; 
-                set
-                {
-                    isSelected = value;
-                    OnMapSeletcedChangedEvent?.Invoke(isSelected);
-                }
-
-            }
-
-            public void Delete()
+            get => isSelected;
+            set
             {
-                foreach(var path in Directory.EnumerateDirectories($"{Setting.LevelPath}/").Where(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    Directory.Delete(path,true);
-                }
-                foreach (var path in Directory.GetFiles($"{Setting.LevelPath}/").Where(filename => Path.GetFileName(filename).StartsWith(Name,StringComparison.InvariantCultureIgnoreCase)))
-                {
-                    File.Delete(path);
-                }
+                isSelected = value;
+                OnMapSeletcedChangedEvent?.Invoke(isSelected);
             }
 
-            public delegate void OnMapSelectedChanged(bool selected);
-
-            public event OnMapSelectedChanged? OnMapSeletcedChangedEvent;
-            private static Setting Setting => Setting.Instance;
         }
+        public void Delete()
+        {
+            foreach (var path in Directory.EnumerateDirectories($"{Setting.LevelPath}/").Where(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                Directory.Delete(path, true);
+            }
+            foreach (var path in Directory.GetFiles($"{Setting.LevelPath}/").Where(filename => Path.GetFileName(filename).StartsWith(Name, StringComparison.InvariantCultureIgnoreCase)))
+            {
+                File.Delete(path);
+            }
+        }
+
+        public delegate void OnMapSelectedChanged(bool selected);
+
+        public event OnMapSelectedChanged? OnMapSeletcedChangedEvent;
+        private static Setting Setting => Setting.Instance;
     }
 }
