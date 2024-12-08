@@ -1,8 +1,4 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Markup.Xaml;
-using System.Diagnostics;
 
 namespace GOILauncher.Views
 {
@@ -11,6 +7,10 @@ namespace GOILauncher.Views
         public ModView()
         {
             InitializeComponent();
+        }
+        public void Unselect(object? sender,SelectionChangedEventArgs e)
+        {
+            (sender as ListBox)!.SelectedItem = null;
         }
     }
 }
