@@ -4,7 +4,7 @@ namespace GOILauncher.Models
 {
     public class Version
     {
-        public Version(int x, int y, int z)
+        private Version(int x, int y, int z)
         {
             X = x;
             Y = y;
@@ -22,8 +22,9 @@ namespace GOILauncher.Models
         private int Y { get; }
         private int Z { get; }
 
-        public static readonly Version Instance = new(0, 2, 1);
-        public int GetVersionValue()
+        public static readonly Version Instance = new(0, 2, 2);
+
+        private int GetVersionValue()
         {
             return X * 10000 + Y * 100 + Z;
         }
