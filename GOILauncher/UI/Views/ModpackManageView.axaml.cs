@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 
-namespace GOILauncher.Views
+namespace GOILauncher.UI.Views
 {
 
     public partial class ModpackManageView : UserControl

@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /GOILauncherServer
+/GOILauncher/UI/Controls/ModExpander.axaml
+/GOILauncher/UI/Controls/ModExpander.axaml.cs

@@ -3,7 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using GOILauncher.ViewModels;
-using GOILauncher.Views;
+using GOILauncher.UI.Views;
 
 namespace GOILauncher
 {

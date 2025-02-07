@@ -3,25 +3,25 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
-             xmlns:vm="using:GOILauncher.ViewModels"
-			 xmlns:v="clr-namespace:GOILauncher.Models"
-			 x:Class="GOILauncher.Views.PendingView"
-			 x:DataType="vm:PendingViewModel"
+			 xmlns:vm="using:GOILauncher.ViewModels"
+             xmlns:v="using:GOILauncher.Models"
+             x:Class="GOILauncher.UI.Views.LeaderBoardView"
+			 x:DataType="vm:LeaderBoardViewModel"
              FontSize="20"
 			 >
 	<Grid>
-		<DataGrid ItemsSource="{Binding PendingRuns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
+		<DataGrid ItemsSource="{Binding Speedruns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
 			<DataGrid.Columns>
-				<DataGridTextColumn Header="模式" Binding="{Binding Category}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
+				<DataGridTextColumn Header="排名" Binding="{Binding Rank}"  FontSize="18"  Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
-					<DataTemplate x:DataType="v:PendingRun">
+                    <DataTemplate x:DataType="v:Speedrun">
 						<HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="平台" Binding="{Binding Platform}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTextColumn Header="时间" Binding="{Binding Time}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="视频地址" Width="auto" IsReadOnly="True">
-					<DataTemplate x:DataType="v:PendingRun">
+					<DataTemplate x:DataType="v:Speedrun">
 						<HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>

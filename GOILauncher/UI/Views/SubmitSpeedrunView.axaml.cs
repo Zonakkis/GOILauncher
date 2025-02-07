@@ -1,11 +1,8 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
-using System.Diagnostics;
 
-namespace GOILauncher.Views
+namespace GOILauncher.UI.Views
 {
 
     public partial class SubmitSpeedrunView : UserControl

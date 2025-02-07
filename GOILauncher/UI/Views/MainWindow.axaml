@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="570"
 		Width="1050" Height="570"
         xmlns:vm="using:GOILauncher.ViewModels"
-        x:Class="GOILauncher.Views.MainWindow"
+        x:Class="GOILauncher.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/GOILauncher.ico"
         Title="GOILauncher"

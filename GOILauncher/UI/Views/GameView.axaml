@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="570"
              xmlns:vm="using:GOILauncher.ViewModels"
-             x:Class="GOILauncher.Views.GameView"
+             x:Class="GOILauncher.UI.Views.GameView"
 	         x:DataType="vm:GameViewModel"
 			 >
 	<UserControl.Styles>

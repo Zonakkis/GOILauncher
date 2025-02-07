@@ -5,7 +5,7 @@
              xmlns:vm="using:GOILauncher.ViewModels"
              xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="570"
-             x:Class="GOILauncher.Views.MapView"
+             x:Class="GOILauncher.UI.Views.MapView"
              x:DataType="vm:MapViewModel"
 			 >
 	<UserControl.Styles>

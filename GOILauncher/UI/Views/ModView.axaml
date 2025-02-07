@@ -5,7 +5,7 @@
              xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:m="using:GOILauncher.Models"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
-             x:Class="GOILauncher.Views.ModView"
+             x:Class="GOILauncher.UI.Views.ModView"
 			 x:DataType="vm:ModViewModel"
 			 >
 	<UserControl.Styles>

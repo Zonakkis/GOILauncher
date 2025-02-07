@@ -6,7 +6,7 @@
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
-             x:Class="GOILauncher.Views.SubmitSpeedrunView"
+             x:Class="GOILauncher.UI.Views.SubmitSpeedrunView"
 			 x:DataType="vm:SubmitSpeedrunViewModel"
              FontSize="20"
 			>

@@ -1,14 +1,13 @@
+using System;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using LeanCloud.Storage;
 using ReactiveUI;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
-namespace GOILauncher.Views
+namespace GOILauncher.UI.Views
 {
     public partial class MainWindow : Window
     {

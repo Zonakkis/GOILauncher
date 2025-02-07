@@ -1,9 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using GOILauncher.Models;
 
-namespace GOILauncher.Views
+namespace GOILauncher.UI.Views
 {
 
     public partial class MapView : UserControl

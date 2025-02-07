@@ -1,6 +1,6 @@
 using Avalonia.Controls;
 
-namespace GOILauncher.Views
+namespace GOILauncher.UI.Views
 {
     public partial class ModView : UserControl
     {
