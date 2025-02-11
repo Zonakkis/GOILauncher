@@ -1,18 +1,21 @@
-﻿using Downloader;
+﻿using Avalonia.Controls.Documents;
+using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
 using LeanCloud.Storage;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    public class Mod : LCObject, INotifyPropertyChanged, IDownloadable 
+    public class Mod : INotifyPropertyChanged, IDownloadable 
     {
-        public Mod(string className) : base(className)
+        public Mod() 
         {
             DownloadableChanged += () => NotifyPropertyChanged(nameof(Downloadable));
         }
@@ -21,9 +24,13 @@ namespace GOILauncher.Models
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        private bool CheckGameVersion()
+        {
+            return TargetGameVersion.Contains(GameInfo.GameVersion) || TargetGameVersion.Concatenate("/").Contains(GameInfo.GameVersion);
+        }
         public async Task Download()
         {
-            if (!TargetGameVersion.Contains(GameInfo.GameVersion) && !TargetGameVersion.Concatenate("/").Contains(GameInfo.GameVersion))
+            if (!CheckGameVersion())
             {
                 await NotificationHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.GameVersion}\r\nMod所需版本：{TargetVersion}");
                 return;
@@ -32,7 +39,7 @@ namespace GOILauncher.Models
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             await DownloadHelper.Download(
-                    $"{Setting.DownloadPath}/{Name}{Build}.zip",
+                    Path.Combine(Setting.DownloadPath, $"{Name}{Build}.zip"),
                     this,
                     token
                     );
@@ -65,12 +72,12 @@ namespace GOILauncher.Models
                 DownloadableChanged?.Invoke();
             }
         }
-        public string Name => (this[nameof(Name)] as string)!;
-        public string Author => (this[nameof(Author)] as string)!;
-        public string Build => (this[nameof(Build)] as string)!;
-        public string Url => (this[nameof(Url)] as string)!;
-        public List<string> TargetGameVersion => (this[nameof(TargetGameVersion)] as List<object>)!.ConvertAll<string>(input => (input as string)!);
-        public string TargetVersion => TargetGameVersion.Concatenate("/");
+        public string Name { get; init; }
+        public string Author { get; init; }
+        public string Build { get; init; }
+        public string Url { get; init; }
+        public List<string> TargetGameVersion { get; init; }
+        public string TargetVersion => string.Join("/", TargetGameVersion);
         private double progressPercentage;
         public double ProgressPercentage
         {

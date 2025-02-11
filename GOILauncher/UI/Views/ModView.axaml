@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GOILauncher.ViewModels"
 			 xmlns:m="using:GOILauncher.Models"
+			 xmlns:ui="using:GOILauncher.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.UI.Views.ModView"
 			 x:DataType="vm:ModViewModel"
@@ -27,113 +28,10 @@
 				未选择游戏路径，请前往设置页面选择
 			</TextBlock>
 			<StackPanel Margin="10,10,10,0" IsVisible="{Binding UnselectedGamePath}">
-				<Expander>
-					<Expander.Header>
-						<TextBlock>
-							<Run FontSize="24" FontWeight="Bold">Modpack</Run>
-							<Run FontSize="16" FontWeight="ExtraLight">by</Run>
-							<Run FontSize="20">Anjo2</Run>
-						</TextBlock>
-					</Expander.Header>
-					<ListBox ItemsSource="{Binding Modpacks}" SelectionChanged="Unselect">
-						<ListBox.ItemTemplate>
-							<DataTemplate x:DataType="m:Modpack">
-								<Grid ColumnDefinitions="auto,*">
-									<TextBlock Grid.Column="0" VerticalAlignment="Center">
-										<Run Text="{Binding Build}"/>
-										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
-									</TextBlock>
-									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
-										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-												 Command="{Binding Download}">下载</Button>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Expander>
-				<Expander Margin="0,10,0,0">
-					<Expander.Header>
-						<TextBlock>
-							<Run FontSize="24" FontWeight="Bold">LevelLoader</Run>
-							<Run FontSize="16" FontWeight="ExtraLight">by</Run>
-							<Run FontSize="20">Jor02</Run>
-						</TextBlock>
-					</Expander.Header>
-					<ListBox ItemsSource="{Binding LevelLoaders}" SelectionChanged="Unselect">
-						<ListBox.ItemTemplate>
-							<DataTemplate x:DataType="m:LevelLoader">
-								<Grid ColumnDefinitions="auto,*">
-									<TextBlock Grid.Column="0" VerticalAlignment="Center">
-										<Run Text="{Binding Build}"/>
-										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
-									</TextBlock>
-									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
-										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-												 Command="{Binding Download}">下载</Button>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-			</Expander>
-				<Expander Margin="0,10,0,0">
-					<Expander.Header>
-						<TextBlock>
-							<Run FontSize="24" FontWeight="Bold">ModpackandLevelLoader</Run>
-							<Run FontSize="16" FontWeight="ExtraLight">by</Run>
-							<Run FontSize="20">Nameless＆Jor02</Run>
-						</TextBlock>
-					</Expander.Header>
-					<ListBox ItemsSource="{Binding ModpackandLevelLoaders}" SelectionChanged="Unselect">
-						<ListBox.ItemTemplate>
-							<DataTemplate x:DataType="m:ModpackandLevelLoader">
-								<Grid ColumnDefinitions="auto,*">
-									<TextBlock Grid.Column="0" VerticalAlignment="Center">
-										<Run Text="{Binding Build}"/>
-										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
-									</TextBlock>
-									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
-										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-												 Command="{Binding Download}">下载</Button>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-				</Expander>
-                <Expander Margin="0,10,0,0">
-                    <Expander.Header>
-                        <TextBlock Text="其他Mod" FontSize="24" FontWeight="Bold"/>
-                    </Expander.Header>
-					<ListBox ItemsSource="{Binding OtherMods}" SelectionChanged="Unselect">
-						<ListBox.ItemTemplate>
-							<DataTemplate x:DataType="m:OtherMod">
-								<Grid ColumnDefinitions="auto,*">
-									<TextBlock Grid.Column="0" VerticalAlignment="Center">
-										<Run Text="{Binding Name}"/>
-										<Run Text="{Binding Build}"/>
-										<Run FontSize="14" FontWeight="UltraLight">by</Run>
-										<Run Text="{Binding Author}" FontSize="18"/>
-										<Run Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
-									</TextBlock>
-									<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-										<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
-										<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-										<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-                                                Command="{Binding Download}">下载</Button>
-									</StackPanel>
-								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-                </Expander>
+				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpack}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoader}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoader}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="其他Mod" Mods="{Binding OtherMod}" IsOtherMod="True"/>
 			</StackPanel>
 		</Grid>
 	</ScrollViewer>
