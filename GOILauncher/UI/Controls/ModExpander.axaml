@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:m ="using:GOILauncher.Models"
+             xmlns:ui="clr-namespace:GOILauncher.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GOILauncher.UI.Controls.ModExpander">
+	<UserControl.Styles>
+		<Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="VerticalAlignment" Value="Center"/>
+			</Style>
+		</Styles>
+	</UserControl.Styles>
+	<Expander Margin="0,10,0,0">
+		<Expander.Header>
+			<StackPanel Orientation="Horizontal" Spacing="5">
+				<TextBlock FontSize="24" FontWeight="Bold"
+						   Text="{Binding ModName,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+				<TextBlock FontSize="16" FontWeight="ExtraLight" VerticalAlignment="Bottom"
+						   IsVisible="{Binding !IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}">
+					by
+				</TextBlock>
+				<TextBlock FontSize="20" VerticalAlignment="Bottom"
+                           IsVisible="{Binding !IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"
+						   Text="{Binding Author,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+			</StackPanel>
+		</Expander.Header>
+		<ListBox ItemsSource="{Binding Mods,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}" SelectionChanged="Unselect">
+			<ListBox.ItemTemplate>
+				<DataTemplate x:DataType="m:Mod">
+					<Grid ColumnDefinitions="auto,*">
+						<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
+							<TextBlock Text="{Binding Name}" 
+									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+							<TextBlock Text="{Binding Build}"/>
+							<TextBlock FontSize="14" FontWeight="UltraLight"
+									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}">
+								by
+							</TextBlock>
+							<TextBlock Text="{Binding Author}" FontSize="18"  
+									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+							<TextBlock Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
+						</StackPanel>
+						<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+							<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
+							<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
+							<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
+									Command="{Binding Download}">下载</Button>
+						</StackPanel>
+					</Grid>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</Expander>
+</UserControl>
