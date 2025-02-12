@@ -10,7 +10,7 @@
 	<UserControl.Styles>
 		<Styles>
 			<Style Selector="TextBlock">
-				<Setter Property="FontSize">18</Setter>
+				<Setter Property="FontSize">20</Setter>
 				<Setter Property="Margin" Value="5,5"/>
 			</Style>
 			<Style Selector="AccessText">
