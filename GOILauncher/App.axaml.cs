@@ -6,6 +6,8 @@ using GOILauncher.ViewModels;
 using GOILauncher.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Net;
+using Downloader;
 
 namespace GOILauncher
 {
@@ -54,6 +56,21 @@ namespace GOILauncher
             services.AddTransient<PendingViewModel>();
             services.AddTransient<AboutViewModel>();
             services.AddTransient<SettingViewModel>();
+            services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
+            {
+                ChunkCount = 16,
+                ParallelDownload = true,
+                MaxTryAgainOnFailover = int.MaxValue,
+                Timeout = 60000,
+                //MaximumMemoryBufferBytes = 1024 * 1024 * 50,
+                RequestConfiguration =
+                {
+                    KeepAlive = true,
+                    UserAgent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:92.0) Gecko/20100101 Firefox/92.0",
+                    ProtocolVersion = HttpVersion.Version11,
+                }
+            });
+            services.AddTransient<DownloadService>(serviceProvider => new DownloadService(serviceProvider.GetRequiredService<DownloadConfiguration>()));
         }
     }
 }
