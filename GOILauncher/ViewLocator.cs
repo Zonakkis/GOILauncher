@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using GOILauncher.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace GOILauncher
@@ -14,7 +15,7 @@ namespace GOILauncher
 
             if (type != null)
             {
-                return (Control)Activator.CreateInstance(type)!;
+                return (Control)App.ServiceProvider.GetRequiredService(type);
             }
 
             return new TextBlock { Text = "Not Found: " + name };

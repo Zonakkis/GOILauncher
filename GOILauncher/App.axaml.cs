@@ -35,6 +35,15 @@ namespace GOILauncher
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            services.AddTransient<GameView>();
+            services.AddSingleton<ModView>();
+            services.AddSingleton<MapView>();
+            services.AddTransient<MapManageView>();
+            services.AddTransient<LeaderBoardView>();
+            services.AddSingleton<SubmitSpeedrunView>();
+            services.AddTransient<PendingView>();
+            services.AddTransient<AboutView>();
+            services.AddTransient<SettingView>();
             services.AddTransient<MainWindowViewModel>();
             services.AddTransient<GameViewModel>();
             services.AddTransient<ModViewModel>();
