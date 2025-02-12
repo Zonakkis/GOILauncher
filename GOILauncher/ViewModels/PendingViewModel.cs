@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class PendingViewModel : ViewModelBase
+    public class PendingViewModel : ViewModelBase
     {
         public override void Init()
         {

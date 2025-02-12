@@ -2,7 +2,7 @@
 
 namespace GOILauncher.Models
 {
-    internal class PendingRun() : LCObject(nameof(PendingRun))
+    public class PendingRun() : LCObject(nameof(PendingRun))
     {
         public string Category
         {

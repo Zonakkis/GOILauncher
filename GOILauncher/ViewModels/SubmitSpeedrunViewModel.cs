@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class SubmitSpeedrunViewModel : ViewModelBase
+    public class SubmitSpeedrunViewModel : ViewModelBase
     {
         public SubmitSpeedrunViewModel()
         {

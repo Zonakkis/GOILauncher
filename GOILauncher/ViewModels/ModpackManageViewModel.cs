@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class ModpackManageViewModel : ViewModelBase
+    public class ModpackManageViewModel : ViewModelBase
     {
         public override void Init()
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class LeaderBoardViewModel : ViewModelBase
+    public class LeaderBoardViewModel : ViewModelBase
     {
         public override void Init()
         {

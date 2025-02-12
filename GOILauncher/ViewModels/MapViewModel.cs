@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class MapViewModel : ViewModelBase
+    public class MapViewModel : ViewModelBase
     {
         public MapViewModel()
         {

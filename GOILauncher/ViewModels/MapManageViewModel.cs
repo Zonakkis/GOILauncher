@@ -11,7 +11,7 @@ using System.Reactive;
 
 namespace GOILauncher.ViewModels
 {
-    internal class MapManageViewModel : ViewModelBase
+    public class MapManageViewModel : ViewModelBase
     {
         public MapManageViewModel()
         {

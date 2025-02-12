@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class ModViewModel : ViewModelBase
+    public class ModViewModel : ViewModelBase
     {
         public ModViewModel()
         {

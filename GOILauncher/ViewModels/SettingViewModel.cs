@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels
 {
-    internal class SettingViewModel : ViewModelBase
+    public class SettingViewModel : ViewModelBase
     {
         public async Task SelectGamePath()
         {

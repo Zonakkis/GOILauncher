@@ -6,7 +6,7 @@ using System.Text;
 
 namespace GOILauncher.ViewModels
 {
-    internal class GameViewModel : ViewModelBase
+    public class GameViewModel : ViewModelBase
     {
         public GameViewModel()
         {

@@ -12,7 +12,7 @@ namespace GOILauncher
     public partial class App : Application
     {
         public static TopLevel? TopLevel { get; private set; }
-        public IServiceProvider ServiceProvider { get; private set; }
+        public static IServiceProvider ServiceProvider { get; private set; }
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -33,9 +33,18 @@ namespace GOILauncher
             base.OnFrameworkInitializationCompleted();
         }
 
-        private void ConfigureServices(ServiceCollection services)
+        private static void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<MainWindowViewModel>();
+            services.AddTransient<MainWindowViewModel>();
+            services.AddTransient<GameViewModel>();
+            services.AddTransient<ModViewModel>();
+            services.AddTransient<MapViewModel>();
+            services.AddTransient<MapManageViewModel>();
+            services.AddTransient<LeaderBoardViewModel>();
+            services.AddTransient<SubmitSpeedrunViewModel>();
+            services.AddTransient<PendingViewModel>();
+            services.AddTransient<AboutViewModel>();
+            services.AddTransient<SettingViewModel>();
         }
     }
 }

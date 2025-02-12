@@ -2,7 +2,7 @@
 
 namespace GOILauncher.Models
 {
-    internal class Speedrun() : LCObject(nameof(Speedrun))
+    public class Speedrun() : LCObject(nameof(Speedrun))
     {
         public int Rank
         {
