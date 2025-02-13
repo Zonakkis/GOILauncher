@@ -22,8 +22,7 @@ namespace GOILauncher.ViewModels
         {
             _settingView = settingViewModel;
             settingViewModel.WhenAnyValue(x => x.LevelPath)
-                            .Where(string.IsNullOrEmpty)
-                            .Subscribe(x => IsLevelPathSelected = false);
+                            .Subscribe(x => IsLevelPathSelected = !string.IsNullOrEmpty(x));
             DownloadCommand = ReactiveCommand.Create(Download, this.WhenAnyValue(x => x.IsLevelPathSelected));
         }
         public override void Init()

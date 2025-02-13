@@ -16,8 +16,7 @@ namespace GOILauncher.ViewModels
         public ModViewModel(SettingViewModel settingViewModel)
         {
             settingViewModel.WhenAnyValue(x => x.GamePath)
-                            .Where(string.IsNullOrEmpty)
-                            .Subscribe(x => IsGamePathSelected = false);
+                            .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
         }
 
         public override void Init()
