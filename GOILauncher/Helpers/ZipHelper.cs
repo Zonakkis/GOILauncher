@@ -33,7 +33,7 @@ namespace GOILauncher.Helpers
                 File.Delete(zipFile);
             }
         }
-        public static async Task Extract(string zipPath, string destinationPath,EventHandler<ExtractProgressEventArgs>? progressHandler = null)
+        public static async Task Extract(string zipPath, string destinationPath,bool deleteAfterExtract, EventHandler<ExtractProgressEventArgs>? progressHandler = null)
         {
             using (var zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
             {
@@ -47,12 +47,10 @@ namespace GOILauncher.Helpers
                     await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
                 }
             }
-            if (!SaveMapZip)
+            if (deleteAfterExtract)
             {
                 File.Delete(zipPath);
             }
         }
-        private static Setting Setting => Setting.Instance;
-        private static bool SaveMapZip => Setting.SaveMapZip;
     }
 }

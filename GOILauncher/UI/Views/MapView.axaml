@@ -78,7 +78,7 @@
 				</Grid>
 				<Button Grid.Row="3" HorizontalAlignment="Center" CornerRadius="5" IsEnabled="{Binding CurrentMap.Downloadable}"
 						 Command="{Binding DownloadCommand}">下载</Button>
-				<TextBlock Grid.Row="4" Foreground="Red" HorizontalAlignment="Center" IsVisible="{Binding !UnselectedLevelPath}" Margin="0,10">
+				<TextBlock Grid.Row="4" Foreground="Red" HorizontalAlignment="Center" IsVisible="{Binding !IsLevelPathSelected}" Margin="0,10">
 					未选择地图路径，请前往设置页面选择
 				</TextBlock>
 			</Grid>

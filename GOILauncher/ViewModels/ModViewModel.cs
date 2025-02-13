@@ -1,22 +1,23 @@
-﻿using GOILauncher.Models;
+﻿using System;
+using GOILauncher.Models;
 using LeanCloud.Storage;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
+using ReactiveUI;
 
 namespace GOILauncher.ViewModels
 {
     public class ModViewModel : ViewModelBase
     {
-        public ModViewModel()
+        public ModViewModel(SettingViewModel settingViewModel)
         {
-            UnselectedGamePath = !Setting.IsDefault(nameof(Setting.GamePath));
-            Setting.GamePathChanged += () =>
-            {
-                UnselectedGamePath = true;
-            };
+            settingViewModel.WhenAnyValue(x => x.GamePath)
+                            .Where(string.IsNullOrEmpty)
+                            .Subscribe(x => IsGamePathSelected = false);
         }
 
         public override void Init()
@@ -104,7 +105,6 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<Mod> ModpackandLevelLoader { get; set; } = [];
         public ObservableCollection<Mod> OtherMod { get; set; } = [];
         [Reactive]
-        public bool UnselectedGamePath { get; set; }
-        private static Setting Setting => Setting.Instance;
+        public bool IsGamePathSelected { get; set; } = true;
     }
 }

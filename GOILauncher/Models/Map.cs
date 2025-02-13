@@ -22,27 +22,6 @@ namespace GOILauncher.Models
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         }
-        public bool CheckMapExists()
-        {
-            if (!IsDownloading && !Setting.IsDefault(nameof(Setting.LevelPath)))
-            {
-                if (Directory.GetDirectories(Setting.LevelPath)
-                    .Any(directory => Path.GetFileName(directory).StartsWith(Name, StringComparison.OrdinalIgnoreCase))
-                    || File.Exists($"{Setting.LevelPath}/{Name}.scene"))
-                {
-                    Downloaded = true;
-                    Downloadable = false;
-                    return true;
-                }
-                else
-                {
-                    Downloaded = false;
-                    Downloadable = true;
-                    return false;
-                }
-            }
-            return false;
-        }
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = eventArgs.ProgressPercentage; 
@@ -123,6 +102,5 @@ namespace GOILauncher.Models
                 NotifyPropertyChanged(nameof(Downloadable));
             }
         }
-        private static Setting Setting => Setting.Instance;
     }
 }

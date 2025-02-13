@@ -1,13 +1,16 @@
 ﻿using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
+using GOILauncher.Services;
 using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,15 +18,13 @@ namespace GOILauncher.ViewModels
 {
     public class MapViewModel : ViewModelBase
     {
-        public MapViewModel()
+        public MapViewModel(SettingViewModel settingViewModel)
         {
-            UnselectedLevelPath = !Setting.IsDefault(nameof(LevelPath));
-            Setting.LevelPathChanged += () =>
-            {
-                UnselectedLevelPath = true;
-            }; 
-            var isDownloadValid = this.WhenAnyValue(x => x.UnselectedLevelPath);
-            DownloadCommand = ReactiveCommand.Create(Download, isDownloadValid);
+            _settingView = settingViewModel;
+            settingViewModel.WhenAnyValue(x => x.LevelPath)
+                            .Where(string.IsNullOrEmpty)
+                            .Subscribe(x => IsLevelPathSelected = false);
+            DownloadCommand = ReactiveCommand.Create(Download, this.WhenAnyValue(x => x.IsLevelPathSelected));
         }
         public override void Init()
         {
@@ -38,9 +39,27 @@ namespace GOILauncher.ViewModels
         {
             foreach (var map in AllMaps)
             {
-                map.CheckMapExists();
+                CheckMapExists(map);
             }
             Refresh();
+        }
+
+        private void CheckMapExists(Map map)
+        {
+            if (map.IsDownloading || IsLevelPathSelected) return;
+            if (Directory.GetDirectories(LevelPath!)
+                    .Any(directory => Path.GetFileName(directory)
+                        .StartsWith(map.Name, StringComparison.OrdinalIgnoreCase))
+                || File.Exists($"{LevelPath}/{map.Name}.scene"))
+            {
+                map.Downloaded = true;
+                map.Downloadable = false;
+            }
+            else
+            {
+                map.Downloaded = false;
+                map.Downloadable = true;
+            }
         }
         public void OnSelectedMapChanged(Map? map)
         {
@@ -58,9 +77,9 @@ namespace GOILauncher.ViewModels
             var maps = await query.Find();
             foreach (var map in maps)
             {
-                if (UnselectedLevelPath)
+                if (IsLevelPathSelected)
                 {
-                    map.CheckMapExists();
+                    CheckMapExists(map);
                 }
                 if (string.IsNullOrEmpty(map.Preview))
                 {
@@ -103,12 +122,19 @@ namespace GOILauncher.ViewModels
                     token
                     );
             map.Status = "解压中";
-            await ZipHelper.Extract($"{DownloadPath}/{map.Name}.zip", LevelPath, map.OnExtractProgressChanged);
+            await FileService.ExtractZip($"{DownloadPath}/{map.Name}.zip", LevelPath,SaveMapZip, map.OnExtractProgressChanged);
             _ = NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
             Refresh();
         }
+        private readonly SettingViewModel _settingView;
+        [Reactive]
+        public bool IsLevelPathSelected { get; private set; } = true;
+        private string? LevelPath => _settingView.LevelPath;
+        private string? DownloadPath => _settingView.DownloadPath;
+        private int PreviewQuality => _settingView.PreviewQuality;
+        private bool SaveMapZip => _settingView.SaveMapZip;
         private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         [Reactive]
         public Map CurrentMap{ get; set; } = new();
@@ -131,12 +157,6 @@ namespace GOILauncher.ViewModels
             }
         }
         public ReactiveCommand<Unit, Task> DownloadCommand { get; set; }
-        [Reactive]
-        public bool UnselectedLevelPath { get; set; }
-        private Setting Setting { get; } = Setting.Instance;
-        private string LevelPath => Setting.LevelPath;
-        private string DownloadPath => Setting.DownloadPath;
-        private int PreviewQuality => Setting.PreviewQuality;
 
         private bool hideDownloadedMap = true;
         public bool HideDownloadedMap

@@ -46,16 +46,16 @@ namespace GOILauncher
             services.AddTransient<PendingView>();
             services.AddTransient<AboutView>();
             services.AddTransient<SettingView>();
-            services.AddTransient<MainWindowViewModel>();
-            services.AddTransient<GameViewModel>();
-            services.AddTransient<ModViewModel>();
-            services.AddTransient<MapViewModel>();
-            services.AddTransient<MapManageViewModel>();
-            services.AddTransient<LeaderBoardViewModel>();
-            services.AddTransient<SubmitSpeedrunViewModel>();
-            services.AddTransient<PendingViewModel>();
-            services.AddTransient<AboutViewModel>();
-            services.AddTransient<SettingViewModel>();
+            services.AddSingleton<MainWindowViewModel>();
+            services.AddSingleton<GameViewModel>();
+            services.AddSingleton<ModViewModel>();
+            services.AddSingleton<MapViewModel>();
+            services.AddSingleton<MapManageViewModel>();
+            services.AddSingleton<LeaderBoardViewModel>();
+            services.AddSingleton<SubmitSpeedrunViewModel>();
+            services.AddSingleton<PendingViewModel>();
+            services.AddSingleton<AboutViewModel>();
+            services.AddSingleton<SettingViewModel>();
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
             {
                 ChunkCount = 16,

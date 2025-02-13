@@ -18,20 +18,47 @@
 	<ScrollViewer>
 		<StackPanel Orientation="Vertical" Margin="10,10">
 			<ui:SettingsExpander Header="游戏">
-				<ui:SettingsExpanderItem Description="{Binding GamePath}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding GamePath,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                         Classes.Unselected="{Binding GamePath,Converter={x:Static StringConverters.IsNullOrEmpty}}">
 					游戏路径：
+					<ui:SettingsExpanderItem.Styles>
+						<Style Selector="ui|SettingsExpanderItem.Selected">
+							<Setter Property="Description" Value="{Binding GamePath}"/>
+						</Style>
+						<Style Selector="ui|SettingsExpanderItem.Unselected">
+							<Setter Property="Description" Value="未选择"/>
+						</Style>
+					</ui:SettingsExpanderItem.Styles>
 					<ui:SettingsExpanderItem.Footer>
 						<Button Command="{Binding SelectGamePath}">选择</Button>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
-				<ui:SettingsExpanderItem Description="{Binding LevelPath}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding LevelPath,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                         Classes.Unselected="{Binding LevelPath,Converter={x:Static StringConverters.IsNullOrEmpty}}">
 					地图路径：
+					<ui:SettingsExpanderItem.Styles>
+						<Style Selector="ui|SettingsExpanderItem.Selected">
+							<Setter Property="Description" Value="{Binding LevelPath}"/>
+						</Style>
+						<Style Selector="ui|SettingsExpanderItem.Unselected">
+							<Setter Property="Description" Value="未选择（选择地图路径后自动选择）"/>
+						</Style>
+					</ui:SettingsExpanderItem.Styles>
 					<ui:SettingsExpanderItem.Footer>
 						<Button Command="{Binding SelectLevelPath}">选择</Button>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
-				<ui:SettingsExpanderItem Description="{Binding SteamPath}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding SteamPath,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                                         Classes.Unselected="{Binding SteamPath,Converter={x:Static StringConverters.IsNullOrEmpty}}">
 					Steam路径：
+					<ui:SettingsExpanderItem.Styles>
+						<Style Selector="ui|SettingsExpanderItem.Selected">
+							<Setter Property="Description" Value="{Binding SteamPath}"/>
+						</Style>
+						<Style Selector="ui|SettingsExpanderItem.Unselected">
+							<Setter Property="Description" Value="未选择"/>
+						</Style>
+					</ui:SettingsExpanderItem.Styles>
 					<ui:SettingsExpanderItem.Footer>
 						<Button Command="{Binding SelectSteamPath}">选择</Button>
 					</ui:SettingsExpanderItem.Footer>

@@ -3,7 +3,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:GOILauncher.ViewModels"
-			 xmlns:m="using:GOILauncher.Models"
 			 xmlns:ui="using:GOILauncher.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
              x:Class="GOILauncher.UI.Views.ModView"
@@ -24,10 +23,10 @@
 	</UserControl.Styles>
 	<ScrollViewer>
 		<Grid>
-			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !UnselectedGamePath}">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsGamePathSelected}">
 				未选择游戏路径，请前往设置页面选择
 			</TextBlock>
-			<StackPanel Margin="10,10,10,0" IsVisible="{Binding UnselectedGamePath}">
+			<StackPanel Margin="10,10,10,0" IsVisible="{Binding IsGamePathSelected}">
 				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpack}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoader}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoader}" IsOtherMod="False"/>

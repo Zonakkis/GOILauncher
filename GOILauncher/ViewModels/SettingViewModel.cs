@@ -1,6 +1,8 @@
-﻿using Avalonia.Platform.Storage;
+﻿using System;
+using Avalonia.Platform.Storage;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Models;
+using GOILauncher.Services;
 using ReactiveUI;
 using System.IO;
 using System.Threading.Tasks;
@@ -9,6 +11,11 @@ namespace GOILauncher.ViewModels
 {
     public class SettingViewModel : ViewModelBase
     {
+        public SettingViewModel()
+        {
+            this.WhenAnyValue(x=>x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
+                .Subscribe(_ => SettingService.SaveSetting(_setting));
+        }
         public async Task SelectGamePath()
         {
             var dialog = new FolderPickerOpenOptions
@@ -96,67 +103,67 @@ namespace GOILauncher.ViewModels
                 DownloadPath = path;
             }
         }
-        private static Setting Setting => Setting.Instance;
-        public string GamePath
+        private readonly Setting _setting = SettingService.LoadSetting();
+        public string? GamePath
         {
-            get => Setting.GamePath;
+            get => _setting.GamePath;
             set
             {
-                Setting.GamePath = value;
+                _setting.GamePath = value;
                 this.RaisePropertyChanged();
             }
         }
-        public string LevelPath
+        public string? LevelPath
         {
-            get => Setting.LevelPath;
+            get => _setting.LevelPath;
             set
             {
-                Setting.LevelPath = value;
+                _setting.LevelPath = value;
                 this.RaisePropertyChanged();
             }
         }
-        public string SteamPath
+        public string? SteamPath
         {
-            get => Setting.SteamPath;
+            get => _setting.SteamPath;
             set
             {
-                Setting.SteamPath = value;
+                _setting.SteamPath = value;
                 this.RaisePropertyChanged();
             }
         }
-        public string DownloadPath
+        public string? DownloadPath
         {
-            get => Setting.DownloadPath;
+            get => _setting.DownloadPath;
             set
             {
-                Setting.DownloadPath = value;
+                _setting.DownloadPath = value;
                 this.RaisePropertyChanged();
             }
         }
         public bool SaveMapZip
         {
-            get => Setting.SaveMapZip;
+            get => _setting.SaveMapZip;
             set
             {
-                Setting.SaveMapZip = value;
+                _setting.SaveMapZip = value;
                 this.RaisePropertyChanged();
             }
         }
         public bool NightMode
         {
-            get => Setting.NightMode;
+            get => _setting.NightMode;
             set
             {
-                Setting.NightMode = value;
+                _setting.NightMode = value;
                 this.RaisePropertyChanged();
             }
         }
         public int PreviewQuality
         {
-            get => Setting.PreviewQuality;
+            get => _setting.PreviewQuality;
             set
             {
-                Setting.PreviewQuality = value;
+                _setting.PreviewQuality = value;
                 this.RaisePropertyChanged();
             }
         }
