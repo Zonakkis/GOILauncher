@@ -129,7 +129,7 @@ namespace GOILauncher.ViewModels
         }
         private readonly SettingViewModel _settingView;
         [Reactive]
-        public bool IsLevelPathSelected { get; private set; } = true;
+        public bool IsLevelPathSelected { get; private set; }
         private string? LevelPath => _settingView.LevelPath;
         private string? DownloadPath => _settingView.DownloadPath;
         private int PreviewQuality => _settingView.PreviewQuality;

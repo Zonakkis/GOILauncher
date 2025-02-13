@@ -104,6 +104,6 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<Mod> ModpackandLevelLoader { get; set; } = [];
         public ObservableCollection<Mod> OtherMod { get; set; } = [];
         [Reactive]
-        public bool IsGamePathSelected { get; set; } = true;
+        public bool IsGamePathSelected { get; set; } 
     }
 }
