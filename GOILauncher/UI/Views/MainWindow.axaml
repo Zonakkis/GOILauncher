@@ -6,7 +6,9 @@
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="570"
 		Width="1050" Height="570"
 		xmlns:ui="using:GOILauncher.UI"
+		xmlns:pg="using:GOILauncher.UI.Views.Pages"
         xmlns:vm="using:GOILauncher.ViewModels"
+        xmlns:pages="clr-namespace:GOILauncher.ViewModels.Pages"
         x:Class="GOILauncher.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/GOILauncher.ico"
@@ -15,6 +17,9 @@
 		Loaded="Loaded"
 		Name="Window"
 		>
+	<Window.DataTemplates>
+		<pg:PageViewLocator/>
+	</Window.DataTemplates>
 	<Grid>
 		<controls:NavigationView MenuItemsSource="{Binding Views}"
 						   FooterMenuItemsSource="{Binding FooterViews}"
@@ -22,7 +27,7 @@
 						   OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"
 						   PaneTitle=" GOILauncher" IsSettingsVisible="False">
 			<controls:NavigationView.MenuItemTemplate>
-				<DataTemplate DataType="{x:Type vm:Page}">
+				<DataTemplate DataType="{x:Type pages:Page}">
 					<controls:NavigationViewItem MenuItemsSource="{Binding SubPages}"
 										   Content="{Binding Label}" IsExpanded="True">
 					</controls:NavigationViewItem>

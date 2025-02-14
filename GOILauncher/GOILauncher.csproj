@@ -60,4 +60,39 @@
       <HintPath>Reference\LeanCloud\Storage.Standard.dll</HintPath>
     </Reference>
   </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Compile Update="UI\Views\Pages\AboutPage.axaml.cs">
+      <DependentUpon>AboutPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\GamePage.axaml.cs">
+      <DependentUpon>GamePage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\LeaderBoardPage.axaml.cs">
+      <DependentUpon>LeaderBoardPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\MapManagePage.axaml.cs">
+      <DependentUpon>MapManagePage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\MapPage.axaml.cs">
+      <DependentUpon>MapPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\ModpackManagePage.axaml.cs">
+      <DependentUpon>ModpackManagePage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\ModPage.axaml.cs">
+      <DependentUpon>ModPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\PendingPage.axaml.cs">
+      <DependentUpon>PendingPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\SettingPage.axaml.cs">
+      <DependentUpon>SettingPage.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="UI\Views\Pages\SubmitSpeedrunPage.axaml.cs">
+      <DependentUpon>SubmitSpeedrunPage.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

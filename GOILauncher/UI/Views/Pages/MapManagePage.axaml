@@ -1,0 +1,36 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GOILauncher.ViewModels.Pages"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             x:Class="GOILauncher.UI.Views.Pages.MapManagePage"
+			 x:DataType="vm:MapManagePageViewModel"
+             FontSize="20"
+			 >
+	<Grid RowDefinitions="*,auto">
+		<DataGrid Grid.Row="0" ItemsSource="{Binding Maps}" Focusable="False" CanUserResizeColumns="True"  >
+			<DataGrid.Columns>
+				<DataGridTemplateColumn Header="" Width="auto" IsReadOnly="True">
+					<DataTemplate x:DataType="vm:MapInfo">
+						<CheckBox IsChecked="{Binding IsSelected}" HorizontalAlignment="Center"/>
+					</DataTemplate>
+				</DataGridTemplateColumn>
+				<DataGridTextColumn Header="名字" Width="*" Binding="{Binding Name}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="作者" Width="*" Binding="{Binding Author}" IsReadOnly="True"/>
+				<DataGridTextColumn Header="大小" Width="*" Binding="{Binding Size}" IsReadOnly="True"/>
+			</DataGrid.Columns>
+		</DataGrid>
+		<Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="10">
+			<TextBlock>
+				<Run Text="已选"/>
+				<Run Text="{Binding SelectedCount}"/>
+				<Run Text="项，"/>
+				<Run Text="总共"/>
+				<Run Text="{Binding TotalCount}"/>
+				<Run Text="项"/>
+			</TextBlock>
+			<Button Content="删除" Command="{Binding DeleteCommand}" HorizontalAlignment="Right"/>
+		</Grid>
+	</Grid>
+</UserControl>

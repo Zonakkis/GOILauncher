@@ -11,6 +11,8 @@ using Downloader;
 using Avalonia.Controls.Notifications;
 using GOILauncher.UI;
 using GOILauncher.Services;
+using GOILauncher.UI.Views.Pages;
+using GOILauncher.ViewModels.Pages;
 
 namespace GOILauncher
 {
@@ -39,25 +41,25 @@ namespace GOILauncher
             {
                 DataContext = serviceProvider.GetRequiredService<MainWindowViewModel>()
             });
-            services.AddTransient<GameView>();
-            services.AddSingleton<ModView>();
-            services.AddSingleton<MapView>();
-            services.AddTransient<MapManageView>();
-            services.AddTransient<LeaderBoardView>();
-            services.AddSingleton<SubmitSpeedrunView>();
-            services.AddTransient<PendingView>();
-            services.AddTransient<AboutView>();
-            services.AddTransient<SettingView>();
+            services.AddTransient<GamePage>();
+            services.AddSingleton<ModPage>();
+            services.AddSingleton<MapPage>();
+            services.AddTransient<MapManagePage>();
+            services.AddTransient<LeaderBoardPage>();
+            services.AddSingleton<SubmitSpeedrunPage>();
+            services.AddTransient<PendingPage>();
+            services.AddTransient<AboutPage>();
+            services.AddTransient<SettingPage>();
             services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<GameViewModel>();
-            services.AddSingleton<ModViewModel>();
-            services.AddSingleton<MapViewModel>();
-            services.AddSingleton<MapManageViewModel>();
-            services.AddSingleton<LeaderBoardViewModel>();
-            services.AddSingleton<SubmitSpeedrunViewModel>();
-            services.AddSingleton<PendingViewModel>();
-            services.AddSingleton<AboutViewModel>();
-            services.AddSingleton<SettingViewModel>();
+            services.AddSingleton<GamePageViewModel>();
+            services.AddSingleton<ModPageViewModel>();
+            services.AddSingleton<MapPageViewModel>();
+            services.AddSingleton<MapManagePageViewModel>();
+            services.AddSingleton<LeaderBoardPageViewModel>();
+            services.AddSingleton<SubmitSpeedrunPageViewModel>();
+            services.AddSingleton<PendingPageViewModel>();
+            services.AddSingleton<AboutPageViewModel>();
+            services.AddSingleton<SettingPageViewModel>();
             services.AddSingleton<NotificationManager>();
             services.AddSingleton<GameService>();
             services.AddSingleton<FileService>(serviceProvider => new FileService(new Lazy<TopLevel>(serviceProvider.GetRequiredService<MainWindow>)));

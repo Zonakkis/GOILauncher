@@ -2,14 +2,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			 xmlns:sty="using:FluentAvalonia.Styling"
              x:Class="GOILauncher.App"
-             xmlns:local="using:GOILauncher"
              RequestedThemeVariant="Default">
 	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
-
-	<Application.DataTemplates>
-		<local:ViewLocator/>
-	</Application.DataTemplates>
-
 	<Application.Styles>
 		<Styles>
 			<sty:FluentAvaloniaTheme/>

@@ -1,0 +1,37 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:GOILauncher.ViewModels.Pages"
+			 xmlns:ui="using:GOILauncher.UI.Controls"
+             mc:Ignorable="d" d:DesignWidth="1000" d:DesignHeight="500"
+             x:Class="GOILauncher.UI.Views.Pages.ModPage"
+			 x:DataType="vm:ModPageViewModel"
+			 >
+	<UserControl.Styles>
+		<Styles>
+			<Style Selector="TextBlock">
+				<Setter Property="FontSize">20</Setter>
+			</Style>
+			<Style Selector="AccessText">
+				<Setter Property="FontSize">20</Setter>
+			</Style>
+			<Style Selector="TextBlock[Tag=DownloadStatus]">
+				<Setter Property="FontSize">16</Setter>
+			</Style>
+		</Styles>
+	</UserControl.Styles>
+	<ScrollViewer>
+		<Grid>
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SettingPage.IsGamePathSelected}">
+				未选择游戏路径，请前往设置页面选择
+			</TextBlock>
+			<StackPanel Margin="10,10,10,0" IsVisible="{Binding SettingPage.IsGamePathSelected}">
+				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpack}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoader}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoader}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="其他Mod" Mods="{Binding OtherMod}" IsOtherMod="True"/>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</UserControl>

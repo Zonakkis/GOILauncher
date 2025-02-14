@@ -9,37 +9,38 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http;
 using FluentAvalonia.UI.Controls;
+using GOILauncher.ViewModels.Pages;
 
 namespace GOILauncher.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         public MainWindowViewModel(
-            GameViewModel gameViewModel, ModViewModel modViewModel,MapViewModel mapViewModel,
-            MapManageViewModel mapManageViewModel,LeaderBoardViewModel leaderBoardViewModel,
-            SubmitSpeedrunViewModel submitSpeedrunViewModel,PendingViewModel pendingViewModel,
-            SettingViewModel settingViewModel,AboutViewModel aboutViewModel,
+            GamePageViewModel gamePageViewModel, ModPageViewModel modPageViewModel,MapPageViewModel mapPageViewModel,
+            MapManagePageViewModel mapManagePageViewModel,LeaderBoardPageViewModel leaderBoardPageViewModel,
+            SubmitSpeedrunPageViewModel submitSpeedrunPageViewModel,PendingPageViewModel pendingPageViewModel,
+            SettingPageViewModel settingPageViewModel,AboutPageViewModel aboutPageViewModel,
             NotificationManager notificationManager)
         { 
             NotificationManager = notificationManager;
             Views = [
-                new Page("游戏", gameViewModel),
-                new Page("Mod", modViewModel),
+                new Page("游戏", gamePageViewModel),
+                new Page("Mod", modPageViewModel),
                 //new Page("Mod",new ObservableCollection<Page>()
                 //{
                 //    new Page("Modpack配置"),
                 //}),
-                new Page("地图", mapViewModel, [
-                    new Page("管理地图", mapManageViewModel)
+                new Page("地图", mapPageViewModel, [
+                    new Page("管理地图", mapManagePageViewModel)
                 ]),
-                new Page("排行榜", leaderBoardViewModel, [
-                    new Page("提交速通", submitSpeedrunViewModel),
-                    new Page("待审核", pendingViewModel),
+                new Page("排行榜", leaderBoardPageViewModel, [
+                    new Page("提交速通", submitSpeedrunPageViewModel),
+                    new Page("待审核", pendingPageViewModel),
                 ])
             ];
             FooterViews = [
-                new Page("设置", settingViewModel),
-                new Page("关于", aboutViewModel)
+                new Page("设置", settingPageViewModel),
+                new Page("关于", aboutPageViewModel)
             ];
             LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com");
 #if DEBUG
@@ -84,7 +85,7 @@ namespace GOILauncher.ViewModels
         public NotificationManager NotificationManager {  get; }
         public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
         [Reactive]
-        public ViewModelBase CurrentView { get; set; }
+        public PageViewModelBase CurrentView { get; set; }
         public Page SelectedPage
         {
             get => selectedView!;

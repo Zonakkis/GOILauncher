@@ -39,14 +39,14 @@ namespace GOILauncher.Models
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             //await DownloadHelper.Download(
-            //        Path.Combine(Setting.DownloadPath, $"{Name}{Build}.zip"),
+            //        Path.Combine(SettingPage.DownloadPath, $"{Name}{Build}.zip"),
             //        this,
             //        token
             //        );
             IsExtracting = true;
             Status = "解压中";
-            //await ZipHelper.Extract($"{Setting.DownloadPath}/{Name}{Build}.zip", Setting.GamePath,false);
-            //GameInfo.Refresh(Setting.GamePath);
+            //await ZipHelper.Extract($"{SettingPage.DownloadPath}/{Name}{Build}.zip", SettingPage.GamePath,false);
+            //GameInfo.Refresh(SettingPage.GamePath);
             IsExtracting = false;
             Downloadable = true;
             await NotificationHelper.ShowContentDialog("提示", $"已经安装{Name}{Build}！");
