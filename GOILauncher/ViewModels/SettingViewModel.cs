@@ -7,13 +7,16 @@ using ReactiveUI;
 using System.IO;
 using System.Threading.Tasks;
 using ReactiveUI.Fody.Helpers;
+using FluentAvalonia.UI.Windowing;
+using GOILauncher.UI;
 
 namespace GOILauncher.ViewModels
 {
     public class SettingViewModel : ViewModelBase
     {
-        public SettingViewModel()
+        public SettingViewModel(FileService fileService)
         {
+            _fileService = fileService;
             this.WhenAnyValue(x => x.GamePath)
                 .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
             this.WhenAnyValue(x => x.LevelPath)
@@ -25,16 +28,10 @@ namespace GOILauncher.ViewModels
         }
         public async Task SelectGamePath()
         {
-            var dialog = new FolderPickerOpenOptions
+            var folder = await _fileService.OpenFolderPickerAsync("选择游戏路径");
+            if (folder is not null)
             {
-                AllowMultiple = false,
-                Title = "选择游戏路径",
-            };
-            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
-            if (folder.Count > 0)
-            {
-                var path = folder[0].Path.ToString();
-                path = path[8..];
+                var path = folder.Path.ToString()[8..];
                 if (File.Exists($"{path}/GettingOverIt.exe"))
                 {
                     GamePath = path;
@@ -42,75 +39,49 @@ namespace GOILauncher.ViewModels
                 }
                 else
                 {
-                    var contentDialog = new ContentDialog()
-                    {
-                        Title = "提示",
-                        Content = "没有找到GettingOverIt.exe，是不是找错路径了喵？",
-                        CloseButtonText = "好的",
-                    };
-                    await contentDialog.ShowAsync();
+                    NotificationManager.ShowContentDialog("提示",
+                        "没有找到GettingOverIt.exe，是不是找错路径了喵？");
                 }
             }
         }
         public async Task SelectLevelPath()
         {
-            var dialog = new FolderPickerOpenOptions
+            var folder = await _fileService.OpenFolderPickerAsync("选择地图路径");
+            if (folder is not null)
             {
-                AllowMultiple = false,
-                Title = "选择地图路径",
-            };
-            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
-            if (folder.Count > 0)
-            {
-                var path = folder[0].Path.ToString();
-                path = path[8..];
+                var path = folder.Path.ToString()[8..];
                 LevelPath = path;
             }
         }
         public async Task SelectSteamPath()
         {
-            var dialog = new FolderPickerOpenOptions
+            var folder = await _fileService.OpenFolderPickerAsync("选择Steam路径");
+            if (folder is not null)
             {
-                AllowMultiple = false,
-                Title = "选择Steam路径",
-            };
-            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
-            if (folder.Count > 0)
-            {
-                string path = folder[0].Path.ToString();
-                path = path[8..];
+                var path = folder.Path.ToString()[8..];
                 if (File.Exists($"{path}/steam.exe"))
                 {
                     SteamPath = path;
                 }
                 else
                 {
-                    var contentDialog = new ContentDialog()
-                    {
-                        Title = "提示",
-                        Content = "没有找到steam.exe，是不是找错路径了喵？",
-                        CloseButtonText = "好的",
-                    };
-                    await contentDialog.ShowAsync();
+                    NotificationManager.ShowContentDialog("提示",
+                        "没有找到steam.exe，是不是找错路径了喵？");
                 }
             }
         }
         public async Task SelectDownloadPath()
         {
-            var dialog = new FolderPickerOpenOptions
+            var folder = await _fileService.OpenFolderPickerAsync("选择下载路径");
+            if (folder is not null)
             {
-                AllowMultiple = false,
-                Title = "选择下载路径",
-            };
-            var folder = await App.TopLevel!.StorageProvider.OpenFolderPickerAsync(dialog);
-            if (folder.Count > 0)
-            {
-                var path = folder[0].Path.ToString();
-                path = path[8..];
+                var path = folder.Path.ToString()[8..];
                 DownloadPath = path;
             }
         }
         private readonly Setting _setting = SettingService.LoadSetting();
+        private readonly FileService _fileService;
+
         public string? GamePath
         {
             get => _setting.GamePath;

@@ -1,4 +1,6 @@
-﻿using Ionic.Zip;
+﻿using Avalonia.Controls;
+using Avalonia.Platform.Storage;
+using Ionic.Zip;
 using LC.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,18 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Services;
 
-public static class FileService
+public class FileService(TopLevel topLevel)
 {
+    public async Task<IStorageFolder?> OpenFolderPickerAsync(string title)
+    {
+        var folderPickerOpenOptions = new FolderPickerOpenOptions
+        {
+            Title = title,
+            AllowMultiple = false
+        };
+        var folder = await topLevel.StorageProvider.OpenFolderPickerAsync(folderPickerOpenOptions);
+        return folder.Count > 0 ? folder[0] : null;
+    }
     public static void SaveAsJson(string path, string fileName, object obj, bool overwrite = true)
     {
         using StreamWriter streamWriter = new(Path.Combine(path, fileName), !overwrite);

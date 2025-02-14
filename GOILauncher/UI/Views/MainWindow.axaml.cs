@@ -15,12 +15,6 @@ namespace GOILauncher.UI.Views
     {
         public MainWindow()
         {
-#if DEBUG
-            if (Design.IsDesignMode)
-            {
-                Design.SetDataContext(this,App.ServiceProvider.GetRequiredService<MainWindowViewModel>());
-            }
-#endif
             InitializeComponent();
             NotificationHelper.NotificationBar = NotificationBar;
         }

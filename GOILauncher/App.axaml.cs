@@ -10,12 +10,12 @@ using System.Net;
 using Downloader;
 using Avalonia.Controls.Notifications;
 using GOILauncher.UI;
+using GOILauncher.Services;
 
 namespace GOILauncher
 {
     public partial class App : Application
     {
-        public static TopLevel? TopLevel { get; private set; }
         public static IServiceProvider ServiceProvider { get; private set; }
         public override void Initialize()
         {
@@ -28,17 +28,16 @@ namespace GOILauncher
             ServiceProvider = services.BuildServiceProvider();
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>(),
-                };
-                TopLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+                var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
+                mainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
+                desktop.MainWindow = mainWindow;
             }
             base.OnFrameworkInitializationCompleted();
         }
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            services.AddSingleton<MainWindow>();
             services.AddTransient<GameView>();
             services.AddSingleton<ModView>();
             services.AddSingleton<MapView>();
@@ -59,6 +58,7 @@ namespace GOILauncher
             services.AddSingleton<AboutViewModel>();
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<NotificationManager>();
+            services.AddSingleton<FileService>(serviceProvider => new FileService(TopLevel.GetTopLevel(serviceProvider.GetRequiredService<MainWindow>())!));
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
             {
                 ChunkCount = 16,
