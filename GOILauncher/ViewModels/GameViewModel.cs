@@ -5,21 +5,24 @@ using ReactiveUI.Fody.Helpers;
 using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Text;
+using GOILauncher.Services;
 
 namespace GOILauncher.ViewModels
 {
     public class GameViewModel : ViewModelBase
     {
-        public GameViewModel(SettingViewModel settingViewModel)
+        public GameViewModel(SettingViewModel settingViewModel,GameService gameService)
         {
             Setting = settingViewModel;
-            GameInfo.Refreshed += () =>
-            {
-                this.RaisePropertyChanged(nameof(GameVersion));
-                this.RaisePropertyChanged(nameof(ModpackVersion));
-                this.RaisePropertyChanged(nameof(LevelLoaderVersion));
-                this.RaisePropertyChanged(nameof(BepInExVersion));
-            };
+            settingViewModel.WhenAnyValue(x => x.GamePath)
+                            .Subscribe(gamePath =>
+                            {
+                                var gameInfo = gameService.GetGameInfo(gamePath!);
+                                GameVersion = gameInfo.GameVersion;
+                                ModpackVersion = gameInfo.ModpackVersion;
+                                LevelLoaderVersion = gameInfo.LevelLoaderVersion;
+                                BepInExVersion = gameInfo.BepInExVersion;
+                            });
         }
         public override void Init()
         {
@@ -62,11 +65,14 @@ namespace GOILauncher.ViewModels
         [Reactive]
         public bool GameLaunched { get; set; }
         private Process? GameProcess { get; set; }
-        private GameInfo GameInfo { get; } = GameInfo.Instance;
-        public string GameVersion => GameInfo.GameVersion;
-        public string ModpackVersion => GameInfo.ModpackVersion;
-        public string LevelLoaderVersion => GameInfo.LevelLoaderVersion;
-        public string BepInExVersion => GameInfo.BepInExVersion;
+        [Reactive]
+        public string GameVersion { get;set; }
+        [Reactive]
+        public string ModpackVersion { get; set; }
+        [Reactive]
+        public string LevelLoaderVersion { get; set; }
+        [Reactive]
+        public string BepInExVersion { get; set; }
 
     }
 }
