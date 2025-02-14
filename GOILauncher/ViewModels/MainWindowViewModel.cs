@@ -22,7 +22,6 @@ namespace GOILauncher.ViewModels
             NotificationManager notificationManager)
         { 
             NotificationManager = notificationManager;
-            NotificationManager.ShowContentDialog("123", "abc");
             Views = [
                 new Page("游戏", gameViewModel),
                 new Page("Mod", modViewModel),
