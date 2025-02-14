@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Services;
 
-public class FileService(TopLevel topLevel)
+public class FileService(Lazy<TopLevel> topLevel)
 {
     public async Task<IStorageFolder?> OpenFolderPickerAsync(string title)
     {
@@ -19,7 +19,7 @@ public class FileService(TopLevel topLevel)
             Title = title,
             AllowMultiple = false
         };
-        var folder = await topLevel.StorageProvider.OpenFolderPickerAsync(folderPickerOpenOptions);
+        var folder = await topLevel.Value.StorageProvider.OpenFolderPickerAsync(folderPickerOpenOptions);
         return folder.Count > 0 ? folder[0] : null;
     }
     public static void SaveAsJson(string path, string fileName, object obj, bool overwrite = true)

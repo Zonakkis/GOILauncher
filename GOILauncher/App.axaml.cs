@@ -28,16 +28,17 @@ namespace GOILauncher
             ServiceProvider = services.BuildServiceProvider();
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
-                mainWindow.DataContext = ServiceProvider.GetRequiredService<MainWindowViewModel>();
-                desktop.MainWindow = mainWindow;
+                desktop.MainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             }
             base.OnFrameworkInitializationCompleted();
         }
 
         private static void ConfigureServices(ServiceCollection services)
         {
-            services.AddSingleton<MainWindow>();
+            services.AddSingleton<MainWindow>(serviceProvider => new MainWindow
+            {
+                DataContext = serviceProvider.GetRequiredService<MainWindowViewModel>()
+            });
             services.AddTransient<GameView>();
             services.AddSingleton<ModView>();
             services.AddSingleton<MapView>();
@@ -58,7 +59,7 @@ namespace GOILauncher
             services.AddSingleton<AboutViewModel>();
             services.AddSingleton<SettingViewModel>();
             services.AddSingleton<NotificationManager>();
-            services.AddSingleton<FileService>(serviceProvider => new FileService(TopLevel.GetTopLevel(serviceProvider.GetRequiredService<MainWindow>())!));
+            services.AddSingleton<FileService>(serviceProvider => new FileService(new Lazy<TopLevel>(serviceProvider.GetRequiredService<MainWindow>)));
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
             {
                 ChunkCount = 16,
