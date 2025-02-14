@@ -11,14 +11,8 @@ using ReactiveUI;
 
 namespace GOILauncher.ViewModels
 {
-    public class ModViewModel : ViewModelBase
+    public class ModViewModel(SettingViewModel settingViewModel) : ViewModelBase
     {
-        public ModViewModel(SettingViewModel settingViewModel)
-        {
-            settingViewModel.WhenAnyValue(x => x.GamePath)
-                            .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
-        }
-
         public override void Init()
         {
             _ = GetModpacks();
@@ -99,11 +93,10 @@ namespace GOILauncher.ViewModels
                 });
             }
         }
+        public SettingViewModel Setting { get; } = settingViewModel;
         public ObservableCollection<Mod> Modpack { get; set; } = [];
         public ObservableCollection<Mod> LevelLoader { get; set; } = [];
         public ObservableCollection<Mod> ModpackandLevelLoader { get; set; } = [];
         public ObservableCollection<Mod> OtherMod { get; set; } = [];
-        [Reactive]
-        public bool IsGamePathSelected { get; set; } 
     }
 }

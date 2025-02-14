@@ -14,9 +14,9 @@ namespace GOILauncher.ViewModels
 {
     public class MapManageViewModel : ViewModelBase
     {
-        public MapManageViewModel(SettingViewModel settingViewModel)
+        public MapManageViewModel(SettingViewModel setting)
         {
-            _settingViewModel = settingViewModel;
+            _setting = setting;
             DeleteCommand = ReactiveCommand.Create(DeleteSelectedMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
         }
 
@@ -44,9 +44,9 @@ namespace GOILauncher.ViewModels
         {
             Maps.Clear();
             SelectedCount = 0;
-            if (Directory.Exists(LevelPath))
+            if (Directory.Exists(_setting.LevelPath))
             {
-                foreach (var file in Directory.GetFiles(LevelPath, "*.scene", SearchOption.AllDirectories))
+                foreach (var file in Directory.GetFiles(_setting.LevelPath, "*.scene", SearchOption.AllDirectories))
                 {
                     var mapName = Path.GetFileNameWithoutExtension(file);
                     if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
@@ -84,13 +84,13 @@ namespace GOILauncher.ViewModels
         }
         public void Delete(MapInfo map)
         {
-            foreach (var path in Directory.EnumerateDirectories($"{LevelPath}/")
+            foreach (var path in Directory.EnumerateDirectories($"{_setting.LevelPath}/")
                                 .Where(directory => Path.GetFileName(directory)
                                 .StartsWith(map.Name, StringComparison.InvariantCultureIgnoreCase)))
             {
                 Directory.Delete(path, true);
             }
-            foreach (var path in Directory.GetFiles($"{LevelPath}/")
+            foreach (var path in Directory.GetFiles($"{_setting.LevelPath}/")
                 .Where(filename => Path.GetFileName(filename)
                 .StartsWith(map.Name, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -117,10 +117,8 @@ namespace GOILauncher.ViewModels
             await contentDialog.ShowAsync();
             
         }
-        private readonly SettingViewModel _settingViewModel;
-        private string? LevelPath => _settingViewModel.LevelPath;
+        private readonly SettingViewModel _setting;
         public ObservableCollection<MapInfo> Maps { get; set; } = [];
-
         [Reactive]
         public int TotalCount { get; set; }
         [Reactive]

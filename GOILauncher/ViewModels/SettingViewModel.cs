@@ -6,6 +6,7 @@ using GOILauncher.Services;
 using ReactiveUI;
 using System.IO;
 using System.Threading.Tasks;
+using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.ViewModels
 {
@@ -13,6 +14,12 @@ namespace GOILauncher.ViewModels
     {
         public SettingViewModel()
         {
+            this.WhenAnyValue(x => x.GamePath)
+                .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
+            this.WhenAnyValue(x => x.LevelPath)
+                .Subscribe(x => IsLevelPathSelected = !string.IsNullOrEmpty(x));
+            this.WhenAnyValue(x => x.SteamPath)
+                .Subscribe(x => IsSteamPathSelected = !string.IsNullOrEmpty(x));
             this.WhenAnyValue(x=>x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
                 .Subscribe(_ => SettingService.SaveSetting(_setting));
         }
@@ -167,5 +174,11 @@ namespace GOILauncher.ViewModels
                 this.RaisePropertyChanged();
             }
         }
+        [Reactive]
+        public bool IsGamePathSelected { get; set; }
+        [Reactive]
+        public bool IsLevelPathSelected { get; set; }
+        [Reactive]
+        public bool IsSteamPathSelected { get; set; }
     }
 }

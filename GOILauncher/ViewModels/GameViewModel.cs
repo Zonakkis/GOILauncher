@@ -12,11 +12,7 @@ namespace GOILauncher.ViewModels
     {
         public GameViewModel(SettingViewModel settingViewModel)
         {
-            _settingViewModel = settingViewModel;
-            settingViewModel.WhenAnyValue(x => x.GamePath)
-                            .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
-            settingViewModel.WhenAnyValue(x => x.SteamPath)
-                            .Subscribe(x => IsSteamPathSelected = !string.IsNullOrEmpty(x));
+            Setting = settingViewModel;
             GameInfo.Refreshed += () =>
             {
                 this.RaisePropertyChanged(nameof(GameVersion));
@@ -38,12 +34,12 @@ namespace GOILauncher.ViewModels
             switch (para)
             {
                 case 1:
-                    GameProcess = Process.Start($"{GamePath}/GettingOverIt.exe");
+                    GameProcess = Process.Start($"{Setting.GamePath}/GettingOverIt.exe");
                     break;
                 case 2:
-                    if (IsGamePathSelected)
+                    if (Setting.IsGamePathSelected)
                     {
-                        GameProcess = Process.Start($"{SteamPath}/steam.exe", "steam://rungameid/240720");
+                        GameProcess = Process.Start($"{Setting.SteamPath}/steam.exe", "steam://rungameid/240720");
                     }
                     break;
             }
@@ -62,16 +58,9 @@ namespace GOILauncher.ViewModels
         {
             GameProcess?.Kill();
         }
-        private readonly SettingViewModel _settingViewModel;
-        private string? GamePath => _settingViewModel.GamePath;
-        private string? SteamPath => _settingViewModel.SteamPath;
-        [Reactive]
-        public bool IsGamePathSelected { get; set; }
-        [Reactive]
-        public bool IsSteamPathSelected { get; set; }
+        public SettingViewModel Setting { get; }
         [Reactive]
         public bool GameLaunched { get; set; }
-
         private Process? GameProcess { get; set; }
         private GameInfo GameInfo { get; } = GameInfo.Instance;
         public string GameVersion => GameInfo.GameVersion;

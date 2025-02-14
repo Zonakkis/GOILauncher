@@ -23,10 +23,10 @@
 	</UserControl.Styles>
 	<ScrollViewer>
 		<Grid>
-			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !IsGamePathSelected}">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !Setting.IsGamePathSelected}">
 				未选择游戏路径，请前往设置页面选择
 			</TextBlock>
-			<StackPanel Margin="10,10,10,0" IsVisible="{Binding IsGamePathSelected}">
+			<StackPanel Margin="10,10,10,0" IsVisible="{Binding Setting.IsGamePathSelected}">
 				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpack}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoader}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoader}" IsOtherMod="False"/>
