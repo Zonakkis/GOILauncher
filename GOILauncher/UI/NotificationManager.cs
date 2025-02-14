@@ -22,6 +22,20 @@ public class NotificationManager : ReactiveObject
             await contentDialog.ShowAsync();
         });
     }
+    public static async Task<ContentDialogResult> ShowContentDialogAsync(string title, string content)
+    {
+        return await Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            var contentDialog = new ContentDialog()
+            {
+                FontSize = 20,
+                Title = title,
+                Content = content,
+                CloseButtonText = "好的",
+            };
+            return await contentDialog.ShowAsync();
+        });
+    }
 
     public void AddNotification(string title, string message,InfoBarSeverity severity,
         int displayTime = 5000)
