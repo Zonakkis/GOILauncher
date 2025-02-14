@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net;
 using Downloader;
+using Avalonia.Controls.Notifications;
+using GOILauncher.UI;
 
 namespace GOILauncher
 {
@@ -56,6 +58,7 @@ namespace GOILauncher
             services.AddSingleton<PendingViewModel>();
             services.AddSingleton<AboutViewModel>();
             services.AddSingleton<SettingViewModel>();
+            services.AddSingleton<NotificationManager>();
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
             {
                 ChunkCount = 16,

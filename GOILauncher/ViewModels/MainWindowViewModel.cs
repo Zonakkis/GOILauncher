@@ -1,4 +1,6 @@
-﻿using LeanCloud;
+﻿using Avalonia.Threading;
+using GOILauncher.UI;
+using LeanCloud;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -6,6 +8,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http;
+using FluentAvalonia.UI.Controls;
 
 namespace GOILauncher.ViewModels
 {
@@ -15,8 +18,11 @@ namespace GOILauncher.ViewModels
             GameViewModel gameViewModel, ModViewModel modViewModel,MapViewModel mapViewModel,
             MapManageViewModel mapManageViewModel,LeaderBoardViewModel leaderBoardViewModel,
             SubmitSpeedrunViewModel submitSpeedrunViewModel,PendingViewModel pendingViewModel,
-            SettingViewModel settingViewModel,AboutViewModel aboutViewModel)
+            SettingViewModel settingViewModel,AboutViewModel aboutViewModel,
+            NotificationManager notificationManager)
         { 
+            NotificationManager = notificationManager;
+            NotificationManager.ShowContentDialog("123", "abc");
             Views = [
                 new Page("游戏", gameViewModel),
                 new Page("Mod", modViewModel),
@@ -76,6 +82,7 @@ namespace GOILauncher.ViewModels
             }
             value.View.OnSelectedViewChanged();
         }
+        public NotificationManager NotificationManager {  get; }
         public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
         [Reactive]
         public ViewModelBase CurrentView { get; set; }

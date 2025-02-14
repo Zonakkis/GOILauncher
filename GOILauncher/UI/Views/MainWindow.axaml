@@ -2,9 +2,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-		xmlns:ui="using:FluentAvalonia.UI.Controls"
+		xmlns:controls="using:FluentAvalonia.UI.Controls"
         mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="570"
 		Width="1050" Height="570"
+		xmlns:ui="using:GOILauncher.UI"
         xmlns:vm="using:GOILauncher.ViewModels"
         x:Class="GOILauncher.UI.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
@@ -15,20 +16,32 @@
 		Name="Window"
 		>
 	<Grid>
-		<ui:NavigationView MenuItemsSource="{Binding Views}"
+		<controls:NavigationView MenuItemsSource="{Binding Views}"
 						   FooterMenuItemsSource="{Binding FooterViews}"
 						   Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}"
-						   OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto" 
+						   OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"
 						   PaneTitle=" GOILauncher" IsSettingsVisible="False">
-			<ui:NavigationView.MenuItemTemplate>
+			<controls:NavigationView.MenuItemTemplate>
 				<DataTemplate DataType="{x:Type vm:Page}">
-					<ui:NavigationViewItem MenuItemsSource="{Binding SubPages}"
+					<controls:NavigationViewItem MenuItemsSource="{Binding SubPages}"
 										   Content="{Binding Label}" IsExpanded="True">
-					</ui:NavigationViewItem>
+					</controls:NavigationViewItem>
 				</DataTemplate>
-			</ui:NavigationView.MenuItemTemplate>
-		</ui:NavigationView>
-		<ui:InfoBar Name="NotificationBar" IsClosable="True" Margin="0,20" 
+			</controls:NavigationView.MenuItemTemplate>
+		</controls:NavigationView>
+		<controls:ItemsRepeater ItemsSource="{Binding NotificationManager.Notifications}"
+						  HorizontalAlignment="Center" VerticalAlignment="Bottom">
+			<controls:ItemsRepeater.ItemTemplate>
+				<DataTemplate x:DataType="ui:Notification">
+					<controls:InfoBar Title="{Binding Title}" Message="{Binding Message}"
+									  Severity="{Binding Severity}"
+									  IsOpen="True" IsClosable="True"
+									  HorizontalAlignment="Center" Margin="0,5">
+					</controls:InfoBar>
+				</DataTemplate>
+			</controls:ItemsRepeater.ItemTemplate>
+		</controls:ItemsRepeater>
+		<controls:InfoBar Name="NotificationBar" IsClosable="True" Margin="0,20"
 					HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
 	</Grid>
 </Window>
