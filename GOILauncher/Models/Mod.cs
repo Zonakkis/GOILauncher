@@ -2,6 +2,7 @@
 using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
+using LC.Newtonsoft.Json;
 using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -14,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
+    [JsonObject(MemberSerialization.OptIn)]
     public class Mod : ReactiveObject, IDownloadable 
     {
         public Mod()
@@ -40,14 +42,19 @@ namespace GOILauncher.Models
             Status = "解压中";
         }
         [Reactive]
+        [JsonProperty]
         public string Name { get; init; }
         [Reactive]
+        [JsonProperty]
         public string Author { get; init; }
         [Reactive]
+        [JsonProperty]
         public string Build { get; init; }
         [Reactive]
+        [JsonProperty]
         public string Url { get; init; }
         [Reactive]
+        [JsonProperty]
         public List<string> TargetGameVersion { get; init; }
         public string TargetGameVersionString => string.Join("/", TargetGameVersion);
         [Reactive]

@@ -14,16 +14,19 @@ using Downloader;
 using System.Xml.Linq;
 using System.Reactive;
 using GOILauncher.UI;
+using GOILauncher.Services.LeanCloud;
+using System.Diagnostics;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class ModPageViewModel : PageViewModelBase
     {
         public ModPageViewModel(GameService gameService, SettingService settingService,
-            DownloadService downloadService,NotificationManager notificationManager)
+            DownloadService downloadService,LeanCloudService leanCloudService)
         {
             _gameInfo = gameService.GameInfo;
             _gameService = gameService;
+            _leanCloudService = leanCloudService;
             _downloadService = downloadService;
             Setting = settingService.Setting;
             DownloadCommand = ReactiveCommand.CreateFromTask<Mod>(Download);
@@ -70,28 +73,27 @@ namespace GOILauncher.ViewModels.Pages
                 NotificationManager.ShowContentDialog($"下载{mod.Name} {mod.Build}失败", e.Message);
             }
         }
-
         private async Task GetModpacks()
         {
-            Modpacks = new ObservableCollection<Mod>(await LeanCloudService.GetMods("Modpack"));
+            Modpacks = await _leanCloudService.GetMods("Modpack");
         }
         private async Task GetLevelLoaders()
         {
-            LevelLoaders = new ObservableCollection<Mod>(await LeanCloudService.GetMods("LevelLoader"));
+            LevelLoaders = await _leanCloudService.GetMods("LevelLoader");
         }
         private async Task GetModpackandLevelLoaders()
         {
-            ModpackandLevelLoaders = new ObservableCollection<Mod>(await LeanCloudService.GetMods("ModpackandLevelLoader"));
+            ModpackandLevelLoaders = await _leanCloudService.GetMods("ModpackandLevelLoader");
         }
         private async Task GetOtherMods()
         {
-            OtherMods = new ObservableCollection<Mod>(await LeanCloudService.GetMods("OtherMod"));
+            OtherMods = await _leanCloudService.GetMods("OtherMod");
         }
         private readonly GameInfo _gameInfo;
         public Setting Setting { get; }
+        private readonly LeanCloudService _leanCloudService;
         private readonly DownloadService _downloadService;
         private readonly GameService _gameService;
-        private readonly NotificationManager _notificationManager;
         [Reactive]
         public ObservableCollection<Mod> Modpacks { get; set; } = [];
         [Reactive]
