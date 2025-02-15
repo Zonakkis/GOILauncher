@@ -3,6 +3,7 @@ using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
 using LeanCloud.Storage;
+using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.Collections.Generic;
@@ -13,112 +14,53 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    public class Mod : INotifyPropertyChanged, IDownloadable 
+    public class Mod : ReactiveObject, IDownloadable 
     {
-        public Mod() 
+        public Mod()
         {
-            DownloadableChanged += () => NotifyPropertyChanged(nameof(Downloadable));
-        }
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        private bool CheckGameVersion()
-        {
-            return TargetGameVersion.Contains(GameInfo.GameVersion) || TargetGameVersion.Concatenate("/").Contains(GameInfo.GameVersion);
-        }
-        public async Task Download()
-        {
-            if (!CheckGameVersion())
-            {
-                await NotificationHelper.ShowContentDialog("提示", $"游戏版本不匹配！\r\n当前版本：{GameInfo.GameVersion}\r\nMod所需版本：{TargetVersion}");
-                return;
-            }
-            Downloadable = false;
-            var tokenSource = new CancellationTokenSource();
-            var token = tokenSource.Token;
-            //await DownloadHelper.Download(
-            //        Path.Combine(Setting.DownloadPath, $"{Name}{Build}.zip"),
-            //        this,
-            //        token
-            //        );
-            IsExtracting = true;
-            Status = "解压中";
-            //await ZipHelper.Extract($"{Setting.DownloadPath}/{Name}{Build}.zip", Setting.GamePath,false);
-            //GameInfo.Refresh(Setting.GamePath);
-            IsExtracting = false;
-            Downloadable = true;
-            await NotificationHelper.ShowContentDialog("提示", $"已经安装{Name}{Build}！");
+            this.WhenAnyValue(x => x.IsDownloading, x => x.IsExtracting,
+                    (isDownloading, isExtracting) => isDownloading || isExtracting)
+                .Subscribe(isInstalling => IsInstalling = isInstalling);
         }
         public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
+            Downloadable = false;
             IsDownloading = true;
-            Status = "下载中";
+            Status = "启动下载中";
         }
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
             ProgressPercentage = eventArgs.ProgressPercentage;
-            Status = $"({ProgressPercentage:0.0}%/{StorageUnitConvertHelper.ByteTo(eventArgs.BytesPerSecondSpeed)}/s)下载中";
+            Status = $"下载中({ProgressPercentage:0.0}%/{StorageUnitConvertHelper.ByteTo(eventArgs.BytesPerSecondSpeed)}/s)";
         }
-        protected static event Action? DownloadableChanged;
-        private static bool _isDownloadable = true;
-        protected static bool IsDownloadable
+        public void OnDownloadCompleted(object? sender, AsyncCompletedEventArgs eventArgs)
         {
-            get => _isDownloadable;
-            set
-            {
-                _isDownloadable = value;
-                DownloadableChanged?.Invoke();
-            }
+            IsDownloading = false;
+            IsExtracting = true;
+            Status = "解压中";
         }
-        public string Name { get; set; }
-        public string Author { get; set; }
-        public string Build { get; set; }
-        public string Url { get; set; }
+        [Reactive]
+        public string Name { get; init; }
+        [Reactive]
+        public string Author { get; init; }
+        [Reactive]
+        public string Build { get; init; }
+        [Reactive]
+        public string Url { get; init; }
+        [Reactive]
         public List<string> TargetGameVersion { get; init; }
-        public string TargetVersion => string.Join("/", TargetGameVersion);
-        private double progressPercentage;
-        public double ProgressPercentage
-        {
-            get => progressPercentage;
-            set
-            {
-                progressPercentage = value;
-                NotifyPropertyChanged(nameof(ProgressPercentage));
-            }
-        }
-        private string status = string.Empty;
-        public string Status
-        {
-            get => status;
-            set
-            {
-                status = value;
-                NotifyPropertyChanged(nameof(Status));
-            }
-        }
-        private bool isDownloading;
-        public bool IsDownloading
-        {
-            get => isDownloading;
-            set
-            {
-                isDownloading = value;
-                NotifyPropertyChanged(nameof(IsDownloading));
-            }
-        }
-        private bool isExtracting;
-        public bool IsExtracting
-        {
-            get => isExtracting;
-            set
-            {
-                isExtracting = value;
-                NotifyPropertyChanged(nameof(IsExtracting));
-            }
-        }
-        public bool Downloadable { get => Mod.IsDownloadable; set => Mod.IsDownloadable = value; }
-        private static GameInfo GameInfo => GameInfo.Instance;
+        public string TargetGameVersionString => string.Join("/", TargetGameVersion);
+        [Reactive]
+        public double ProgressPercentage { get; set; }
+        [Reactive]
+        public string Status { get; set; }
+        [Reactive]
+        public bool Downloadable { get; set; }
+        [Reactive]
+        public bool IsDownloading { get; set; }
+        [Reactive]
+        public bool IsExtracting { get; set; }
+        [Reactive]
+        public bool IsInstalling { get; set; }
     }
 }

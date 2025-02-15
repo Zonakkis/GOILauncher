@@ -1,7 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
 using GOILauncher.Models;
-using GOILauncher.ViewModels.Models;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using ReactiveUI;
@@ -19,8 +18,8 @@ public partial class ModExpander : UserControl
     public static readonly StyledProperty<string> AuthorProperty =
         AvaloniaProperty.Register<ModExpander, string>(nameof(Author));
 
-    public static readonly StyledProperty<ObservableCollection<ModViewModel>> ModsProperty =
-        AvaloniaProperty.Register<ModExpander, ObservableCollection<ModViewModel>>(nameof(Mods));
+    public static readonly StyledProperty<ObservableCollection<Mod>> ModsProperty =
+        AvaloniaProperty.Register<ModExpander, ObservableCollection<Mod>>(nameof(Mods));
 
     public string ModName
     {
@@ -37,7 +36,7 @@ public partial class ModExpander : UserControl
         get => GetValue(AuthorProperty);
         set => SetValue(AuthorProperty, value);
     }
-    public ObservableCollection<ModViewModel> Mods
+    public ObservableCollection<Mod> Mods
     {
         get => GetValue(ModsProperty);
         set => SetValue(ModsProperty, value);

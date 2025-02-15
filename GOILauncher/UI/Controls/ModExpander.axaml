@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:pg="using:GOILauncher.UI.Views.Pages"
 			 xmlns:vm="using:GOILauncher.ViewModels.Pages"
-             xmlns:m ="using:GOILauncher.ViewModels.Models"
+             xmlns:m ="using:GOILauncher.Models"
              xmlns:ui="clr-namespace:GOILauncher.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GOILauncher.UI.Controls.ModExpander">
@@ -31,7 +31,7 @@
 		</Expander.Header>
 		<ListBox ItemsSource="{Binding Mods,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}" SelectionChanged="Unselect">
 			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="m:ModViewModel">
+				<DataTemplate x:DataType="m:Mod">
 					<Grid ColumnDefinitions="auto,*">
 						<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
 							<TextBlock Text="{Binding Name}" 

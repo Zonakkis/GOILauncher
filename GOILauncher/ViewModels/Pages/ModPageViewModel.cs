@@ -10,7 +10,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
 using GOILauncher.Services;
-using GOILauncher.ViewModels.Models;
 using Downloader;
 using System.Xml.Linq;
 using System.Reactive;
@@ -27,7 +26,7 @@ namespace GOILauncher.ViewModels.Pages
             _gameService = gameService;
             _downloadService = downloadService;
             Setting = settingService.Setting;
-            DownloadCommand = ReactiveCommand.CreateFromTask<ModViewModel>(Download);
+            DownloadCommand = ReactiveCommand.CreateFromTask<Mod>(Download);
         }
         public override void Init()
         {
@@ -41,7 +40,7 @@ namespace GOILauncher.ViewModels.Pages
 
         }
 
-        private async Task Download(ModViewModel mod)
+        private async Task Download(Mod mod)
         {
             try
             {
@@ -74,27 +73,19 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetModpacks()
         {
-            Modpacks = new ObservableCollection<ModViewModel>(
-                            (await LeanCloudService.GetMods("Modpack"))
-                            .Select(mod => new ModViewModel(mod)));
+            Modpacks = new ObservableCollection<Mod>(await LeanCloudService.GetMods("Modpack"));
         }
         private async Task GetLevelLoaders()
         {
-            LevelLoaders = new ObservableCollection<ModViewModel>(
-                            (await LeanCloudService.GetMods("LevelLoader"))
-                            .Select(mod => new ModViewModel(mod)));
+            LevelLoaders = new ObservableCollection<Mod>(await LeanCloudService.GetMods("LevelLoader"));
         }
         private async Task GetModpackandLevelLoaders()
         {
-            ModpackandLevelLoaders = new ObservableCollection<ModViewModel>(
-                            (await LeanCloudService.GetMods("ModpackandLevelLoader"))
-                            .Select(mod => new ModViewModel(mod)));
+            ModpackandLevelLoaders = new ObservableCollection<Mod>(await LeanCloudService.GetMods("ModpackandLevelLoader"));
         }
         private async Task GetOtherMods()
         {
-            OtherMods = new ObservableCollection<ModViewModel>(
-                            (await LeanCloudService.GetMods("OtherMod"))
-                            .Select(mod => new ModViewModel(mod)));
+            OtherMods = new ObservableCollection<Mod>(await LeanCloudService.GetMods("OtherMod"));
         }
         private readonly GameInfo _gameInfo;
         public Setting Setting { get; }
@@ -102,15 +93,15 @@ namespace GOILauncher.ViewModels.Pages
         private readonly GameService _gameService;
         private readonly NotificationManager _notificationManager;
         [Reactive]
-        public ObservableCollection<ModViewModel> Modpacks { get; set; } = [];
+        public ObservableCollection<Mod> Modpacks { get; set; } = [];
         [Reactive]
-        public ObservableCollection<ModViewModel> LevelLoaders { get; set; } = [];
+        public ObservableCollection<Mod> LevelLoaders { get; set; } = [];
         [Reactive]
-        public ObservableCollection<ModViewModel> ModpackandLevelLoaders { get; set; } = [];
+        public ObservableCollection<Mod> ModpackandLevelLoaders { get; set; } = [];
         [Reactive]
-        public ObservableCollection<ModViewModel> OtherMods { get; set; } = [];
+        public ObservableCollection<Mod> OtherMods { get; set; } = [];
 
-        public ReactiveCommand<ModViewModel,Unit> DownloadCommand { get; }
+        public ReactiveCommand<Mod, Unit> DownloadCommand { get; }
 
     }
 }
