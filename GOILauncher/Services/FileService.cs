@@ -5,8 +5,10 @@ using LC.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
+using ZipFile = System.IO.Compression.ZipFile;
 
 namespace GOILauncher.Services;
 
@@ -57,18 +59,24 @@ public class FileService(Lazy<TopLevel> topLevel)
             File.Delete(zipFile);
         }
     }
-    public static async Task ExtractZip(string zipPath, string destinationPath, bool deleteAfterExtract, EventHandler<ExtractProgressEventArgs>? progressHandler = null)
+    public static void ExtractZip(string zipPath, string destinationPath, bool deleteAfterExtract)
     {
-        using (var zip = ZipFile.Read(zipPath, new ReadOptions() { Encoding = Encoding.GetEncoding("GBK") }))
+        using (var zipArchive = ZipFile.OpenRead(zipPath))
         {
-            if (progressHandler is not null)
+            foreach (var zipArchiveEntry in zipArchive.Entries)
             {
-                zip.ExtractProgress += progressHandler;
-            }
-            foreach (var entry in zip)
-            {
+                var filePath = Path.Combine(destinationPath, zipArchiveEntry.FullName);
 
-                await Task.Run(() => entry.Extract(destinationPath, ExtractExistingFileAction.OverwriteSilently));
+                // 如果条目是文件而非文件夹，则解压
+                if (string.IsNullOrEmpty(zipArchiveEntry.Name))
+                {
+                    // 是文件夹，跳过
+                    continue;
+                }
+                // 创建文件夹
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                // 解压文件
+                zipArchiveEntry.ExtractToFile(filePath, overwrite: true);
             }
         }
         if (deleteAfterExtract)

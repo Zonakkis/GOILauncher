@@ -14,9 +14,9 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class MapManagePageViewModel : PageViewModelBase
     {
-        public MapManagePageViewModel(SettingPageViewModel settingPage)
+        public MapManagePageViewModel(SettingPageViewModel settingViewModel)
         {
-            settingPage = settingPage;
+            _setting = settingViewModel;
             DeleteCommand = ReactiveCommand.Create(DeleteSelectedMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
         }
 
@@ -44,9 +44,9 @@ namespace GOILauncher.ViewModels.Pages
         {
             Maps.Clear();
             SelectedCount = 0;
-            if (Directory.Exists(settingPage.LevelPath))
+            if (Directory.Exists(_setting.LevelPath))
             {
-                foreach (var file in Directory.GetFiles(settingPage.LevelPath, "*.scene", SearchOption.AllDirectories))
+                foreach (var file in Directory.GetFiles(_setting.LevelPath, "*.scene", SearchOption.AllDirectories))
                 {
                     var mapName = Path.GetFileNameWithoutExtension(file);
                     if (File.Exists(Path.ChangeExtension(file, "txt")) || File.Exists(Path.ChangeExtension(file, "mdata")))
@@ -84,13 +84,13 @@ namespace GOILauncher.ViewModels.Pages
         }
         public void Delete(MapInfo map)
         {
-            foreach (var path in Directory.EnumerateDirectories($"{settingPage.LevelPath}/")
+            foreach (var path in Directory.EnumerateDirectories($"{_setting.LevelPath}/")
                                 .Where(directory => Path.GetFileName(directory)
                                 .StartsWith(map.Name, StringComparison.InvariantCultureIgnoreCase)))
             {
                 Directory.Delete(path, true);
             }
-            foreach (var path in Directory.GetFiles($"{settingPage.LevelPath}/")
+            foreach (var path in Directory.GetFiles($"{_setting.LevelPath}/")
                 .Where(filename => Path.GetFileName(filename)
                 .StartsWith(map.Name, StringComparison.InvariantCultureIgnoreCase)))
             {
@@ -117,7 +117,7 @@ namespace GOILauncher.ViewModels.Pages
             await contentDialog.ShowAsync();
 
         }
-        private readonly SettingPageViewModel settingPage;
+        private readonly SettingPageViewModel _setting;
         public ObservableCollection<MapInfo> Maps { get; set; } = [];
         [Reactive]
         public int TotalCount { get; set; }

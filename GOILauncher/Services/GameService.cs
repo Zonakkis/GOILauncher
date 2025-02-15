@@ -39,32 +39,33 @@ public class GameService(NotificationManager notificationManager)
     }
     private (string modpack, string levelLoader) GetModpackandLevelLoaderVersion(string gamePath)
     {
+        (string modpack, string levelLoader) result = ("未安装", "未安装");
         try
         {
-            (string modpack, string levelLoader) result = ("未安装", "未安装");
             var assemblyLoadContext = new AssemblyLoadContext("Assembly-CSharp", true); 
             assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(gamePath, "GettingOverIt_Data/Managed/UnityEngine.CoreModule.dll"));
-            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(gamePath, "GettingOverIt_Data/Managed/Assembly-CSharp.dll"));
-            var settingsManager = assembly.GetType("SettingsManager", true);
-            var modpackBuildFieldInfo = settingsManager.GetField("build", BindingFlags.Static | BindingFlags.NonPublic);
-            if (modpackBuildFieldInfo is not null)
-            {
-                result.modpack = (string)modpackBuildFieldInfo.GetValue(null);
-            }
+            var assembly = Assembly.LoadFrom(Path.Combine(gamePath, "GettingOverIt_Data/Managed/Assembly-CSharp.dll"));
             var levelLoaderInfo = assembly.GetType("GOILevelImporter.ModInfo");
             if (levelLoaderInfo is not null)
             {
                 var levelLoaderFullVersionPropertyInfo = levelLoaderInfo.GetProperty("FULLVERSION");
                 result.levelLoader = (string)levelLoaderFullVersionPropertyInfo.GetValue(null);
             }
+            var settingsManager = assembly.GetType("SettingsManager", true);
+            var modpackBuildFieldInfo = settingsManager.GetField("build", BindingFlags.Static | BindingFlags.NonPublic);
+            if (modpackBuildFieldInfo is not null)
+            {
+                result.modpack = (string)modpackBuildFieldInfo.GetValue(null);
+            }
             assemblyLoadContext.Unload();
             return result;
         }
         catch (Exception ex)
         {
-            notificationManager.AddNotification("获取Modpack和LevelLoader版本失败", ex.Message, InfoBarSeverity.Error);
-            return ("获取失败", "获取失败");
+            result.modpack = "已安装";
+            notificationManager.AddNotification("获取Modpack版本失败", ex.Message, InfoBarSeverity.Error);
         }
+        return result;
     }
     private static string GetBepinExVersion(string gamePath)
     {

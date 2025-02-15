@@ -4,15 +4,29 @@ using LeanCloud.Storage;
 using ReactiveUI.Fody.Helpers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
+using GOILauncher.Services;
+using GOILauncher.ViewModels.Models;
+using Downloader;
+using System.Xml.Linq;
+using System.Reactive;
+using GOILauncher.UI;
 
 namespace GOILauncher.ViewModels.Pages
 {
-    public class ModPageViewModel(SettingPageViewModel settingPageViewModel) : PageViewModelBase
+    public class ModPageViewModel : PageViewModelBase
     {
+        public ModPageViewModel(GamePageViewModel gamePageViewModel, SettingPageViewModel settingPageViewModel, DownloadService downloadService)
+        {
+            _gamePageViewModel = gamePageViewModel;
+            _downloadService = downloadService;
+            Setting = settingPageViewModel;
+            DownloadCommand = ReactiveCommand.CreateFromTask<ModViewModel>(Download);
+        }
         public override void Init()
         {
             _ = GetModpacks();
@@ -24,79 +38,68 @@ namespace GOILauncher.ViewModels.Pages
         {
 
         }
+
+        private async Task Download(ModViewModel mod)
+        {
+            if(!mod.TargetGameVersion.Contains(_gamePageViewModel.GameVersion))
+            {
+                NotificationManager.ShowContentDialog("提示", $"版本不匹配！\n目标版本：{mod.TargetGameVersionString}\n当前版本：{_gamePageViewModel.GameVersion}");
+                return;
+            }
+            _downloadService.DownloadStarted += mod.OnDownloadStarted;
+            _downloadService.DownloadProgressChanged += mod.OnDownloadProgressChanged;
+            _downloadService.DownloadFileCompleted += mod.OnDownloadCompleted;
+            await _downloadService.DownloadFileTaskAsync(mod.Url,
+                Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"));
+            _downloadService.DownloadStarted -= mod.OnDownloadStarted;
+            _downloadService.DownloadProgressChanged -= mod.OnDownloadProgressChanged;
+            _downloadService.DownloadFileCompleted -= mod.OnDownloadCompleted;
+            FileService.ExtractZip(
+                Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"),
+                Setting.GamePath!,
+                !Setting.SaveMapZip);
+            mod.IsExtracting = false;
+            _gamePageViewModel.GetGameInfo(Setting.GamePath!);
+            NotificationManager.ShowContentDialog("提示", $"已经安装{mod.Name} {mod.Build}！");
+        }
+
         private async Task GetModpacks()
         {
-            var query = new LCQuery<LCObject>("Modpack");
-            query.OrderByDescending(nameof(Mod.Build));
-            var modpacks = await query.Find();
-            foreach (var modpack in modpacks)
-            {
-                Modpack.Add(new Mod()
-                {
-                    Name = "Modpack",
-                    Build = (modpack[nameof(Mod.Build)] as string)!,
-                    Url = (modpack[nameof(Mod.Url)] as string)!,
-                    TargetGameVersion = (modpack[nameof(Mod.TargetGameVersion)] as List<object>)!
-                        .Select(x => x.ToString()).ToList()!,
-                });
-            }
+            Modpacks = new ObservableCollection<ModViewModel>(
+                            (await LeanCloudService.GetMods("Modpack"))
+                            .Select(mod => new ModViewModel(mod)));
         }
         private async Task GetLevelLoaders()
         {
-            var query = new LCQuery<LCObject>("LevelLoader");
-            query.OrderByDescending(nameof(Mod.Build));
-            var levelLoaders = await query.Find();
-            foreach (var levelLoader in levelLoaders)
-            {
-                LevelLoader.Add(new Mod()
-                {
-                    Name = "LevelLoader",
-                    Build = (levelLoader[nameof(Mod.Build)] as string)!,
-                    Url = (levelLoader[nameof(Mod.Url)] as string)!,
-                    TargetGameVersion = (levelLoader[nameof(Mod.TargetGameVersion)] as List<object>)!
-                        .Select(x => x.ToString()).ToList()!,
-                });
-            }
+            LevelLoaders = new ObservableCollection<ModViewModel>(
+                            (await LeanCloudService.GetMods("LevelLoader"))
+                            .Select(mod => new ModViewModel(mod)));
         }
         private async Task GetModpackandLevelLoaders()
         {
-            var query = new LCQuery<LCObject>("ModpackandLevelLoader");
-            query.OrderByDescending(nameof(Mod.Build));
-            var modpackandLevelLoaders = await query.Find();
-            foreach (var modpackandLevelLoader in modpackandLevelLoaders)
-            {
-                ModpackandLevelLoader.Add(new Mod()
-                {
-                    Name = "ModpackandLevelLoader",
-                    Build = (modpackandLevelLoader[nameof(Mod.Build)] as string)!,
-                    Url = (modpackandLevelLoader[nameof(Mod.Url)] as string)!,
-                    TargetGameVersion = (modpackandLevelLoader[nameof(Mod.TargetGameVersion)] as List<object>)!
-                        .Select(x => x.ToString()).ToList()!,
-                });
-            }
+            ModpackandLevelLoaders = new ObservableCollection<ModViewModel>(
+                            (await LeanCloudService.GetMods("ModpackandLevelLoader"))
+                            .Select(mod => new ModViewModel(mod)));
         }
         private async Task GetOtherMods()
         {
-            var query = new LCQuery<LCObject>("OtherMod");
-            query.OrderByDescending(nameof(Mod.Build));
-            var otherMods = await query.Find();
-            foreach (var otherMod in otherMods)
-            {
-                OtherMod.Add(new Mod()
-                {
-                    Name = (otherMod[nameof(Mod.Name)] as string)!,
-                    Author = (otherMod[nameof(Mod.Author)] as string)!,
-                    Build = (otherMod[nameof(Mod.Build)] as string)!,
-                    Url = (otherMod[nameof(Mod.Url)] as string)!,
-                    TargetGameVersion = (otherMod[nameof(Mod.TargetGameVersion)] as List<object>)!
-                        .Select(x => x.ToString()).ToList()!,
-                });
-            }
+            OtherMods = new ObservableCollection<ModViewModel>(
+                            (await LeanCloudService.GetMods("OtherMod"))
+                            .Select(mod => new ModViewModel(mod)));
         }
-        public SettingPageViewModel SettingPage { get; } = settingPageViewModel;
-        public ObservableCollection<Mod> Modpack { get; set; } = [];
-        public ObservableCollection<Mod> LevelLoader { get; set; } = [];
-        public ObservableCollection<Mod> ModpackandLevelLoader { get; set; } = [];
-        public ObservableCollection<Mod> OtherMod { get; set; } = [];
+        private readonly GamePageViewModel _gamePageViewModel;
+        public SettingPageViewModel Setting { get; }
+        private readonly DownloadService _downloadService;
+        [Reactive]
+        public ObservableCollection<ModViewModel> Modpacks { get; set; } = [];
+        [Reactive]
+        public ObservableCollection<ModViewModel> LevelLoaders { get; set; } = [];
+        [Reactive]
+        public ObservableCollection<ModViewModel> ModpackandLevelLoaders { get; set; } = [];
+        [Reactive]
+        public ObservableCollection<ModViewModel> OtherMods { get; set; } = [];
+
+        public ReactiveCommand<ModViewModel,Unit> DownloadCommand { get; }
+
     }
 }

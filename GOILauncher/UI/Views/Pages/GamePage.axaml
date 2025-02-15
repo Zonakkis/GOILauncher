@@ -19,11 +19,11 @@
 	</UserControl.Styles>
 	<Grid>
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" 
-				   IsVisible="{Binding !SettingPage.IsGamePathSelected}">
+				   IsVisible="{Binding !Setting.IsGamePathSelected}">
 			未选择游戏路径，请前往设置页面选择
 		</TextBlock>
 		<Grid RowDefinitions="35,35,35,35,*" ColumnDefinitions="auto,auto,*"
-			  IsVisible="{Binding SettingPage.IsGamePathSelected}" Margin="15,15">
+			  IsVisible="{Binding Setting.IsGamePathSelected}" Margin="15,15">
 			<TextBlock Grid.Row="0" Grid.Column="0">游戏版本：</TextBlock>
 			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}"/>
 			<TextBlock Grid.Row="1" Grid.Column="0">Modpack版本：</TextBlock>

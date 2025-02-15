@@ -3,6 +3,7 @@ using LeanCloud.Storage;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GOILauncher.Models;
 
 namespace GOILauncher.ViewModels.Pages
 {
@@ -30,7 +31,7 @@ namespace GOILauncher.ViewModels.Pages
         private List<string?> Players { get; } = [];
         public string Thanks => Players!.Concatenate(",");
 
-        private string GOILauncherversion = Models.Version.Instance.ToString();
+        private string GOILauncherversion = Version.Instance.ToString();
 
         public string GOILauncherVersion
         {

@@ -2,7 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:m ="using:GOILauncher.Models"
+			 xmlns:pg="using:GOILauncher.UI.Views.Pages"
+			 xmlns:vm="using:GOILauncher.ViewModels.Pages"
+             xmlns:m ="using:GOILauncher.ViewModels.Models"
              xmlns:ui="clr-namespace:GOILauncher.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GOILauncher.UI.Controls.ModExpander">
@@ -29,7 +31,7 @@
 		</Expander.Header>
 		<ListBox ItemsSource="{Binding Mods,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}" SelectionChanged="Unselect">
 			<ListBox.ItemTemplate>
-				<DataTemplate x:DataType="m:Mod">
+				<DataTemplate x:DataType="m:ModViewModel">
 					<Grid ColumnDefinitions="auto,*">
 						<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
 							<TextBlock Text="{Binding Name}" 
@@ -41,13 +43,16 @@
 							</TextBlock>
 							<TextBlock Text="{Binding Author}" FontSize="18"  
 									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
-							<TextBlock Text="{Binding TargetVersion}" FontSize="12" FontWeight="UltraLight"/>
+							<TextBlock Text="{Binding TargetGameVersionString}" FontSize="12" FontWeight="UltraLight"/>
 						</StackPanel>
 						<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-							<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsDownloading}"/>
-							<ProgressBar Value="{Binding ProgressPercentage}" IsIndeterminate="{Binding IsExtracting}" HorizontalAlignment="Right" IsVisible="{Binding IsDownloading}" VerticalAlignment="Center" Margin="10,0"/>
-							<Button HorizontalAlignment="Right" IsEnabled="{Binding Downloadable}"
-									Command="{Binding Download}">下载</Button>
+							<TextBlock Tag="DownloadStatus" Text="{Binding Status}" VerticalAlignment="Center" IsVisible="{Binding IsInstalling}"/>
+							<ProgressBar Value="{Binding ProgressPercentage}" IsVisible="{Binding IsInstalling}"
+										 IsIndeterminate="{Binding IsExtracting}" Margin="10,0"
+										 HorizontalAlignment="Right" VerticalAlignment="Center"/>
+							<Button HorizontalAlignment="Right"
+									Command="{Binding $parent[pg:ModPage].((vm:ModPageViewModel)DataContext).DownloadCommand}"
+									CommandParameter="{Binding $self.DataContext}">下载</Button>
 						</StackPanel>
 					</Grid>
 				</DataTemplate>

@@ -39,14 +39,14 @@ namespace GOILauncher.Models
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             //await DownloadHelper.Download(
-            //        Path.Combine(SettingPage.DownloadPath, $"{Name}{Build}.zip"),
+            //        Path.Combine(Setting.DownloadPath, $"{Name}{Build}.zip"),
             //        this,
             //        token
             //        );
             IsExtracting = true;
             Status = "解压中";
-            //await ZipHelper.Extract($"{SettingPage.DownloadPath}/{Name}{Build}.zip", SettingPage.GamePath,false);
-            //GameInfo.Refresh(SettingPage.GamePath);
+            //await ZipHelper.Extract($"{Setting.DownloadPath}/{Name}{Build}.zip", Setting.GamePath,false);
+            //GameInfo.Refresh(Setting.GamePath);
             IsExtracting = false;
             Downloadable = true;
             await NotificationHelper.ShowContentDialog("提示", $"已经安装{Name}{Build}！");
@@ -72,10 +72,10 @@ namespace GOILauncher.Models
                 DownloadableChanged?.Invoke();
             }
         }
-        public string Name { get; init; }
-        public string Author { get; init; }
-        public string Build { get; init; }
-        public string Url { get; init; }
+        public string Name { get; set; }
+        public string Author { get; set; }
+        public string Build { get; set; }
+        public string Url { get; set; }
         public List<string> TargetGameVersion { get; init; }
         public string TargetVersion => string.Join("/", TargetGameVersion);
         private double progressPercentage;

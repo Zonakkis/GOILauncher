@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Text;
 using GOILauncher.Services;
+using GOILauncher.UI.Views.Pages;
 
 namespace GOILauncher.ViewModels.Pages
 {
@@ -13,16 +14,10 @@ namespace GOILauncher.ViewModels.Pages
     {
         public GamePageViewModel(SettingPageViewModel settingPageViewModel, GameService gameService)
         {
-            SettingPage = settingPageViewModel;
+            _gameService = gameService;
+            Setting = settingPageViewModel;
             settingPageViewModel.WhenAnyValue(x => x.GamePath)
-                            .Subscribe(gamePath =>
-                            {
-                                var gameInfo = gameService.GetGameInfo(gamePath!);
-                                GameVersion = gameInfo.GameVersion;
-                                ModpackVersion = gameInfo.ModpackVersion;
-                                LevelLoaderVersion = gameInfo.LevelLoaderVersion;
-                                BepInExVersion = gameInfo.BepInExVersion;
-                            });
+                            .Subscribe(GetGameInfo);
         }
         public override void Init()
         {
@@ -32,17 +27,25 @@ namespace GOILauncher.ViewModels.Pages
         {
 
         }
+        public void GetGameInfo(string gamePath)
+        {
+            var gameInfo = _gameService.GetGameInfo(gamePath!);
+            GameVersion = gameInfo.GameVersion;
+            ModpackVersion = gameInfo.ModpackVersion;
+            LevelLoaderVersion = gameInfo.LevelLoaderVersion;
+            BepInExVersion = gameInfo.BepInExVersion;
+        }
         public void Launch(int para)
         {
             switch (para)
             {
                 case 1:
-                    GameProcess = Process.Start($"{SettingPage.GamePath}/GettingOverIt.exe");
+                    GameProcess = Process.Start($"{Setting.GamePath}/GettingOverIt.exe");
                     break;
                 case 2:
-                    if (SettingPage.IsGamePathSelected)
+                    if (Setting.IsGamePathSelected)
                     {
-                        GameProcess = Process.Start($"{SettingPage.SteamPath}/steam.exe", "steam://rungameid/240720");
+                        GameProcess = Process.Start($"{Setting.SteamPath}/steam.exe", "steam://rungameid/240720");
                     }
                     break;
             }
@@ -61,7 +64,8 @@ namespace GOILauncher.ViewModels.Pages
         {
             GameProcess?.Kill();
         }
-        public SettingPageViewModel SettingPage { get; }
+        private readonly GameService _gameService;
+        public SettingPageViewModel Setting { get; }
         [Reactive]
         public bool GameLaunched { get; set; }
         private Process? GameProcess { get; set; }

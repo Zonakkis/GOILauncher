@@ -23,14 +23,15 @@
 	</UserControl.Styles>
 	<ScrollViewer>
 		<Grid>
-			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !SettingPage.IsGamePathSelected}">
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !Setting.IsGamePathSelected}">
 				未选择游戏路径，请前往设置页面选择
 			</TextBlock>
-			<StackPanel Margin="10,10,10,0" IsVisible="{Binding SettingPage.IsGamePathSelected}">
-				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpack}" IsOtherMod="False"/>
-                <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoader}" IsOtherMod="False"/>
-                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoader}" IsOtherMod="False"/>
-                <ui:ModExpander ModName="其他Mod" Mods="{Binding OtherMod}" IsOtherMod="True"/>
+			<StackPanel Margin="10,0" IsVisible="{Binding Setting.IsGamePathSelected}">
+				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpacks}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoaders}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoaders}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="其他Mod" Mods="{Binding OtherMods}" IsOtherMod="True"/>
+				<Button Command="{Binding DownloadCommand}">123</Button>
 			</StackPanel>
 		</Grid>
 	</ScrollViewer>

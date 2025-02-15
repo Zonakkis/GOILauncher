@@ -1,6 +1,7 @@
 ﻿using Downloader;
 using System.ComponentModel;
 using GOILauncher.Helpers;
+using ReactiveUI;
 
 namespace GOILauncher.Interfaces
 {
@@ -11,6 +12,7 @@ namespace GOILauncher.Interfaces
         bool Downloadable { get; set; }
         string Status { get; set; }
         bool IsDownloading { get; set; }
+        //bool IsExtracting { get; set; }
         void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
             Downloadable = false;

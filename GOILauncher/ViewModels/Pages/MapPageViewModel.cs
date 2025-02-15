@@ -122,7 +122,7 @@ namespace GOILauncher.ViewModels.Pages
                     token
                     );
             map.Status = "解压中";
-            await FileService.ExtractZip($"{SettingPage.DownloadPath}/{map.Name}.zip", SettingPage.LevelPath!, SettingPage.SaveMapZip, map.OnExtractProgressChanged);
+            //await FileService.ExtractZip($"{SettingPage.DownloadPath}/{map.Name}.zip", SettingPage.LevelPath!, SettingPage.SaveMapZip, map.OnExtractProgressChanged);
             _ = NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
