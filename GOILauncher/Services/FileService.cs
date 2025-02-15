@@ -27,7 +27,8 @@ public class FileService(Lazy<TopLevel> topLevel)
     public static void SaveAsJson(string path, string fileName, object obj, bool overwrite = true)
     {
         using StreamWriter streamWriter = new(Path.Combine(path, fileName), !overwrite);
-        streamWriter.WriteLine(JsonConvert.SerializeObject(obj));
+        var json = JsonConvert.SerializeObject(obj);
+        streamWriter.WriteLine(json);
     }
 
     public static T LoadFromJson<T>(string path, string fileName)

@@ -20,11 +20,11 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class ModPageViewModel : PageViewModelBase
     {
-        public ModPageViewModel(GamePageViewModel gamePageViewModel, SettingPageViewModel settingPageViewModel, DownloadService downloadService)
+        public ModPageViewModel(GamePageViewModel gamePageViewModel, SettingService settingService, DownloadService downloadService)
         {
             _gamePageViewModel = gamePageViewModel;
             _downloadService = downloadService;
-            Setting = settingPageViewModel;
+            Setting = settingService.Setting;
             DownloadCommand = ReactiveCommand.CreateFromTask<ModViewModel>(Download);
         }
         public override void Init()
@@ -88,7 +88,7 @@ namespace GOILauncher.ViewModels.Pages
                             .Select(mod => new ModViewModel(mod)));
         }
         private readonly GamePageViewModel _gamePageViewModel;
-        public SettingPageViewModel Setting { get; }
+        public Setting Setting { get; }
         private readonly DownloadService _downloadService;
         [Reactive]
         public ObservableCollection<ModViewModel> Modpacks { get; set; } = [];

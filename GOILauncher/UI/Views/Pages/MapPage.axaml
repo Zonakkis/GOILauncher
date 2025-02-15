@@ -26,10 +26,10 @@
 	</UserControl.Styles>
 	<Grid>
 		<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center"
-				   IsVisible="{Binding !SettingPage.IsLevelPathSelected}">
+				   IsVisible="{Binding !Setting.IsLevelPathSelected}">
 			未选择地图路径，请前往设置页面选择
 		</TextBlock>
-		<Grid ColumnDefinitions="500,*" IsVisible="{Binding SettingPage.IsLevelPathSelected}">
+		<Grid ColumnDefinitions="500,*" IsVisible="{Binding Setting.IsLevelPathSelected}">
 			<Grid Grid.Column="0" RowDefinitions="auto,auto,*">
 				<TextBox Grid.Row="0" Text="{Binding FilterMapName}" Watermark="请输入地图名" Margin="10,10"/>
 				<Expander Header="筛选" Grid.Row="1" Margin="10,0" IsExpanded="True">
@@ -83,7 +83,7 @@
 					</Grid>
 					<Button Grid.Row="3" HorizontalAlignment="Center" CornerRadius="5" IsEnabled="{Binding CurrentMap.Downloadable}"
 							 Command="{Binding DownloadCommand}">下载</Button>
-					<TextBlock Grid.Row="4" Foreground="Red" HorizontalAlignment="Center" IsVisible="{Binding !SettingPage.IsLevelPathSelected}" Margin="0,10">
+					<TextBlock Grid.Row="4" Foreground="Red" HorizontalAlignment="Center" IsVisible="{Binding !Setting.IsLevelPathSelected}" Margin="0,10">
 						未选择地图路径，请前往设置页面选择
 					</TextBlock>
 				</Grid>

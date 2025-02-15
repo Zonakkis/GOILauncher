@@ -1,6 +1,7 @@
 ﻿using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
+using GOILauncher.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
@@ -14,9 +15,9 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class MapManagePageViewModel : PageViewModelBase
     {
-        public MapManagePageViewModel(SettingPageViewModel settingViewModel)
+        public MapManagePageViewModel(SettingService settingService)
         {
-            _setting = settingViewModel;
+            _setting = settingService.Setting;
             DeleteCommand = ReactiveCommand.Create(DeleteSelectedMaps, this.WhenAnyValue(x => x.SelectedCount, x => x > 0));
         }
 
@@ -117,7 +118,7 @@ namespace GOILauncher.ViewModels.Pages
             await contentDialog.ShowAsync();
 
         }
-        private readonly SettingPageViewModel _setting;
+        private readonly Setting _setting;
         public ObservableCollection<MapInfo> Maps { get; set; } = [];
         [Reactive]
         public int TotalCount { get; set; }

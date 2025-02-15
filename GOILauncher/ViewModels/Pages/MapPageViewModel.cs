@@ -18,10 +18,10 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class MapPageViewModel : PageViewModelBase
     {
-        public MapPageViewModel(SettingPageViewModel settingPageModel)
+        public MapPageViewModel(SettingService settingService)
         {
-            SettingPage = settingPageModel;
-            DownloadCommand = ReactiveCommand.Create(Download, settingPageModel.WhenAnyValue(x => x.IsLevelPathSelected));
+            Setting = settingService.Setting;
+            DownloadCommand = ReactiveCommand.Create(Download, Setting.WhenAnyValue(x => x.IsLevelPathSelected));
         }
         public override void Init()
         {
@@ -34,7 +34,7 @@ namespace GOILauncher.ViewModels.Pages
         }
         public override void OnSelectedViewChanged()
         {
-            if (SettingPage.IsLevelPathSelected)
+            if (Setting.IsLevelPathSelected)
             {
                 foreach (var map in AllMaps)
                 {
@@ -46,11 +46,11 @@ namespace GOILauncher.ViewModels.Pages
 
         private void CheckMapExists(Map map)
         {
-            if (map.IsDownloading || SettingPage.IsLevelPathSelected) return;
-            if (Directory.GetDirectories(SettingPage.LevelPath!)
+            if (map.IsDownloading || Setting.IsLevelPathSelected) return;
+            if (Directory.GetDirectories(Setting.LevelPath!)
                     .Any(directory => Path.GetFileName(directory)
                         .StartsWith(map.Name, StringComparison.OrdinalIgnoreCase))
-                || File.Exists($"{SettingPage.LevelPath}/{map.Name}.scene"))
+                || File.Exists($"{Setting.LevelPath}/{map.Name}.scene"))
             {
                 map.Downloaded = true;
                 map.Downloadable = false;
@@ -77,7 +77,7 @@ namespace GOILauncher.ViewModels.Pages
             var maps = await query.Find();
             foreach (var map in maps)
             {
-                if (SettingPage.IsLevelPathSelected)
+                if (Setting.IsLevelPathSelected)
                 {
                     CheckMapExists(map);
                 }
@@ -88,7 +88,7 @@ namespace GOILauncher.ViewModels.Pages
                 else
                 {
                     LCFile file = new("Preview.png", new Uri(map.Preview));
-                    map.Preview = file.GetThumbnailUrl((int)(19.2 * SettingPage.PreviewQuality), (int)(10.8 * SettingPage.PreviewQuality));
+                    map.Preview = file.GetThumbnailUrl((int)(19.2 * Setting.PreviewQuality), (int)(10.8 * Setting.PreviewQuality));
                 }
                 AllMaps.Add(map);
             }
@@ -117,18 +117,18 @@ namespace GOILauncher.ViewModels.Pages
             var tokenSource = new CancellationTokenSource();
             var token = tokenSource.Token;
             await DownloadHelper.Download(
-                    $"{SettingPage.DownloadPath}/{map.Name}.zip",
+                    $"{Setting.DownloadPath}/{map.Name}.zip",
                     map,
                     token
                     );
             map.Status = "解压中";
-            //await FileService.ExtractZip($"{SettingPage.DownloadPath}/{map.Name}.zip", SettingPage.LevelPath!, SettingPage.SaveMapZip, map.OnExtractProgressChanged);
+            //await FileService.ExtractZip($"{Setting.DownloadPath}/{map.Name}.zip", Setting.LevelPath!, Setting.SaveMapZip, map.OnExtractProgressChanged);
             _ = NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
             map.IsDownloading = false;
             map.Downloaded = true;
             Refresh();
         }
-        public SettingPageViewModel SettingPage { get; }
+        public Setting Setting { get; }
         private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         [Reactive]
         public Map CurrentMap { get; set; } = new();

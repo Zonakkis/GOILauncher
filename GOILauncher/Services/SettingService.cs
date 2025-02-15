@@ -5,9 +5,13 @@ using GOILauncher.Helpers;
 
 namespace GOILauncher.Services;
 
-public static class SettingService
+public class SettingService
 {
-    public static Setting LoadSetting()
+    public SettingService()
+    {
+        Setting = LoadSetting();
+    }
+    public Setting LoadSetting()
     {
         if (File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
         {
@@ -20,8 +24,9 @@ public static class SettingService
         };
     }
 
-    public static void SaveSetting(Setting setting)
+    public void SaveSetting()
     {
-        FileService.SaveAsJson(AppDomain.CurrentDomain.BaseDirectory, "Settings.json", setting);
+        FileService.SaveAsJson(AppDomain.CurrentDomain.BaseDirectory, "Settings.json", Setting);
     }
+    public Setting Setting { get; }
 }

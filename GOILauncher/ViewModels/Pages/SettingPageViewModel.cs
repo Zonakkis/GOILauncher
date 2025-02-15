@@ -9,22 +9,22 @@ using System.Threading.Tasks;
 using ReactiveUI.Fody.Helpers;
 using FluentAvalonia.UI.Windowing;
 using GOILauncher.UI;
+using System.Diagnostics;
+using System.Reactive.Linq;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class SettingPageViewModel : PageViewModelBase
     {
-        public SettingPageViewModel(FileService fileService)
+
+        public SettingPageViewModel(FileService fileService,SettingService settingService)
         {
             _fileService = fileService;
-            this.WhenAnyValue(x => x.GamePath)
-                .Subscribe(x => IsGamePathSelected = !string.IsNullOrEmpty(x));
-            this.WhenAnyValue(x => x.LevelPath)
-                .Subscribe(x => IsLevelPathSelected = !string.IsNullOrEmpty(x));
-            this.WhenAnyValue(x => x.SteamPath)
-                .Subscribe(x => IsSteamPathSelected = !string.IsNullOrEmpty(x));
-            this.WhenAnyValue(x => x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
-                .Subscribe(_ => SettingService.SaveSetting(_setting));
+            Setting = settingService.Setting;
+            Setting.WhenAnyValue(x => x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
+                .Skip(1)
+                .Subscribe(_ => settingService.SaveSetting());
+
         }
         public async Task SelectGamePath()
         {
@@ -34,8 +34,8 @@ namespace GOILauncher.ViewModels.Pages
                 var path = folder.Path.ToString()[8..];
                 if (File.Exists($"{path}/GettingOverIt.exe"))
                 {
-                    GamePath = path;
-                    LevelPath = $"{path}/Levels";
+                    Setting.GamePath = path;
+                    Setting.LevelPath = $"{path}/Levels";
                 }
                 else
                 {
@@ -50,7 +50,7 @@ namespace GOILauncher.ViewModels.Pages
             if (folder is not null)
             {
                 var path = folder.Path.ToString()[8..];
-                LevelPath = path;
+                Setting.LevelPath = path;
             }
         }
         public async Task SelectSteamPath()
@@ -61,7 +61,7 @@ namespace GOILauncher.ViewModels.Pages
                 var path = folder.Path.ToString()[8..];
                 if (File.Exists($"{path}/steam.exe"))
                 {
-                    SteamPath = path;
+                    Setting.SteamPath = path;
                 }
                 else
                 {
@@ -76,80 +76,10 @@ namespace GOILauncher.ViewModels.Pages
             if (folder is not null)
             {
                 var path = folder.Path.ToString()[8..];
-                DownloadPath = path;
+                Setting.DownloadPath = path;
             }
         }
-        private readonly Setting _setting = SettingService.LoadSetting();
         private readonly FileService _fileService;
-
-        public string? GamePath
-        {
-            get => _setting.GamePath;
-            set
-            {
-                _setting.GamePath = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public string? LevelPath
-        {
-            get => _setting.LevelPath;
-            set
-            {
-                _setting.LevelPath = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public string? SteamPath
-        {
-            get => _setting.SteamPath;
-            set
-            {
-                _setting.SteamPath = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public string? DownloadPath
-        {
-            get => _setting.DownloadPath;
-            set
-            {
-                _setting.DownloadPath = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public bool SaveMapZip
-        {
-            get => _setting.SaveMapZip;
-            set
-            {
-                _setting.SaveMapZip = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public bool NightMode
-        {
-            get => _setting.NightMode;
-            set
-            {
-                _setting.NightMode = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        public int PreviewQuality
-        {
-            get => _setting.PreviewQuality;
-            set
-            {
-                _setting.PreviewQuality = value;
-                this.RaisePropertyChanged();
-            }
-        }
-        [Reactive]
-        public bool IsGamePathSelected { get; set; }
-        [Reactive]
-        public bool IsLevelPathSelected { get; set; }
-        [Reactive]
-        public bool IsSteamPathSelected { get; set; }
+        public Setting Setting { get; }
     }
 }

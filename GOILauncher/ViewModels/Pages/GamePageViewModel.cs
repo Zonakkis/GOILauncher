@@ -12,12 +12,13 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class GamePageViewModel : PageViewModelBase
     {
-        public GamePageViewModel(SettingPageViewModel settingPageViewModel, GameService gameService)
+        public GamePageViewModel(SettingService settingService, GameService gameService)
         {
             _gameService = gameService;
-            Setting = settingPageViewModel;
-            settingPageViewModel.WhenAnyValue(x => x.GamePath)
-                            .Subscribe(GetGameInfo);
+            Setting = settingService.Setting;
+            Setting.WhenAnyValue(x => x.GamePath)
+                   .Where(x => !string.IsNullOrEmpty(x))
+                   .Subscribe(x => GetGameInfo(x!));
         }
         public override void Init()
         {
@@ -65,7 +66,7 @@ namespace GOILauncher.ViewModels.Pages
             GameProcess?.Kill();
         }
         private readonly GameService _gameService;
-        public SettingPageViewModel Setting { get; }
+        public Setting Setting { get; }
         [Reactive]
         public bool GameLaunched { get; set; }
         private Process? GameProcess { get; set; }

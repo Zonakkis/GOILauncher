@@ -18,12 +18,12 @@
 	<ScrollViewer>
 		<StackPanel Orientation="Vertical" Margin="10,10">
 			<ui:SettingsExpander Header="游戏">
-				<ui:SettingsExpanderItem Classes.Selected="{Binding IsGamePathSelected}"
-                                         Classes.Unselected="{Binding !IsGamePathSelected}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding Setting.IsGamePathSelected}"
+                                         Classes.Unselected="{Binding !Setting.IsGamePathSelected}">
 					游戏路径：
 					<ui:SettingsExpanderItem.Styles>
 						<Style Selector="ui|SettingsExpanderItem.Selected">
-							<Setter Property="Description" Value="{Binding GamePath}"/>
+							<Setter Property="Description" Value="{Binding Setting.GamePath}"/>
 						</Style>
 						<Style Selector="ui|SettingsExpanderItem.Unselected">
 							<Setter Property="Description" Value="未选择"/>
@@ -33,12 +33,12 @@
 						<Button Command="{Binding SelectGamePath}">选择</Button>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
-				<ui:SettingsExpanderItem Classes.Selected="{Binding IsLevelPathSelected}"
-                                         Classes.Unselected="{Binding !IsLevelPathSelected}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding Setting.IsLevelPathSelected}"
+                                         Classes.Unselected="{Binding !Setting.IsLevelPathSelected}">
 					地图路径：
 					<ui:SettingsExpanderItem.Styles>
 						<Style Selector="ui|SettingsExpanderItem.Selected">
-							<Setter Property="Description" Value="{Binding LevelPath}"/>
+							<Setter Property="Description" Value="{Binding Setting.LevelPath}"/>
 						</Style>
 						<Style Selector="ui|SettingsExpanderItem.Unselected">
 							<Setter Property="Description" Value="未选择（选择游戏路径后自动选择）"/>
@@ -48,12 +48,12 @@
 						<Button Command="{Binding SelectLevelPath}">选择</Button>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
-				<ui:SettingsExpanderItem Classes.Selected="{Binding IsSteamPathSelected}"
-                                         Classes.Unselected="{Binding !IsSteamPathSelected}">
+				<ui:SettingsExpanderItem Classes.Selected="{Binding Setting.IsSteamPathSelected}"
+                                         Classes.Unselected="{Binding !Setting.IsSteamPathSelected}">
 					Steam路径：
 					<ui:SettingsExpanderItem.Styles>
 						<Style Selector="ui|SettingsExpanderItem.Selected">
-							<Setter Property="Description" Value="{Binding SteamPath}"/>
+							<Setter Property="Description" Value="{Binding Setting.SteamPath}"/>
 						</Style>
 						<Style Selector="ui|SettingsExpanderItem.Unselected">
 							<Setter Property="Description" Value="未选择"/>
@@ -68,10 +68,10 @@
 				<ui:SettingsExpanderItem Description="范围：1-100，重启应用后生效">
 					地图预览质量
 					<ui:SettingsExpanderItem.Footer>
-						<ui:NumberBox Value="{Binding PreviewQuality}" Maximum="100" Minimum="1"/>
+						<ui:NumberBox Value="{Binding Setting.PreviewQuality}" Maximum="100" Minimum="1"/>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
-				<ui:SettingsExpanderItem Description="{Binding DownloadPath}">
+				<ui:SettingsExpanderItem Description="{Binding Setting.DownloadPath}">
 					下载路径：
 					<ui:SettingsExpanderItem.Footer>
 						<Button Command="{Binding SelectDownloadPath}">选择</Button>
@@ -80,13 +80,13 @@
 				<ui:SettingsExpanderItem>
 					下载后保存Zip文件：
 					<ui:SettingsExpanderItem.Footer>
-						<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding SaveMapZip}"/>
+						<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding Setting.SaveMapZip}"/>
 					</ui:SettingsExpanderItem.Footer>
 				</ui:SettingsExpanderItem>
 			</ui:SettingsExpander>
 			<ui:SettingsExpander Header="夜间模式">
 				<ui:SettingsExpander.Footer>
-					<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding NightMode}"/>
+					<ToggleSwitch OnContent="开" OffContent="关"  IsChecked="{Binding Setting.NightMode}"/>
 				</ui:SettingsExpander.Footer>
 			</ui:SettingsExpander>
 		</StackPanel>
