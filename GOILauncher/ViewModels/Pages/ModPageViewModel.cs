@@ -20,9 +20,11 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class ModPageViewModel : PageViewModelBase
     {
-        public ModPageViewModel(GamePageViewModel gamePageViewModel, SettingService settingService, DownloadService downloadService)
+        public ModPageViewModel(GameService gameService, SettingService settingService,
+            DownloadService downloadService,NotificationManager notificationManager)
         {
-            _gamePageViewModel = gamePageViewModel;
+            _gameInfo = gameService.GameInfo;
+            _gameService = gameService;
             _downloadService = downloadService;
             Setting = settingService.Setting;
             DownloadCommand = ReactiveCommand.CreateFromTask<ModViewModel>(Download);
@@ -41,26 +43,33 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task Download(ModViewModel mod)
         {
-            if(!mod.TargetGameVersion.Contains(_gamePageViewModel.GameVersion))
+            try
             {
-                NotificationManager.ShowContentDialog("提示", $"版本不匹配！\n目标版本：{mod.TargetGameVersionString}\n当前版本：{_gamePageViewModel.GameVersion}");
-                return;
+                if (!mod.TargetGameVersion.Contains(_gameInfo.GameVersion))
+                {
+                    NotificationManager.ShowContentDialog("提示", $"版本不匹配！\n目标版本：{mod.TargetGameVersionString}\n当前版本：{_gameInfo.GameVersion}");
+                    return;
+                }
+                _downloadService.DownloadStarted += mod.OnDownloadStarted;
+                _downloadService.DownloadProgressChanged += mod.OnDownloadProgressChanged;
+                _downloadService.DownloadFileCompleted += mod.OnDownloadCompleted;
+                await _downloadService.DownloadFileTaskAsync(mod.Url,
+                    Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"));
+                _downloadService.DownloadStarted -= mod.OnDownloadStarted;
+                _downloadService.DownloadProgressChanged -= mod.OnDownloadProgressChanged;
+                _downloadService.DownloadFileCompleted -= mod.OnDownloadCompleted;
+                FileService.ExtractZip(
+                    Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"),
+                    Setting.GamePath!,
+                    !Setting.SaveMapZip);
+                mod.IsExtracting = false;
+                _gameService.GetModpackandLevelLoaderVersion();
+                NotificationManager.ShowContentDialog("提示", $"已经安装{mod.Name} {mod.Build}！");
             }
-            _downloadService.DownloadStarted += mod.OnDownloadStarted;
-            _downloadService.DownloadProgressChanged += mod.OnDownloadProgressChanged;
-            _downloadService.DownloadFileCompleted += mod.OnDownloadCompleted;
-            await _downloadService.DownloadFileTaskAsync(mod.Url,
-                Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"));
-            _downloadService.DownloadStarted -= mod.OnDownloadStarted;
-            _downloadService.DownloadProgressChanged -= mod.OnDownloadProgressChanged;
-            _downloadService.DownloadFileCompleted -= mod.OnDownloadCompleted;
-            FileService.ExtractZip(
-                Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"),
-                Setting.GamePath!,
-                !Setting.SaveMapZip);
-            mod.IsExtracting = false;
-            _gamePageViewModel.GetGameInfo(Setting.GamePath!);
-            NotificationManager.ShowContentDialog("提示", $"已经安装{mod.Name} {mod.Build}！");
+            catch (Exception e)
+            {
+                NotificationManager.ShowContentDialog($"下载{mod.Name} {mod.Build}失败", e.Message);
+            }
         }
 
         private async Task GetModpacks()
@@ -87,9 +96,11 @@ namespace GOILauncher.ViewModels.Pages
                             (await LeanCloudService.GetMods("OtherMod"))
                             .Select(mod => new ModViewModel(mod)));
         }
-        private readonly GamePageViewModel _gamePageViewModel;
+        private readonly GameInfo _gameInfo;
         public Setting Setting { get; }
         private readonly DownloadService _downloadService;
+        private readonly GameService _gameService;
+        private readonly NotificationManager _notificationManager;
         [Reactive]
         public ObservableCollection<ModViewModel> Modpacks { get; set; } = [];
         [Reactive]

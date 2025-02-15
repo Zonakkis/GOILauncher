@@ -25,13 +25,13 @@
 		<Grid RowDefinitions="35,35,35,35,*" ColumnDefinitions="auto,auto,*"
 			  IsVisible="{Binding Setting.IsGamePathSelected}" Margin="15,15">
 			<TextBlock Grid.Row="0" Grid.Column="0">游戏版本：</TextBlock>
-			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameVersion}"/>
+			<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding GameInfo.GameVersion}"/>
 			<TextBlock Grid.Row="1" Grid.Column="0">Modpack版本：</TextBlock>
-			<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ModpackVersion}"/>
+			<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding GameInfo.ModpackVersion}"/>
 			<TextBlock Grid.Row="2" Grid.Column="0">LevelLoader版本：</TextBlock>
-			<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LevelLoaderVersion}"/>
+			<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding GameInfo.LevelLoaderVersion}"/>
 			<TextBlock Grid.Row="3" Grid.Column="0">BepInEx版本：</TextBlock>
-			<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding BepInExVersion}"/>
+			<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding GameInfo.BepInExVersion}"/>
 			<SplitButton Grid.Row="4" Grid.Column="2" IsVisible="{Binding !GameLaunched}" BorderBrush="LightGray" HorizontalAlignment="Right" VerticalAlignment="Bottom" CornerRadius="5"
 						 Command="{Binding Launch}" CommandParameter="1">
 				启动游戏

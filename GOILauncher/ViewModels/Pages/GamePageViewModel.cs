@@ -14,11 +14,11 @@ namespace GOILauncher.ViewModels.Pages
     {
         public GamePageViewModel(SettingService settingService, GameService gameService)
         {
-            _gameService = gameService;
+            GameInfo = gameService.GameInfo;
             Setting = settingService.Setting;
             Setting.WhenAnyValue(x => x.GamePath)
                    .Where(x => !string.IsNullOrEmpty(x))
-                   .Subscribe(x => GetGameInfo(x!));
+                   .Subscribe(x => gameService.SetGamePath(x!));
         }
         public override void Init()
         {
@@ -27,14 +27,6 @@ namespace GOILauncher.ViewModels.Pages
         public override void OnSelectedViewChanged()
         {
 
-        }
-        public void GetGameInfo(string gamePath)
-        {
-            var gameInfo = _gameService.GetGameInfo(gamePath!);
-            GameVersion = gameInfo.GameVersion;
-            ModpackVersion = gameInfo.ModpackVersion;
-            LevelLoaderVersion = gameInfo.LevelLoaderVersion;
-            BepInExVersion = gameInfo.BepInExVersion;
         }
         public void Launch(int para)
         {
@@ -65,19 +57,12 @@ namespace GOILauncher.ViewModels.Pages
         {
             GameProcess?.Kill();
         }
-        private readonly GameService _gameService;
         public Setting Setting { get; }
         [Reactive]
         public bool GameLaunched { get; set; }
         private Process? GameProcess { get; set; }
-        [Reactive]
-        public string GameVersion { get; set; }
-        [Reactive]
-        public string ModpackVersion { get; set; }
-        [Reactive]
-        public string LevelLoaderVersion { get; set; }
-        [Reactive]
-        public string BepInExVersion { get; set; }
+
+        public GameInfo GameInfo { get; }
 
     }
 }

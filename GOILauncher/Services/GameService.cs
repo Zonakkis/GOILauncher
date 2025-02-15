@@ -8,28 +8,31 @@ using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using FluentAvalonia.UI.Controls;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GOILauncher.Services;
 
 public class GameService(NotificationManager notificationManager)
 {
-    public GameInfo GetGameInfo(string gamePath)
+    public void SetGamePath(string gamePath)
     {
-        var game = GetGameVersion(gamePath);
-        var (modpack, levelLoader) = GetModpackandLevelLoaderVersion(gamePath);
-        var bepInEx = GetBepinExVersion(gamePath);
-        return new GameInfo
-        {
-            GameVersion = game,
-            ModpackVersion = modpack,
-            LevelLoaderVersion = levelLoader,
-            BepInExVersion = bepInEx,
-        };
+        _gamePath = gamePath;
+        GetGameInfo();
     }
-    private static string GetGameVersion(string gamePath)
+    private void GetGameInfo()
     {
-        var fileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(gamePath,"GettingOverIt.exe"));
-        return fileVersionInfo.FilePrivatePart switch
+        if(string.IsNullOrEmpty(_gamePath))
+        {
+            return;
+        }    
+        GetGameVersion();
+        GetModpackandLevelLoaderVersion();
+        GetBepinExVersion();
+    }
+    private void GetGameVersion()
+    {
+        var fileVersionInfo = FileVersionInfo.GetVersionInfo(Path.Combine(_gamePath,"GettingOverIt.exe"));
+        GameInfo.GameVersion = fileVersionInfo.FilePrivatePart switch
         {
             37248 => "1.7",
             35766 => "1.6",
@@ -37,57 +40,63 @@ public class GameService(NotificationManager notificationManager)
             _ => "未知版本"
         };
     }
-    private (string modpack, string levelLoader) GetModpackandLevelLoaderVersion(string gamePath)
+    public void GetModpackandLevelLoaderVersion()
     {
-        (string modpack, string levelLoader) result = ("未安装", "未安装");
         try
         {
             var assemblyLoadContext = new AssemblyLoadContext("Assembly-CSharp", true); 
-            assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(gamePath, "GettingOverIt_Data/Managed/UnityEngine.CoreModule.dll"));
-            var assembly = Assembly.LoadFrom(Path.Combine(gamePath, "GettingOverIt_Data/Managed/Assembly-CSharp.dll"));
+            assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(_gamePath, "GettingOverIt_Data/Managed/UnityEngine.CoreModule.dll"));
+            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(_gamePath, "GettingOverIt_Data/Managed/Assembly-CSharp.dll"));
             var levelLoaderInfo = assembly.GetType("GOILevelImporter.ModInfo");
             if (levelLoaderInfo is not null)
             {
                 var levelLoaderFullVersionPropertyInfo = levelLoaderInfo.GetProperty("FULLVERSION");
-                result.levelLoader = (string)levelLoaderFullVersionPropertyInfo.GetValue(null);
+                GameInfo.LevelLoaderVersion = (string)levelLoaderFullVersionPropertyInfo.GetValue(null);
+            }
+            else
+            {
+                GameInfo.LevelLoaderVersion = "未安装";
             }
             var settingsManager = assembly.GetType("SettingsManager", true);
             var modpackBuildFieldInfo = settingsManager.GetField("build", BindingFlags.Static | BindingFlags.NonPublic);
             if (modpackBuildFieldInfo is not null)
             {
-                result.modpack = (string)modpackBuildFieldInfo.GetValue(null);
+                GameInfo.ModpackVersion = (string)modpackBuildFieldInfo.GetValue(null);
+            }
+            else
+            {
+                GameInfo.ModpackVersion = "未安装";
             }
             assemblyLoadContext.Unload();
-            return result;
         }
         catch (Exception ex)
         {
-            result.modpack = "已安装";
+            GameInfo.ModpackVersion = "已安装";
             notificationManager.AddNotification("获取Modpack版本失败", ex.Message, InfoBarSeverity.Error);
         }
-        return result;
     }
-    private static string GetBepinExVersion(string gamePath)
+    private void GetBepinExVersion()
     {
-        if (!Directory.Exists($"{gamePath}/BepInEx/core"))
+        if (!Directory.Exists($"{_gamePath}/BepInEx/core"))
         {
-            return "未安装";
+            GameInfo.BepInExVersion = "未安装";
         }
         var assemblyLoadContext = new AssemblyLoadContext("BepInEx", true);
-        string version;
-        if (File.Exists($"{gamePath}/BepInEx/core/BepInEx.Preloader.Unity.dll"))
+        if (File.Exists($"{_gamePath}/BepInEx/core/BepInEx.Preloader.Unity.dll"))
         {
-            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(gamePath,"BepInEx/core/BepInEx.Preloader.Unity.dll"));
+            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(_gamePath, "BepInEx/core/BepInEx.Preloader.Unity.dll"));
             var assemblyInformationalVersionAttribute = (AssemblyInformationalVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute));
-            version = assemblyInformationalVersionAttribute.InformationalVersion;
+            GameInfo.BepInExVersion = assemblyInformationalVersionAttribute.InformationalVersion;
         }
         else
         {
-            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(gamePath, "BepInEx/core/BepInEx.Preloader.dll"));
+            var assembly = assemblyLoadContext.LoadFromAssemblyPath(Path.Combine(_gamePath, "BepInEx/core/BepInEx.Preloader.dll"));
             var assemblyInformationalVersionAttribute = (AssemblyFileVersionAttribute)assembly.GetCustomAttribute(typeof(AssemblyFileVersionAttribute));
-            version = assemblyInformationalVersionAttribute.Version;
+            GameInfo.BepInExVersion = assemblyInformationalVersionAttribute.Version;
         }
         assemblyLoadContext.Unload();
-        return version;
     }
+    public GameInfo GameInfo { get; } = new();
+
+    private string _gamePath;
 }

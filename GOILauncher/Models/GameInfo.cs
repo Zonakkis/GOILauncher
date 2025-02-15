@@ -1,16 +1,22 @@
 ﻿using GOILauncher.Helpers;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.IO;
 using System.Reflection;
 
 namespace GOILauncher.Models
 {
-    public class GameInfo
+    public class GameInfo : ReactiveObject
     {
-        public required string GameVersion { get; init; }
-        public required string ModpackVersion { get; init; }
-        public required string LevelLoaderVersion { get; init; }
-        public required string BepInExVersion { get; init; }
+        [Reactive]
+        public string GameVersion { get; set; }
+        [Reactive]
+        public string ModpackVersion { get; set; }
+        [Reactive]
+        public string LevelLoaderVersion { get; set; }
+        [Reactive]
+        public string BepInExVersion { get; set; }
         public static GameInfo Instance => null;
     }
 }
