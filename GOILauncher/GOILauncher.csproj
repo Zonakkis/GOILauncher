@@ -40,7 +40,7 @@
     <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="Downloader" Version="3.3.3" />
     <PackageReference Include="FluentAvaloniaUI" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
     <PackageReference Include="ReactiveUI.Fody" Version="19.5.41" />
   </ItemGroup>
 
