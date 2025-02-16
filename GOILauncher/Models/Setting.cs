@@ -3,13 +3,12 @@ using GOILauncher.Helpers;
 using ReactiveUI;
 using System;
 using System.IO;
+using System.Text.Json.Serialization;
 using ReactiveUI.Fody.Helpers;
 using GOILauncher.Services;
-using LC.Newtonsoft.Json;
 
 namespace GOILauncher.Models
 {
-    [JsonObject(MemberSerialization.OptOut)]
     public class Setting : ReactiveObject
     {
         public Setting()

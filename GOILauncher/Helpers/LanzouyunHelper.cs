@@ -1,9 +1,9 @@
 ﻿using GOILauncher.ViewModels;
-using LC.Newtonsoft.Json;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -53,7 +53,7 @@ namespace GOILauncher.Helpers
             var response = await HttpClient.SendAsync(request);
             var content = response.Content;
             var data = (await content.ReadAsStringAsync()).Replace("\\/", "/");
-            return JsonConvert.DeserializeObject<LanzouResponse>(data);
+            return JsonSerializer.Deserialize<LanzouResponse>(data);
         }
         public static async Task<string?> GetRealUrl(string url)
         {

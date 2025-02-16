@@ -1,14 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Platform.Storage;
-using Ionic.Zip;
-using LC.Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
-using ZipFile = System.IO.Compression.ZipFile;
 
 namespace GOILauncher.Services;
 
@@ -27,7 +25,7 @@ public class FileService(Lazy<TopLevel> topLevel)
     public static void SaveAsJson(string path, string fileName, object obj, bool overwrite = true)
     {
         using StreamWriter streamWriter = new(Path.Combine(path, fileName), !overwrite);
-        var json = JsonConvert.SerializeObject(obj);
+        var json = JsonSerializer.Serialize(obj);
         streamWriter.WriteLine(json);
     }
 
@@ -35,7 +33,7 @@ public class FileService(Lazy<TopLevel> topLevel)
     {
         using StreamReader streamReader = new(Path.Combine(path, fileName));
         var json = streamReader.ReadToEnd();
-        return JsonConvert.DeserializeObject<T>(json);
+        return JsonSerializer.Deserialize<T>(json);
     }
     public static async Task CombineZipSegment(string path, string zipName, string searchPattern)
     {

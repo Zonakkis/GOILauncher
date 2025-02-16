@@ -1,5 +1,5 @@
-﻿using LC.Newtonsoft.Json;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Helpers
@@ -11,7 +11,7 @@ namespace GOILauncher.Helpers
             using HttpClient client = new();
             var response = await client.GetAsync($"https://api.bilibili.com/x/web-interface/view?bvid={bvid}");
             var content = await response.Content.ReadAsStringAsync();
-            var bilibiliResponse = JsonConvert.DeserializeObject<BilibiliResponse>(content);
+            var bilibiliResponse = JsonSerializer.Deserialize<BilibiliResponse>(content);
             if (bilibiliResponse.code == 0)
             {
                 return new BilibiliResult()

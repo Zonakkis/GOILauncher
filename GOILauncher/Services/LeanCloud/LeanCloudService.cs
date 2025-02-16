@@ -8,8 +8,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text.Json;
-using LC.Newtonsoft.Json.Linq;
-using LC.Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
 namespace GOILauncher.Services.LeanCloud;
@@ -28,16 +26,18 @@ public class LeanCloudService
         var httpResponseMessage = await _httpClient.GetAsync(await leanCloudQuery.Build());
         httpResponseMessage.EnsureSuccessStatusCode();
         var content = await httpResponseMessage.Content.ReadAsStringAsync();
-        var results = JObject.Parse(content)["results"].ToString();
-        return JsonConvert.DeserializeObject<List<T>>(results);
+        using var doc = JsonDocument.Parse(content);
+        var results = doc.RootElement.GetProperty("results").ToString();
+        return JsonSerializer.Deserialize<List<T>>(results)!;
     }
     public async Task<ObservableCollection<T>> FindAsObservableCollection<T>(LeanCloudQuery leanCloudQuery)
     {
         var httpResponseMessage = await _httpClient.GetAsync(await leanCloudQuery.Build());
         httpResponseMessage.EnsureSuccessStatusCode();
         var content = await httpResponseMessage.Content.ReadAsStringAsync();
-        var results = JObject.Parse(content)["results"].ToString();
-        return JsonConvert.DeserializeObject<ObservableCollection<T>>(results);
+        using var doc = JsonDocument.Parse(content);
+        var results = doc.RootElement.GetProperty("results").ToString();
+        return JsonSerializer.Deserialize<ObservableCollection<T>>(results)!;
     }
     public async Task<ObservableCollection<Mod>> GetMods(string modName)
     {

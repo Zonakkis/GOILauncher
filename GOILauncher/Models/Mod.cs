@@ -2,7 +2,6 @@
 using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
-using LC.Newtonsoft.Json;
 using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -10,12 +9,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Models
 {
-    [JsonObject(MemberSerialization.OptIn)]
     public class Mod : ReactiveObject, IDownloadable 
     {
         public Mod()
@@ -42,32 +41,34 @@ namespace GOILauncher.Models
             Status = "解压中";
         }
         [Reactive]
-        [JsonProperty]
         public string Name { get; init; }
         [Reactive]
-        [JsonProperty]
         public string Author { get; init; }
         [Reactive]
-        [JsonProperty]
         public string Build { get; init; }
         [Reactive]
-        [JsonProperty]
         public string Url { get; init; }
         [Reactive]
-        [JsonProperty]
         public List<string> TargetGameVersion { get; init; }
+        [JsonIgnore]
         public string TargetGameVersionString => string.Join("/", TargetGameVersion);
         [Reactive]
+        [JsonIgnore]
         public double ProgressPercentage { get; set; }
         [Reactive]
+        [JsonIgnore]
         public string Status { get; set; }
         [Reactive]
+        [JsonIgnore]
         public bool Downloadable { get; set; }
         [Reactive]
+        [JsonIgnore]
         public bool IsDownloading { get; set; }
         [Reactive]
+        [JsonIgnore]
         public bool IsExtracting { get; set; }
         [Reactive]
+        [JsonIgnore]
         public bool IsInstalling { get; set; }
     }
 }
