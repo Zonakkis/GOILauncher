@@ -1,13 +1,10 @@
-﻿using LeanCloud.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Services.LeanCloud;
 
-public class LeanCloudQuery
+public class LeanCloudQuery<T>
 {
     private readonly string _className;
     private string? _order;
@@ -16,9 +13,7 @@ public class LeanCloudQuery
     public LeanCloudQuery(string className)
     {
         _className = className;
-        Deselect("createdAt");
-        Deselect("updatedAt");
-        Deselect("objectId");
+        Deselect("createdAt","updatedAt","objectId");
     }
 
     public async Task<string> Build()
@@ -35,22 +30,22 @@ public class LeanCloudQuery
         }
         return $"{_className}?{await new FormUrlEncodedContent(queryParams).ReadAsStringAsync()}";
     }
-    public LeanCloudQuery OrderByAscending(string key)
+    public LeanCloudQuery<T> OrderByAscending(string key)
     {
         _order = key;
         return this;
     }
-    public LeanCloudQuery OrderByDescending(string key)
+    public LeanCloudQuery<T> OrderByDescending(string key)
     {
         _order = $"-{key}";
         return this;
     }
-    public LeanCloudQuery Select(params string[] keys)
+    public LeanCloudQuery<T> Select(params string[] keys)
     {
         _keys.AddRange(keys);
         return this;
     }
-    public LeanCloudQuery Deselect(params string[] keys)
+    public LeanCloudQuery<T> Deselect(params string[] keys)
     {
         foreach (var key in keys)
         {
