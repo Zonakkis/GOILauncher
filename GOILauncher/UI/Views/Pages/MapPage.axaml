@@ -102,7 +102,7 @@
 					</Grid>
 					<Button Grid.Row="3" HorizontalAlignment="Center" CornerRadius="5"
 							IsEnabled="{Binding SelectedMap.Downloadable}"
-							Command="{Binding DownloadCommand}"
+							Command="{Binding SelectedMap.DownloadCommand}"
 							CommandParameter="{Binding SelectedMap}">
 						下载
 					</Button>

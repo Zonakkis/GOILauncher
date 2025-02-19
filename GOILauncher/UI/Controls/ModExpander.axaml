@@ -2,8 +2,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:pg="using:GOILauncher.UI.Views.Pages"
-			 xmlns:vm="using:GOILauncher.ViewModels.Pages"
              xmlns:m ="using:GOILauncher.Models"
              xmlns:ui="clr-namespace:GOILauncher.UI.Controls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
@@ -19,30 +17,30 @@
 		<Expander.Header>
 			<StackPanel Orientation="Horizontal" Spacing="5">
 				<TextBlock FontSize="24" FontWeight="Bold"
-						   Text="{Binding ModName,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+						   Text="{Binding $parent[ui:ModExpander].ModName}"/>
 				<TextBlock FontSize="16" FontWeight="ExtraLight" VerticalAlignment="Bottom"
-						   IsVisible="{Binding !IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}">
+						   IsVisible="{Binding !$parent[ui:ModExpander].IsOtherMod}">
 					by
 				</TextBlock>
 				<TextBlock FontSize="20" VerticalAlignment="Bottom"
-                           IsVisible="{Binding !IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"
-						   Text="{Binding Author,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+                           IsVisible="{Binding !$parent[ui:ModExpander].IsOtherMod}"
+						   Text="{Binding $parent[ui:ModExpander].Author}"/>
 			</StackPanel>
 		</Expander.Header>
-		<ListBox ItemsSource="{Binding Mods,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}" SelectionChanged="Unselect">
+		<ListBox ItemsSource="{Binding $parent[ui:ModExpander].Mods}" SelectionChanged="Unselect">
 			<ListBox.ItemTemplate>
 				<DataTemplate x:DataType="m:Mod">
 					<Grid ColumnDefinitions="auto,*">
 						<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5">
 							<TextBlock Text="{Binding Name}" 
-									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+									   IsVisible="{Binding $parent[ui:ModExpander].IsOtherMod}"/>
 							<TextBlock Text="{Binding Build}"/>
 							<TextBlock FontSize="14" FontWeight="UltraLight"
-									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}">
+									   IsVisible="{Binding $parent[ui:ModExpander].IsOtherMod}">
 								by
 							</TextBlock>
 							<TextBlock Text="{Binding Author}" FontSize="18"  
-									   IsVisible="{Binding IsOtherMod,RelativeSource={RelativeSource AncestorType={x:Type ui:ModExpander}}}"/>
+									   IsVisible="{Binding $parent[ui:ModExpander].IsOtherMod}"/>
 							<TextBlock Text="{Binding TargetGameVersionString}" FontSize="12" FontWeight="UltraLight"/>
 						</StackPanel>
 						<StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
@@ -51,7 +49,7 @@
 										 IsIndeterminate="{Binding IsExtracting}" Margin="10,0"
 										 HorizontalAlignment="Right" VerticalAlignment="Center"/>
 							<Button HorizontalAlignment="Right"
-									Command="{Binding $parent[pg:ModPage].((vm:ModPageViewModel)DataContext).DownloadCommand}"
+									Command="{Binding DownloadCommand}"
 									CommandParameter="{Binding $self.DataContext}">下载</Button>
 						</StackPanel>
 					</Grid>

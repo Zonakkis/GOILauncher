@@ -36,7 +36,6 @@ namespace GOILauncher.ViewModels.Pages
             _downloadConfiguration = downloadConfiguration;
             _notificationManager = notificationManager;
             Setting = settingService.Setting;
-            DownloadCommand = ReactiveCommand.CreateFromTask<Map>(Download, Observable.Return(true));
             this.WhenAnyValue(x => x.HideDownloadedMap, x => x.FilterMapName, x => x.Form, x => x.Style, x => x.Difficulty)
                 .Subscribe(_ => Filter());
             Setting.WhenAnyValue(x => x.LevelPath)
@@ -59,6 +58,7 @@ namespace GOILauncher.ViewModels.Pages
         {
             foreach (var map in await _leanCloudService.GetMaps())
             {
+                map.DownloadCommand = ReactiveCommand.CreateFromTask<Map>(Download);
                 Maps.Add(map);
                 var downloadService = new DownloadService(_downloadConfiguration);
                 downloadService.DownloadStarted += map.OnDownloadStarted;
@@ -70,14 +70,11 @@ namespace GOILauncher.ViewModels.Pages
                    .Where(x => !string.IsNullOrEmpty(x))
                    .Subscribe(_ =>
                    {
-                       foreach (var map in Maps)
+                       foreach (var map in Maps.Where(map => _gameService.CheckWhetherMapExists(map)))
                        {
-                           if (_gameService.CheckWhetherMapExists(map))
-                           {
-                               _gameService.AddMap(map);
-                               map.Downloaded = true;
-                               map.Downloadable = false;
-                           }
+                           _gameService.AddMap(map);
+                           map.Downloaded = true;
+                           map.Downloadable = false;
                        }
                        Filter();
                    });
@@ -126,7 +123,6 @@ namespace GOILauncher.ViewModels.Pages
         public Setting Setting { get; }
         private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         private readonly Dictionary<Map, DownloadService> downloadServices = [];
-        public ReactiveCommand<Map, Unit> DownloadCommand { get; set; }
         public List<Map> Maps { get; } = [];
         public ObservableCollection<Map> FilteredMaps { get; } = [];
         [Reactive]

@@ -75,35 +75,46 @@ namespace GOILauncher.ViewModels.Pages
         }
         private async Task GetModpacks()
         {
-            Modpacks = await _leanCloudService.GetMods("Modpack");
+            foreach(var modpack in await _leanCloudService.GetMods("Modpack"))
+            {
+                modpack.DownloadCommand = DownloadCommand;
+                Modpacks.Add(modpack);
+            }
         }
         private async Task GetLevelLoaders()
         {
-            LevelLoaders = await _leanCloudService.GetMods("LevelLoader");
+            foreach (var levelLoader in await _leanCloudService.GetMods("LevelLoader"))
+            {
+                levelLoader.DownloadCommand = DownloadCommand;
+                LevelLoaders.Add(levelLoader);
+            }
         }
         private async Task GetModpackandLevelLoaders()
         {
-            ModpackandLevelLoaders = await _leanCloudService.GetMods("ModpackandLevelLoader");
+            foreach (var modpackandLevelLoader in await _leanCloudService.GetMods("ModpackandLevelLoader"))
+            {
+                modpackandLevelLoader.DownloadCommand = DownloadCommand;
+                ModpackandLevelLoaders.Add(modpackandLevelLoader);
+            }
         }
         private async Task GetOtherMods()
         {
-            OtherMods = await _leanCloudService.GetMods("OtherMod");
+            foreach (var otherMod in await _leanCloudService.GetMods("OtherMod"))
+            {
+                otherMod.DownloadCommand = DownloadCommand;
+                OtherMods.Add(otherMod);
+            }
         }
         private readonly GameInfo _gameInfo;
         public Setting Setting { get; }
         private readonly LeanCloudService _leanCloudService;
         private readonly DownloadService _downloadService;
         private readonly GameService _gameService;
-        [Reactive]
         public ObservableCollection<Mod> Modpacks { get; set; } = [];
-        [Reactive]
         public ObservableCollection<Mod> LevelLoaders { get; set; } = [];
-        [Reactive]
         public ObservableCollection<Mod> ModpackandLevelLoaders { get; set; } = [];
-        [Reactive]
         public ObservableCollection<Mod> OtherMods { get; set; } = [];
-
-        public ReactiveCommand<Mod, Unit> DownloadCommand { get; }
+        private ReactiveCommand<Mod, Unit> DownloadCommand { get; }
 
     }
 }

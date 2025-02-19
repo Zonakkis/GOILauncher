@@ -1,19 +1,15 @@
 ﻿using Downloader;
 using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
-using Ionic.Zip;
-using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Text.Json.Serialization;
+using System.Reactive;
 
 namespace GOILauncher.Models
 {
-    public class Map: ReactiveObject,IDownloadable
+    public class Map: ReactiveObject,IDownloadable<Map>
     {
         public Map()
         {
@@ -60,5 +56,6 @@ namespace GOILauncher.Models
         public bool Downloaded { get; set; }
         [Reactive]
         public bool Downloadable { get; set; } = true;
+        public ReactiveCommand<Map,Unit> DownloadCommand { get; set; }
     }
 }
