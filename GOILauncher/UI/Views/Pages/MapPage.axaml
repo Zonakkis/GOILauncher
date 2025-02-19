@@ -83,7 +83,7 @@
 							</Style>
                         </Image.Styles>
 					</Image>
-					<TextBlock Grid.Row="0" IsVisible="{Binding !SelectedMap.HasPreview}"
+					<TextBlock Grid.Row="0" IsVisible="{Binding SelectedMap.Preview,Converter={x:Static StringConverters.IsNullOrEmpty}}"
 							   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30">
 						暂无预览图
 					</TextBlock>
