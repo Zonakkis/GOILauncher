@@ -58,29 +58,32 @@ public class FileService(Lazy<TopLevel> topLevel)
             File.Delete(zipFile);
         }
     }
-    public static void ExtractZip(string zipPath, string destinationPath, bool deleteAfterExtract)
+    public static Task ExtractZipAsync(string zipPath, string destinationPath, bool deleteAfterExtract)
     {
-        using (var zipArchive = ZipFile.OpenRead(zipPath))
+        return Task.Run(() =>
         {
-            foreach (var zipArchiveEntry in zipArchive.Entries)
+            using (var zipArchive = ZipFile.OpenRead(zipPath))
             {
-                var filePath = Path.Combine(destinationPath, zipArchiveEntry.FullName);
-
-                // 如果条目是文件而非文件夹，则解压
-                if (string.IsNullOrEmpty(zipArchiveEntry.Name))
+                foreach (var zipArchiveEntry in zipArchive.Entries)
                 {
-                    // 是文件夹，跳过
-                    continue;
+                    var filePath = Path.Combine(destinationPath, zipArchiveEntry.FullName);
+
+                    // 如果条目是文件而非文件夹，则解压
+                    if (string.IsNullOrEmpty(zipArchiveEntry.Name))
+                    {
+                        // 是文件夹，跳过
+                        continue;
+                    }
+                    // 创建文件夹
+                    Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
+                    // 解压文件
+                    zipArchiveEntry.ExtractToFile(filePath, overwrite: true);
                 }
-                // 创建文件夹
-                Directory.CreateDirectory(Path.GetDirectoryName(filePath)!);
-                // 解压文件
-                zipArchiveEntry.ExtractToFile(filePath, overwrite: true);
             }
-        }
-        if (deleteAfterExtract)
-        {
-            File.Delete(zipPath);
-        }
+            if (deleteAfterExtract)
+            {
+                File.Delete(zipPath);
+            }
+        });
     }
 }

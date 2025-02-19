@@ -60,7 +60,7 @@ namespace GOILauncher.ViewModels.Pages
                 _downloadService.DownloadStarted -= mod.OnDownloadStarted;
                 _downloadService.DownloadProgressChanged -= mod.OnDownloadProgressChanged;
                 _downloadService.DownloadFileCompleted -= mod.OnDownloadCompleted;
-                FileService.ExtractZip(
+                await FileService.ExtractZipAsync(
                     Path.Combine(Setting.DownloadPath!, $"{mod.Name} {mod.Build}.zip"),
                     Setting.GamePath!,
                     !Setting.SaveMapZip);
