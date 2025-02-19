@@ -111,13 +111,13 @@ public class GameService(NotificationManager notificationManager)
     {
         LocalMaps.Clear();
         _localMapsDictionary.Clear();
-        foreach (var directory in Directory.GetDirectories(_levelPath, "* by *", SearchOption.AllDirectories))
+        foreach (var directory in Directory.GetDirectories(_levelPath, "* by *"))
         { 
             var directoryName = Path.GetFileName(directory).Replace("By","by");
             var mapName = directoryName.Split(" by ")[0];
             var author = directoryName.Split(" by ")[1];
-            var size = Directory.GetFiles(directory, "*.scene", SearchOption.AllDirectories)
-                                 .Aggregate<string, long>(0, (size, scene) => size + scene.Length);
+            var size = Directory.GetFiles(directory, "*.scene")
+                                .Aggregate<string, long>(0, (size, scene) => size + new FileInfo(scene).Length);
             AddMap(new Map
             {
                 Name = mapName,
@@ -172,6 +172,23 @@ public class GameService(NotificationManager notificationManager)
     {
         LocalMaps.Remove(map);
         _localMapsDictionary.Remove(map.Name);
+    }
+    public void DeleteMap(Map map)
+    {
+        if(Directory.GetDirectories(_levelPath, "* by *")
+           .FirstOrDefault(directory => Path.GetFileName(directory).Contains(map.Name)) is { } direct)
+        {
+            Directory.Delete(direct, true);
+        }
+        foreach (var scene in Directory.GetFiles(_levelPath)
+                 .Where(filename => Path.GetFileName(filename)
+                                        .StartsWith(map.Name, StringComparison.InvariantCultureIgnoreCase)))
+        {
+            File.Delete(scene);
+        }
+        RemoveMap(map);
+        map.Downloaded = false;
+        map.Downloadable = true;
     }
     private string _gamePath;
     private string _levelPath;
