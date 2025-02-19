@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using LeanCloud.Storage;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace GOILauncher.Services.LeanCloud;
@@ -9,6 +11,7 @@ public class LeanCloudQuery<T>
     private readonly string _className;
     private string? _order;
     private readonly List<string> _keys = [];
+    private readonly Dictionary<string,object> _condition = [];
 
     public LeanCloudQuery(string className)
     {
@@ -23,10 +26,13 @@ public class LeanCloudQuery<T>
         {
             queryParams.Add("order", _order);
         }
-        var keys = string.Join(',',_keys);
-        if (!string.IsNullOrEmpty(keys))
+        if (_keys.Count > 0)
         {
-            queryParams.Add("keys", keys);
+            queryParams.Add("keys", string.Join(',', _keys));
+        }
+        if (_condition.Count > 0)
+        {
+            queryParams.Add("where", JsonSerializer.Serialize(_condition));
         }
         return $"{_className}?{await new FormUrlEncodedContent(queryParams).ReadAsStringAsync()}";
     }
@@ -51,6 +57,12 @@ public class LeanCloudQuery<T>
         {
             _keys.Add($"-{key}");
         }
+        return this;
+    }
+
+    public LeanCloudQuery<T> Where(string key, object value)
+    {
+        _condition.Add(key, value);
         return this;
     }
 }

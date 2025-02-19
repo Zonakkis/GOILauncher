@@ -38,9 +38,17 @@ public class LeanCloudService
     public async Task<ObservableCollection<Mod>> GetMods(string modName)
     {
         var query = new LeanCloudQuery<Mod>(modName)
-                        .OrderByDescending("Build")
+                        .OrderByDescending(nameof(Mod.Build))
                         .Select("Name", "Author", "Build", "Url", "TargetGameVersion");
         return await FindAsObservableCollection(query);
+    }
+    public async Task<List<Map>> GetMaps()
+    {
+        var query = new LeanCloudQuery<Map>(nameof(Map))
+                        .OrderByAscending(nameof(Map.Name))
+                        .Where("Platform", "PC")
+                        .Select("Name", "Author", "Size", "Preview", "Url", "Difficulty", "Form", "Style");
+        return await Find(query);
     }
     private readonly HttpClient _httpClient;
 }
