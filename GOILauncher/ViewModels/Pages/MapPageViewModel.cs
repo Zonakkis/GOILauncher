@@ -1,12 +1,21 @@
-﻿using FluentAvalonia.UI.Controls;
+﻿using Avalonia.Controls.Notifications;
+using Downloader;
+using DynamicData;
+using DynamicData.Binding;
+using FluentAvalonia.UI.Controls;
 using GOILauncher.Helpers;
 using GOILauncher.Models;
 using GOILauncher.Services;
+using GOILauncher.Services.LeanCloud;
+using GOILauncher.UI;
 using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using Splat.ModeDetection;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -18,10 +27,21 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class MapPageViewModel : PageViewModelBase
     {
-        public MapPageViewModel(SettingService settingService)
+        public MapPageViewModel(GameService gameService, LeanCloudService leanCloudService,
+            SettingService settingService, DownloadConfiguration downloadConfiguration,
+            NotificationManager notificationManager)
         {
+            _gameService = gameService;
+            _leanCloudService = leanCloudService;
+            _downloadConfiguration = downloadConfiguration;
+            _notificationManager = notificationManager;
             Setting = settingService.Setting;
-            DownloadCommand = ReactiveCommand.Create(Download, Setting.WhenAnyValue(x => x.IsLevelPathSelected));
+            DownloadCommand = ReactiveCommand.CreateFromTask<Map>(Download, Observable.Return(true));
+            this.WhenAnyValue(x => x.HideDownloadedMap, x => x.FilterMapName, x => x.Form, x => x.Style, x => x.Difficulty)
+                .Subscribe(_ => Filter());
+            Setting.WhenAnyValue(x => x.LevelPath)
+                   .Where(x => !string.IsNullOrEmpty(x))
+                   .Subscribe(x => gameService.SetLevelPath(x!));
         }
         public override void Init()
         {
@@ -29,192 +49,100 @@ namespace GOILauncher.ViewModels.Pages
             {
                 Directory.CreateDirectory(Path.Combine(BaseDirectory, nameof(Download)));
             }
-            LCObject.RegisterSubclass(nameof(Map), () => new Map());
             _ = GetMaps();
         }
         public override void OnSelectedViewChanged()
         {
-            if (Setting.IsLevelPathSelected)
-            {
-                foreach (var map in AllMaps)
-                {
-                    CheckMapExists(map);
-                }
-                Refresh();
-            }
-        }
 
-        private void CheckMapExists(Map map)
-        {
-            if (map.IsDownloading || Setting.IsLevelPathSelected) return;
-            if (Directory.GetDirectories(Setting.LevelPath!)
-                    .Any(directory => Path.GetFileName(directory)
-                        .StartsWith(map.Name, StringComparison.OrdinalIgnoreCase))
-                || File.Exists($"{Setting.LevelPath}/{map.Name}.scene"))
-            {
-                map.Downloaded = true;
-                map.Downloadable = false;
-            }
-            else
-            {
-                map.Downloaded = false;
-                map.Downloadable = true;
-            }
         }
-        public void OnSelectedMapChanged(Map? map)
+        private async Task GetMaps()
         {
-            IsSelectedMap = map is not null;
-            if (IsSelectedMap)
+            foreach (var map in await _leanCloudService.GetMaps())
             {
-                CurrentMap = map!;
+                Maps.Add(map);
+                var downloadService = new DownloadService(_downloadConfiguration);
+                downloadService.DownloadStarted += map.OnDownloadStarted;
+                downloadService.DownloadProgressChanged += map.OnDownloadProgressChanged;
+                downloadService.DownloadFileCompleted += map.OnDownloadCompleted;
+                downloadServices.Add(map, downloadService);
             }
+            Setting.WhenAnyValue(x => x.LevelPath)
+                   .Where(x => !string.IsNullOrEmpty(x))
+                   .Subscribe(_ =>
+                   {
+                       foreach (var map in Maps)
+                       {
+                           if (_gameService.CheckWhetherMapExists(map))
+                           {
+                               _gameService.AddMap(map);
+                               map.Downloaded = true;
+                               map.Downloadable = false;
+                           }
+                       }
+                       Filter();
+                   });
         }
-        public async Task GetMaps()
+        private void Filter()
         {
-            LCQuery<Map> query = new(nameof(Map));
-            query.OrderByAscending(nameof(Map.Name));
-            query.WhereEqualTo("Platform", "PC");
-            var maps = await query.Find();
-            foreach (var map in maps)
-            {
-                if (Setting.IsLevelPathSelected)
-                {
-                    CheckMapExists(map);
-                }
-                if (string.IsNullOrEmpty(map.Preview))
-                {
-                    map.Preview = "avares://GOILauncher/Assets/No Preview.png";
-                }
-                else
-                {
-                    LCFile file = new("Preview.png", new Uri(map.Preview));
-                    map.Preview = file.GetThumbnailUrl((int)(19.2 * Setting.PreviewQuality), (int)(10.8 * Setting.PreviewQuality));
-                }
-                AllMaps.Add(map);
-            }
-            Refresh();
-            query.OrderByDescending("updatedAt");
-            query.Select("updatedAt");
-            LastUpdateTime = (await query.First()).UpdatedAt.ToLongDateString();
-        }
-        public void Refresh()
-        {
-            Maps.Clear();
-            foreach (var map in AllMaps)
+            FilteredMaps.Clear();
+            foreach (var map in Maps)
             {
                 if (HideDownloadedMap && map.Downloaded) continue;
                 if (!map.Name.Contains(FilterMapName, StringComparison.InvariantCultureIgnoreCase)) continue;
                 if (Form != Forms[0] && map.Form != Form) continue;
                 if (Style != Styles[0] && map.Style != Style) continue;
                 if (Difficulty != Difficulties[0] && map.Difficulty != Difficulty) continue;
-                Maps.Add(map);
+                FilteredMaps.Add(map);
             }
         }
-        public async Task Download()
+        public async Task Download(Map map)
         {
-            if (SelectedMap == null) return;
-            var map = SelectedMap;
-            var tokenSource = new CancellationTokenSource();
-            var token = tokenSource.Token;
-            await DownloadHelper.Download(
-                    $"{Setting.DownloadPath}/{map.Name}.zip",
-                    map,
-                    token
-                    );
-            map.Status = "解压中";
-            //await FileService.ExtractZip($"{Setting.DownloadPath}/{map.Name}.zip", Setting.LevelPath!, Setting.SaveMapZip, map.OnExtractProgressChanged);
-            _ = NotificationHelper.ShowNotification("下载完成", $"地图{map.Name}下载完成", InfoBarSeverity.Success);
-            map.IsDownloading = false;
-            map.Downloaded = true;
-            Refresh();
+            try
+            {
+                var downloadService = downloadServices[map];
+                await downloadService.DownloadFileTaskAsync(map.Url,
+                    Path.Combine(Setting.DownloadPath!, $"{map.Name}.zip"));
+                await FileService.ExtractZipAsync(Path.Combine(Setting.DownloadPath!, $"{map.Name}.zip"),
+                Setting.LevelPath!,
+                !Setting.SaveMapZip);
+                map.IsExtracting = false;
+                map.Downloaded = true;
+                if(HideDownloadedMap)
+                {
+                    FilteredMaps.Remove(map);
+                }
+                _gameService.AddMap(map);
+                _notificationManager.AddNotification("成功", $"地图{map.Name}下载完成！", InfoBarSeverity.Success);
+            }
+            catch (Exception exception)
+            {
+                _notificationManager.AddNotification("错误", $"地图{map.Name}下载失败：{exception.Message}", InfoBarSeverity.Error);
+            }
         }
+        private readonly GameService _gameService;
+        private readonly LeanCloudService _leanCloudService;
+        private readonly NotificationManager _notificationManager;
+        private readonly DownloadConfiguration _downloadConfiguration;
         public Setting Setting { get; }
         private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
+        private readonly Dictionary<Map, DownloadService> downloadServices = [];
+        public ReactiveCommand<Map, Unit> DownloadCommand { get; set; }
+        public List<Map> Maps { get; } = [];
+        public ObservableCollection<Map> FilteredMaps { get; } = [];
         [Reactive]
-        public Map CurrentMap { get; set; } = new();
-
+        public Map SelectedMap { get; set; }
         [Reactive]
-        public bool IsSelectedMap { get; set; }
-        public ObservableCollection<Map> AllMaps { get; } = [];
-        public ObservableCollection<Map> Maps { get; set; } = [];
+        public bool HideDownloadedMap { get; set; } = true;
         [Reactive]
-        public string LastUpdateTime { get; set; } = "未知";
-
-        private Map? selectedMap;
-        public Map? SelectedMap
-        {
-            get => selectedMap;
-            set
-            {
-                OnSelectedMapChanged(value);
-                this.RaiseAndSetIfChanged(ref selectedMap, value);
-            }
-        }
-        public ReactiveCommand<Unit, Task> DownloadCommand { get; set; }
-
-        private bool hideDownloadedMap = true;
-        public bool HideDownloadedMap
-        {
-            get => hideDownloadedMap;
-            set
-            {
-                if (HideDownloadedMap == value) return;
-                this.RaiseAndSetIfChanged(ref hideDownloadedMap, value);
-                Refresh();
-            }
-        }
-        private string filterMapName = string.Empty;
-        public string FilterMapName
-        {
-            get => filterMapName;
-            set
-            {
-                if (FilterMapName == value) return;
-                this.RaiseAndSetIfChanged(ref filterMapName, value);
-                Refresh();
-            }
-        }
-
+        public string FilterMapName { get; set; } = string.Empty;
+        public string[] Forms { get; } = ["不限", "原创", "移植"];
         [Reactive]
-        public string[] Forms { get; set; } = ["不限", "原创", "移植"];
-        private string? form = "不限";
-        public string? Form
-        {
-            get => form;
-            set
-            {
-                if (value is null || value == Form) return;
-                this.RaiseAndSetIfChanged(ref form, value);
-                Refresh();
-            }
-        }
+        public string? Form { get; set; } = "不限";
+        public string[] Styles { get; } = ["不限", "挑战", "休闲"];
         [Reactive]
-        public string[] Styles { get; set; } = ["不限", "挑战", "休闲"];
-        private string? style = "不限";
-        public string? Style
-        {
-            get => style;
-            set
-            {
-                if (value is null || value == Style) return;
-                this.RaiseAndSetIfChanged(ref style, value);
-                Refresh();
-            }
-        }
+        public string Style { get; set; } = "不限";
+        public string[] Difficulties { get; } = ["不限", "简单", "中等", "困难", "极难", "地狱"];
         [Reactive]
-        public string[] Difficulties { get; set; } = ["不限", "简单", "中等", "困难", "极难", "地狱"];
-
-        private string? difficulty = "不限";
-
-        public string? Difficulty
-        {
-            get => difficulty;
-            set
-            {
-                if (value is null || value == Difficulty) return;
-                this.RaiseAndSetIfChanged(ref difficulty, value);
-                Refresh();
-            }
-        }
+        public string Difficulty { get; set; } = "不限";
     }
 }

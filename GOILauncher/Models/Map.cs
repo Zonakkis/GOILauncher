@@ -3,24 +3,29 @@ using GOILauncher.Helpers;
 using GOILauncher.Interfaces;
 using Ionic.Zip;
 using LeanCloud.Storage;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using System;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace GOILauncher.Models
 {
-    public class Map:LCObject, INotifyPropertyChanged,IDownloadable
+    public class Map: ReactiveObject,IDownloadable
     {
-        public Map() : base(nameof(Map))
+        public Map()
         {
-            Downloadable = true;
+            this.WhenAnyValue(x => x.IsDownloading, x => x.IsExtracting,
+                    (isDownloading, isExtracting) => isDownloading || isExtracting)
+                .Subscribe(isInstalling => IsInstalling = isInstalling);
         }
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
+        public void OnDownloadStarted(object? sender, DownloadStartedEventArgs eventArgs)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-
+            Downloadable = false;
+            IsDownloading = true;
+            Status = "启动下载中";
         }
         public void OnDownloadProgressChanged(object? sender, DownloadProgressChangedEventArgs eventArgs)
         {
@@ -29,78 +34,31 @@ namespace GOILauncher.Models
         }
         public void OnDownloadCompleted(object? sender, AsyncCompletedEventArgs eventArgs)
         {
-
+            IsDownloading = false;
+            IsExtracting = true;
+            Status = "解压中";
         }
-        public void OnExtractProgressChanged(object? sender, ExtractProgressEventArgs eventArgs)
-        {
-            if (eventArgs.TotalBytesToTransfer == 0)
-            {
-                ProgressPercentage = 0;
-                return;
-            }
-            ProgressPercentage = Convert.ToInt32((float)eventArgs.BytesTransferred / eventArgs.TotalBytesToTransfer * 100f);
-        }
-        public string Name => (this[nameof(Name)] as string)!;
-        public string Author => (this[nameof(Author)] as string)!;
-        public string Size => (this[nameof(Size)] as string)!;
-        public string Preview 
-        { 
-            get => (this[nameof(Preview)] as string)!;
-            set => this[nameof(Preview)] = value;
-        }
-        public bool HasPreview => Preview is { } str && str.StartsWith("http");
-        public string Url => (this[nameof(Url)] as string)!;
-        public string Form => (this[nameof(Form)] as string)!;
-        public string Style => (this[nameof(Style)] as string)!;
-        public string Difficulty => (this[nameof(Difficulty)] as string)!;
-        private bool downloaded;
-        public bool Downloaded { 
-            get => downloaded;
-            set
-            {
-                downloaded = value;
-                NotifyPropertyChanged(nameof(Downloaded));
-            }
-        }
-        private bool isDownloading;
-        public bool IsDownloading
-        {
-            get => isDownloading; 
-            set
-            {
-                isDownloading = value;
-                NotifyPropertyChanged(nameof(IsDownloading));
-            }
-        }
-        private double progressPercentage;
-        public double ProgressPercentage
-        {
-            get => progressPercentage; 
-            set
-            {
-                progressPercentage = value;
-                NotifyPropertyChanged(nameof(ProgressPercentage));
-            }
-        }
-        private string status = string.Empty;
-        public string Status
-        {
-            get => status; 
-            set
-            {
-                status = value;
-                NotifyPropertyChanged(nameof(Status));
-            }
-        }
-        private bool downloadable;
-        public bool Downloadable
-        {
-            get => downloadable; 
-            set
-            {
-                downloadable = value;
-                NotifyPropertyChanged(nameof(Downloadable));
-            }
-        }
+        public string Name { get;init; }
+        public string Author { get; init; }
+        public string Size { get; init; }
+        public string Preview { get; init; } 
+        public string Url { get; init; }
+        public string Form { get; init; }
+        public string Style { get; init; }
+        public string Difficulty { get; init; }
+        [Reactive]
+        public bool IsDownloading { get; set; }
+        [Reactive]
+        public bool IsExtracting { get; set; }
+        [Reactive]
+        public bool IsInstalling { get; set; }
+        [Reactive]
+        public double ProgressPercentage { get; set; }
+        [Reactive]
+        public string Status { get; set; }
+        [Reactive]
+        public bool Downloaded { get; set; }
+        [Reactive]
+        public bool Downloadable { get; set; } = true;
     }
 }

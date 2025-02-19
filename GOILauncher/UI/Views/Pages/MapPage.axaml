@@ -44,7 +44,7 @@
 						<ComboBox Grid.Row="3" Grid.Column="1" ItemsSource="{Binding Difficulties}" SelectedValue="{Binding Difficulty}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
 					</Grid>
 				</Expander>
-				<ListBox  Grid.Row="2" ItemsSource="{Binding Maps}" SelectedItem="{Binding SelectedMap}" >
+				<ListBox Grid.Row="2" ItemsSource="{Binding FilteredMaps}" SelectedItem="{Binding SelectedMap}" >
 					<ListBox.ItemTemplate>
 						<DataTemplate>
 							<Grid RowDefinitions="auto" ColumnDefinitions="auto,auto,*">
@@ -61,42 +61,56 @@
 			</Grid>
 
 
-			<Grid RowDefinitions="*,*" Grid.Column="1" HorizontalAlignment="Center">
-				<Grid Grid.Row="0" IsVisible="{Binding !IsSelectedMap}" HorizontalAlignment="Center" VerticalAlignment="Bottom">
-					<TextBlock Text="请选择一张地图" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-				</Grid>
-				<Grid Grid.Row="0" RowDefinitions="auto,auto,auto,auto,auto" IsVisible="{Binding IsSelectedMap}">
-					<Image Grid.Row="0" Stretch="Fill" asyncImageLoader:ImageLoader.Source="{Binding CurrentMap.Preview}" HorizontalAlignment="Center"/>
-					<TextBlock Grid.Row="0" Text="暂无预览图" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" IsVisible="{Binding !CurrentMap.HasPreview}"/>
-					<TextBlock Grid.Row="1" Text="{Binding CurrentMap.Name}" HorizontalAlignment="Center" />
-					<Grid Grid.Row="2" RowDefinitions="auto,auto,auto,auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
-						<TextBlock Grid.Row="0" Grid.Column="0">作者：</TextBlock>
-						<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CurrentMap.Author}"/>
-						<TextBlock Grid.Row="1" Grid.Column="0">大小：</TextBlock>
-						<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CurrentMap.Size}"/>
-						<TextBlock Grid.Row="2" Grid.Column="0">类型：</TextBlock>
-						<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding CurrentMap.Form}"/>
-						<TextBlock Grid.Row="3" Grid.Column="0">风格：</TextBlock>
-						<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding CurrentMap.Style}"/>
-						<TextBlock Grid.Row="4" Grid.Column="0">难度：</TextBlock>
-						<TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding CurrentMap.Difficulty}"/>
-					</Grid>
-					<Button Grid.Row="3" HorizontalAlignment="Center" CornerRadius="5" IsEnabled="{Binding CurrentMap.Downloadable}"
-							 Command="{Binding DownloadCommand}">下载</Button>
-					<TextBlock Grid.Row="4" Foreground="Red" HorizontalAlignment="Center" IsVisible="{Binding !Setting.IsLevelPathSelected}" Margin="0,10">
-						未选择地图路径，请前往设置页面选择
+			<Grid Grid.Column="1" HorizontalAlignment="Stretch">
+				<Grid IsVisible="{Binding SelectedMap,Converter={x:Static ObjectConverters.IsNull}}"
+					  HorizontalAlignment="Center" VerticalAlignment="Center">
+					<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+						请选择一张地图
 					</TextBlock>
 				</Grid>
-				<Grid Grid.Row="1" RowDefinitions="auto,auto" VerticalAlignment="Bottom">
-					<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-						<TextBlock>地图总数：</TextBlock>
-						<TextBlock Text="{Binding AllMaps.Count}"/>
-					</StackPanel>
-					<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-						<TextBlock>地图库最后更新日期：</TextBlock>
-						<TextBlock Text="{Binding LastUpdateTime}"/>
-					</StackPanel>
+				<Grid Grid.Row="0" RowDefinitions="auto,auto,auto,auto"
+					  IsVisible="{Binding SelectedMap,Converter={x:Static ObjectConverters.IsNotNull}}">
+					<Image Grid.Row="0" Stretch="Fill"
+						   Classes.Preview ="{Binding SelectedMap.Preview,Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                           Classes.NoPreview ="{Binding SelectedMap.Preview,Converter={x:Static StringConverters.IsNullOrEmpty}}"
+						    >
+                        <Image.Styles>
+							<Style Selector="Image.Preview">
+								<Setter Property="asyncImageLoader:ImageLoader.Source" Value="{Binding SelectedMap.Preview}"/>
+							</Style>
+							<Style Selector="Image.NoPreview">
+                                <Setter Property="asyncImageLoader:ImageLoader.Source" Value="avares://GOILauncher/Assets/No Preview.png"/>
+							</Style>
+                        </Image.Styles>
+					</Image>
+					<TextBlock Grid.Row="0" IsVisible="{Binding !SelectedMap.HasPreview}"
+							   HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30">
+						暂无预览图
+					</TextBlock>
+					<TextBlock Grid.Row="1" Text="{Binding SelectedMap.Name}" HorizontalAlignment="Center" />
+					<Grid Grid.Row="2" RowDefinitions="auto,auto,auto,auto,auto" ColumnDefinitions="auto,*" Margin="10,0,0,0">
+						<TextBlock Grid.Row="0" Grid.Column="0">作者：</TextBlock>
+						<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedMap.Author}"/>
+						<TextBlock Grid.Row="1" Grid.Column="0">大小：</TextBlock>
+						<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedMap.Size}"/>
+						<TextBlock Grid.Row="2" Grid.Column="0">类型：</TextBlock>
+						<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedMap.Form}"/>
+						<TextBlock Grid.Row="3" Grid.Column="0">风格：</TextBlock>
+						<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedMap.Style}"/>
+						<TextBlock Grid.Row="4" Grid.Column="0">难度：</TextBlock>
+						<TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedMap.Difficulty}"/>
+					</Grid>
+					<Button Grid.Row="3" HorizontalAlignment="Center" CornerRadius="5"
+							IsEnabled="{Binding SelectedMap.Downloadable}"
+							Command="{Binding DownloadCommand}"
+							CommandParameter="{Binding SelectedMap}">
+						下载
+					</Button>
 				</Grid>
+				<TextBlock HorizontalAlignment="Center" VerticalAlignment="Bottom">
+					<Run>地图总数：</Run>
+					<Run Text="{Binding Maps.Count}"/>
+				</TextBlock>
 			</Grid>
 		</Grid>
 	</Grid>

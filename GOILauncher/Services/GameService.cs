@@ -9,6 +9,11 @@ using System.Reflection;
 using System.Runtime.Loader;
 using FluentAvalonia.UI.Controls;
 using System.Diagnostics.CodeAnalysis;
+using System.Collections.ObjectModel;
+using System.Linq;
+using GOILauncher.ViewModels.Pages;
+using System.Threading;
+using System.Collections.Generic;
 
 namespace GOILauncher.Services;
 
@@ -18,6 +23,11 @@ public class GameService(NotificationManager notificationManager)
     {
         _gamePath = gamePath;
         GetGameInfo();
+    }
+    public void SetLevelPath(string levelPath)
+    {
+        _levelPath = levelPath;
+        GetLocalMaps();
     }
     private void GetGameInfo()
     {
@@ -96,7 +106,77 @@ public class GameService(NotificationManager notificationManager)
         }
         assemblyLoadContext.Unload();
     }
-    public GameInfo GameInfo { get; } = new();
 
+    private void GetLocalMaps()
+    {
+        LocalMaps.Clear();
+        _localMapsDictionary.Clear();
+        foreach (var directory in Directory.GetDirectories(_levelPath, "* by *", SearchOption.AllDirectories))
+        { 
+            var directoryName = Path.GetFileName(directory).Replace("By","by");
+            var mapName = directoryName.Split(" by ")[0];
+            var author = directoryName.Split(" by ")[1];
+            var size = Directory.GetFiles(directory, "*.scene", SearchOption.AllDirectories)
+                                 .Aggregate<string, long>(0, (size, scene) => size + scene.Length);
+            AddMap(new Map
+            {
+                Name = mapName,
+                Author = author,
+                Size = StorageUnitConvertHelper.ByteTo(size)
+            });
+        }
+        foreach (var scene in Directory.GetFiles(_levelPath, "*.scene"))
+        {
+            var mapName = Path.GetFileNameWithoutExtension(scene);
+            string? configFile = null;
+            if (File.Exists(Path.ChangeExtension(scene, "txt")))
+            {
+                configFile = Path.ChangeExtension(scene, "txt");
+            }
+            else if (File.Exists(Path.ChangeExtension(scene, "mdata")))
+            {
+                configFile = Path.ChangeExtension(scene, "mdata");
+            }
+            string? credit = null;
+            if (!string.IsNullOrEmpty(configFile))
+            {
+                var lines = File.ReadAllLines(configFile);
+                var configs = lines.Select(line => line.Split('='))
+                                   .ToDictionary(key => key[0].Trim(), val => val[1].Trim());
+                credit = configs.GetValueOrDefault("credit");
+            }
+            var map = new Map
+            {
+                Name = mapName,
+                Size = StorageUnitConvertHelper.ByteTo(new FileInfo(scene).Length),
+                Author = credit
+            };
+            AddMap(map);
+        }
+    }
+    public bool CheckWhetherMapExists(Map map)
+    {
+        return _localMapsDictionary.ContainsKey(map.Name);
+    }
+    public void AddMap(Map map)
+    {
+        if(_localMapsDictionary.TryGetValue(map.Name,out var localmap))
+        {
+            LocalMaps.Remove(localmap);
+            _localMapsDictionary.Remove(map.Name);
+        }
+        LocalMaps.Add(map);
+        _localMapsDictionary.Add(map.Name, map);
+    }
+    public void RemoveMap(Map map)
+    {
+        LocalMaps.Remove(map);
+        _localMapsDictionary.Remove(map.Name);
+    }
     private string _gamePath;
+    private string _levelPath;
+    public GameInfo GameInfo { get; } = new();
+    public ObservableCollection<Map> LocalMaps { get; } = [];
+    private readonly Dictionary<string,Map> _localMapsDictionary = [];
+
 }
