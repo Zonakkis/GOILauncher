@@ -58,6 +58,10 @@ namespace GOILauncher.ViewModels.Pages
         {
             foreach (var map in await _leanCloudService.GetMaps())
             {
+                if(!string.IsNullOrEmpty(map.Preview))
+                {
+                    map.Preview = $"{map.Preview}?imageView/2/w/{(int)(19.2*Setting.PreviewQuality)}/h/{(int)(10.8*Setting.PreviewQuality)}/q/{Setting.PreviewQuality}";
+                }
                 map.DownloadCommand = ReactiveCommand.CreateFromTask<Map>(Download);
                 Maps.Add(map);
                 var downloadService = new DownloadService(_downloadConfiguration);

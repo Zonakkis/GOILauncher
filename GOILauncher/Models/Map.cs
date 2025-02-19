@@ -37,7 +37,7 @@ namespace GOILauncher.Models
         public string Name { get;init; }
         public string Author { get; init; }
         public string Size { get; init; }
-        public string Preview { get; init; } 
+        public string Preview { get; set; } 
         public string Url { get; init; }
         public string Form { get; init; }
         public string Style { get; init; }
