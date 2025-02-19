@@ -3,6 +3,7 @@ using FluentAvalonia.UI.Controls;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GOILauncher.UI;
 
@@ -17,23 +18,25 @@ public class NotificationManager : ReactiveObject
                 FontSize = 20,
                 Title = title,
                 Content = content,
-                CloseButtonText = "好的",
+                CloseButtonText = "好的"
             };
             await contentDialog.ShowAsync();
         });
     }
-    public static async Task<ContentDialogResult> ShowContentDialogAsync(string title, string content)
+    public static void ShowContentDialog(string title, string content,ICommand confirmCommand)
     {
-        return await Dispatcher.UIThread.InvokeAsync(async () =>
+        Dispatcher.UIThread.InvokeAsync(async () =>
         {
             var contentDialog = new ContentDialog()
             {
                 FontSize = 20,
                 Title = title,
                 Content = content,
-                CloseButtonText = "好的",
+                PrimaryButtonText = "确定",
+                PrimaryButtonCommand = confirmCommand,
+                CloseButtonText = "取消"
             };
-            return await contentDialog.ShowAsync();
+            await contentDialog.ShowAsync();
         });
     }
 
