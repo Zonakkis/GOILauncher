@@ -23,7 +23,7 @@ public class NotificationManager : ReactiveObject
             await contentDialog.ShowAsync();
         });
     }
-    public static void ShowContentDialog(string title, string content,ICommand confirmCommand)
+    public static void ShowContentDialog(string title, string content, ICommand confirmCommand)
     {
         Dispatcher.UIThread.InvokeAsync(async () =>
         {
@@ -35,6 +35,24 @@ public class NotificationManager : ReactiveObject
                 PrimaryButtonText = "确定",
                 PrimaryButtonCommand = confirmCommand,
                 CloseButtonText = "取消"
+            };
+            await contentDialog.ShowAsync();
+        });
+    }
+    public static void ShowContentDialog(string title, string content,
+        string primaryButtonText,string closeButtonText, ICommand confirmCommand,ICommand closeCommand)
+    {
+        Dispatcher.UIThread.InvokeAsync(async () =>
+        {
+            var contentDialog = new ContentDialog()
+            {
+                FontSize = 20,
+                Title = title,
+                Content = content,
+                PrimaryButtonText = primaryButtonText,
+                PrimaryButtonCommand = confirmCommand,
+                CloseButtonText = closeButtonText,
+                CloseButtonCommand = closeCommand
             };
             await contentDialog.ShowAsync();
         });

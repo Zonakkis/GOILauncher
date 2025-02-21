@@ -1,15 +1,16 @@
-﻿using Avalonia.Threading;
-using GOILauncher.UI;
-using LeanCloud;
-using Microsoft.Extensions.DependencyInjection;
+﻿using GOILauncher.UI;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Net.Http;
-using FluentAvalonia.UI.Controls;
 using GOILauncher.ViewModels.Pages;
+using GOILauncher.Services.LeanCloud;
+using System.Diagnostics;
+using System;
+using System.Threading.Tasks;
+using GOILauncher.Models;
+using Version = GOILauncher.Models.Version;
+using GOILauncher.Services;
 
 namespace GOILauncher.ViewModels
 {
@@ -20,9 +21,11 @@ namespace GOILauncher.ViewModels
             MapManagePageViewModel mapManagePageViewModel,LeaderBoardPageViewModel leaderBoardPageViewModel,
             SubmitSpeedrunPageViewModel submitSpeedrunPageViewModel,PendingPageViewModel pendingPageViewModel,
             SettingPageViewModel settingPageViewModel,AboutPageViewModel aboutPageViewModel,
-            NotificationManager notificationManager)
-        { 
+            NotificationManager notificationManager,LeanCloudService leanCloudService,AppService appService)
+        {
             NotificationManager = notificationManager;
+            _leanCloudService = leanCloudService;
+            _version = appService.Version;
             Views = [
                 new Page("游戏", gamePageViewModel),
                 new Page("Mod", modPageViewModel),
@@ -42,36 +45,32 @@ namespace GOILauncher.ViewModels
                 new Page("设置", settingPageViewModel),
                 new Page("关于", aboutPageViewModel)
             ];
-            LCApplication.Initialize("3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz", "uHF3AdKD4i3RqZB7w1APiFRF", "https://3dec7zyj.lc-cn-n1-shared.com");
-#if DEBUG
-            EnableLeanCloudLog();
-#endif
             CurrentView = Views[0].View;
             SelectedPage = Views[0];
+            Task.Run(CheckUpdate);
         }
-#if DEBUG
-        private static void EnableLeanCloudLog()
+
+        private async Task CheckUpdate()
         {
-            LCLogger.LogDelegate = (level, info) =>
+            var update = await _leanCloudService.Get<Update>(nameof(Update), "67b8c0b2d2c78e5c0084c98e");
+            var newVersion = new Version(update.Version);
+            if (newVersion > _version)
             {
-                switch (level)
-                {
-                    case LCLogLevel.Debug:
-                        Trace.WriteLine($"[DEBUG] {DateTime.Now} {info}\n");
-                        break;
-                    case LCLogLevel.Warn:
-                        Trace.WriteLine($"[WARNING] {DateTime.Now} {info}\n");
-                        break;
-                    case LCLogLevel.Error:
-                        Trace.WriteLine($"[ERROR] {DateTime.Now} {info}\n");
-                        break;
-                    default:
-                        Trace.WriteLine(info);
-                        break;
-                }
-            };
+                NotificationManager.ShowContentDialog("有新版本！！",
+                    $"{_version} -> {newVersion}\r\n{update.Changelog}",
+                    "手动更新", "自动更新",
+                    ReactiveCommand.Create(() =>
+                    {
+                        Process.Start("explorer.exe", "https://github.com/Zonakkis/GOILauncher/releases");
+                        Environment.Exit(0);
+                    }),
+                    ReactiveCommand.Create(() =>
+                    {
+                        Process.Start("GOILUpdater.exe", update.Url);
+                        Environment.Exit(0);
+                    }));
+            }
         }
-#endif
         public void OnSelectedPageChanged(Page value)
         {
             CurrentView = value.View;
@@ -82,7 +81,9 @@ namespace GOILauncher.ViewModels
             }
             value.View.OnSelectedViewChanged();
         }
-        public NotificationManager NotificationManager {  get; }
+        public NotificationManager NotificationManager { get; }
+        private readonly LeanCloudService _leanCloudService;
+        private readonly Version _version;
         public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
         [Reactive]
         public PageViewModelBase CurrentView { get; set; }
@@ -102,5 +103,3 @@ namespace GOILauncher.ViewModels
         public ObservableCollection<Page> FooterViews { get; }
     }
 }
-
-

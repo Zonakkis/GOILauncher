@@ -14,7 +14,6 @@
         Icon="/Assets/GOILauncher.ico"
         Title="GOILauncher"
 		WindowStartupLocation="CenterScreen"
-		Loaded="Loaded"
 		Name="Window"
 		>
 	<Window.DataTemplates>
