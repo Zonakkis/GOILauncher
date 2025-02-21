@@ -364,3 +364,8 @@ FodyWeavers.xsd
 /GOILauncherServer
 /GOILauncher/UI/Controls/ModExpander.axaml
 /GOILauncher/UI/Controls/ModExpander.axaml.cs
+/.idea/.idea.GOILauncher/.idea/.gitignore
+/.idea/.idea.GOILauncher/.idea/avalonia.xml
+/.idea/.idea.GOILauncher/.idea/encodings.xml
+/.idea/.idea.GOILauncher/.idea/indexLayout.xml
+/.idea/.idea.GOILauncher/.idea/vcs.xml
