@@ -65,7 +65,7 @@ namespace GOILauncher
             services.AddSingleton<NotificationManager>();
             services.AddSingleton<LeanCloudService>();
             services.AddSingleton<GameService>();
-            services.AddSingleton<SettingService>();
+            services.AddSingleton<AppService>();
             services.AddSingleton<FileService>(serviceProvider => new FileService(new Lazy<TopLevel>(serviceProvider.GetRequiredService<MainWindow>)));
             services.AddSingleton<HttpClient>(_ =>  new HttpClient());
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()

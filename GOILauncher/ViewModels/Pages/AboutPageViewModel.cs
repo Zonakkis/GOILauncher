@@ -2,41 +2,40 @@
 using LeanCloud.Storage;
 using ReactiveUI;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GOILauncher.Models;
+using GOILauncher.Services;
+using GOILauncher.Services.LeanCloud;
+using DynamicData.Binding;
+using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class AboutPageViewModel : PageViewModelBase
     {
+        public AboutPageViewModel(AppService appService,LeanCloudService leanCloudService)
+        {
+            Version = appService.Version;
+            _leanCloudService = leanCloudService;
+        }
         public override void Init()
         {
-            Task.Run(async () =>
-            {
-                await GetCredits();
-                this.RaisePropertyChanged(nameof(Thanks));
-            });
+            _ = GetCredits();
         }
-        public async Task GetCredits()
+
+        private async Task GetCredits()
         {
-            LCQuery<LCObject> query = new("Credits");
-            query.AddAscendingOrder("Player");
-            query.Select("Player");
-            var credits = await query.Find();
-            foreach (var credit in credits)
+            foreach (var credit in await _leanCloudService.GetCredits())
             {
-                Players.Add(credit["Player"] as string);
+                Players.Add(credit.Player);
             }
+            Thanks = string.Join(',', Players);
         }
-        private List<string?> Players { get; } = [];
-        public string Thanks => Players!.Concatenate(",");
-
-        private string GOILauncherversion = Version.Instance.ToString();
-
-        public string GOILauncherVersion
-        {
-            get => $"GOILauncher v{GOILauncherversion}";
-            set => this.RaiseAndSetIfChanged(ref GOILauncherversion, value);
-        }
+        private readonly LeanCloudService _leanCloudService;
+        private ObservableCollection<string> Players { get; } = [];
+        [Reactive]
+        public string Thanks { get; set; }
+        public Version Version { get; set; }
     }
 }

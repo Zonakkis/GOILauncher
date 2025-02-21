@@ -1,15 +1,10 @@
 ﻿using System;
-using Avalonia.Platform.Storage;
-using FluentAvalonia.UI.Controls;
 using GOILauncher.Models;
 using GOILauncher.Services;
 using ReactiveUI;
 using System.IO;
 using System.Threading.Tasks;
-using ReactiveUI.Fody.Helpers;
-using FluentAvalonia.UI.Windowing;
 using GOILauncher.UI;
-using System.Diagnostics;
 using System.Reactive.Linq;
 
 namespace GOILauncher.ViewModels.Pages
@@ -17,13 +12,13 @@ namespace GOILauncher.ViewModels.Pages
     public class SettingPageViewModel : PageViewModelBase
     {
 
-        public SettingPageViewModel(FileService fileService,SettingService settingService)
+        public SettingPageViewModel(FileService fileService,AppService appService)
         {
             _fileService = fileService;
-            Setting = settingService.Setting;
+            Setting = appService.Setting;
             Setting.WhenAnyValue(x => x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
                 .Skip(1)
-                .Subscribe(_ => settingService.SaveSetting());
+                .Subscribe(_ => appService.SaveSetting());
 
         }
         public async Task SelectGamePath()

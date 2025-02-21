@@ -1,34 +1,27 @@
 ﻿using System;
 using GOILauncher.Models;
-using LeanCloud.Storage;
-using ReactiveUI.Fody.Helpers;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ReactiveUI;
 using GOILauncher.Services;
 using Downloader;
-using System.Xml.Linq;
 using System.Reactive;
 using GOILauncher.UI;
 using GOILauncher.Services.LeanCloud;
-using System.Diagnostics;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class ModPageViewModel : PageViewModelBase
     {
-        public ModPageViewModel(GameService gameService, SettingService settingService,
+        public ModPageViewModel(GameService gameService, AppService appService,
             DownloadService downloadService,LeanCloudService leanCloudService)
         {
             _gameInfo = gameService.GameInfo;
             _gameService = gameService;
             _leanCloudService = leanCloudService;
             _downloadService = downloadService;
-            Setting = settingService.Setting;
+            Setting = appService.Setting;
             DownloadCommand = ReactiveCommand.CreateFromTask<Mod>(Download);
         }
         public override void Init()

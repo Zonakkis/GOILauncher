@@ -1,26 +1,17 @@
-﻿using Avalonia.Controls.Notifications;
-using Downloader;
-using DynamicData;
-using DynamicData.Binding;
+﻿using Downloader;
 using FluentAvalonia.UI.Controls;
-using GOILauncher.Helpers;
 using GOILauncher.Models;
 using GOILauncher.Services;
 using GOILauncher.Services.LeanCloud;
 using GOILauncher.UI;
-using LeanCloud.Storage;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Splat.ModeDetection;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels.Pages
@@ -28,14 +19,14 @@ namespace GOILauncher.ViewModels.Pages
     public class MapPageViewModel : PageViewModelBase
     {
         public MapPageViewModel(GameService gameService, LeanCloudService leanCloudService,
-            SettingService settingService, DownloadConfiguration downloadConfiguration,
+            AppService appService, DownloadConfiguration downloadConfiguration,
             NotificationManager notificationManager)
         {
             _gameService = gameService;
             _leanCloudService = leanCloudService;
             _downloadConfiguration = downloadConfiguration;
             _notificationManager = notificationManager;
-            Setting = settingService.Setting;
+            Setting = appService.Setting;
             this.WhenAnyValue(x => x.HideDownloadedMap, x => x.FilterMapName, x => x.Form, x => x.Style, x => x.Difficulty)
                 .Subscribe(_ => Filter());
             Setting.WhenAnyValue(x => x.LevelPath)

@@ -6,16 +6,15 @@ using System.Diagnostics;
 using System.Reactive.Linq;
 using System.Text;
 using GOILauncher.Services;
-using GOILauncher.UI.Views.Pages;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class GamePageViewModel : PageViewModelBase
     {
-        public GamePageViewModel(SettingService settingService, GameService gameService)
+        public GamePageViewModel(AppService appService, GameService gameService)
         {
             GameInfo = gameService.GameInfo;
-            Setting = settingService.Setting;
+            Setting = appService.Setting;
             Setting.WhenAnyValue(x => x.GamePath)
                    .Where(x => !string.IsNullOrEmpty(x))
                    .Subscribe(x => gameService.SetGamePath(x!));
