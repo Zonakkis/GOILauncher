@@ -17,6 +17,15 @@ public class LeanCloudService
         httpClient.DefaultRequestHeaders.Add("X-LC-Key", "uHF3AdKD4i3RqZB7w1APiFRF");
         _httpClient = httpClient;
     }
+    public async Task<T> Get<T>(string className, string objectId)
+    {
+        var query = new LeanCloudQuery<T>(className)
+                        .Get(objectId);
+        var httpResponseMessage = await _httpClient.GetAsync(await query.Build());
+        httpResponseMessage.EnsureSuccessStatusCode();
+        var content = await httpResponseMessage.Content.ReadAsStringAsync();
+        return JsonSerializer.Deserialize<T>(content)!;
+    }
     public async Task<List<T>> Find<T>(LeanCloudQuery<T> leanCloudQuery)
     {
         var httpResponseMessage = await _httpClient.GetAsync(await leanCloudQuery.Build());
@@ -48,6 +57,13 @@ public class LeanCloudService
                         .OrderByAscending(nameof(Map.Name))
                         .Where("Platform", "PC")
                         .Select("Name", "Author", "Size", "Preview", "Url", "Difficulty", "Form", "Style");
+        return await Find(query);
+    }
+    public async Task<List<Credit>> GetCredits()
+    {
+        var query = new LeanCloudQuery<Credit>(nameof(Credit))
+                        .OrderByAscending(nameof(Credit.Player))
+                        .Select("Player");
         return await Find(query);
     }
     private readonly HttpClient _httpClient;
