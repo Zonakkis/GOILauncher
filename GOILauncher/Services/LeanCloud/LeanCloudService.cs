@@ -51,13 +51,13 @@ public class LeanCloudService
                         .Select("Name", "Author", "Build", "Url", "TargetGameVersion");
         return await FindAsObservableCollection(query);
     }
-    public async Task<List<Map>> GetMaps()
+    public async Task<ObservableCollection<Map>> GetMaps()
     {
         var query = new LeanCloudQuery<Map>(nameof(Map))
                         .OrderByAscending(nameof(Map.Name))
                         .Where("Platform", "PC")
                         .Select("Name", "Author", "Size", "Preview", "Url", "Difficulty", "Form", "Style");
-        return await Find(query);
+        return await FindAsObservableCollection(query);
     }
     public async Task<List<Credit>> GetCredits()
     {

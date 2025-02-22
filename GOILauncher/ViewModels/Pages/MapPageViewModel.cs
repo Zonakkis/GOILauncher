@@ -118,7 +118,7 @@ namespace GOILauncher.ViewModels.Pages
         public Setting Setting { get; }
         private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         private readonly Dictionary<Map, DownloadService> downloadServices = [];
-        public List<Map> Maps { get; } = [];
+        public ObservableCollection<Map> Maps { get; } = [];
         public ObservableCollection<Map> FilteredMaps { get; } = [];
         [Reactive]
         public Map SelectedMap { get; set; }
