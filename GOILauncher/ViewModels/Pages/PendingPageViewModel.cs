@@ -1,4 +1,5 @@
-﻿using GOILauncher.Models;
+﻿using Avalonia.Threading;
+using GOILauncher.Models;
 using GOILauncher.Services.LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
@@ -11,12 +12,7 @@ namespace GOILauncher.ViewModels.Pages
     {
         public override void Init()
         {
-            _ = GetPendingRuns();
-        }
-
-        public override void OnSelectedViewChanged()
-        {
-
+            Dispatcher.UIThread.InvokeAsync(GetPendingRuns);
         }
 
         private async Task GetPendingRuns()
@@ -32,7 +28,6 @@ namespace GOILauncher.ViewModels.Pages
                 }
                 PendingRuns.Add(pendingRun);
             }
-            this.RaisePropertyChanged(nameof(PendingRuns));
         }
 
         public ObservableCollection<PendingRun> PendingRuns { get; } = [];

@@ -1,4 +1,5 @@
-﻿using Downloader;
+﻿using Avalonia.Threading;
+using Downloader;
 using FluentAvalonia.UI.Controls;
 using GOILauncher.Models;
 using GOILauncher.Services;
@@ -39,11 +40,7 @@ namespace GOILauncher.ViewModels.Pages
             {
                 Directory.CreateDirectory(Path.Combine(BaseDirectory, nameof(Download)));
             }
-            _ = GetMaps();
-        }
-        public override void OnSelectedViewChanged()
-        {
-
+            Dispatcher.UIThread.InvokeAsync(GetMaps);
         }
         private async Task GetMaps()
         {

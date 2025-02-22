@@ -1,4 +1,5 @@
-﻿using GOILauncher.Models;
+﻿using Avalonia.Threading;
+using GOILauncher.Models;
 using GOILauncher.Services.LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
@@ -11,9 +12,10 @@ namespace GOILauncher.ViewModels.Pages
     {
         public override void Init()
         {
-            _ = GetSpeedruns();
+            Dispatcher.UIThread.InvokeAsync(GetSpeedruns);
         }
-        public async Task GetSpeedruns()
+
+        private async Task GetSpeedruns()
         {
             Speedruns.Clear();
             var speedruns = await leanCloudService.GetSpeedruns();

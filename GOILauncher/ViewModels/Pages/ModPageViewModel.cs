@@ -9,6 +9,7 @@ using Downloader;
 using System.Reactive;
 using GOILauncher.UI;
 using GOILauncher.Services.LeanCloud;
+using Avalonia.Threading;
 
 namespace GOILauncher.ViewModels.Pages
 {
@@ -26,14 +27,10 @@ namespace GOILauncher.ViewModels.Pages
         }
         public override void Init()
         {
-            _ = GetModpacks();
-            _ = GetLevelLoaders();
-            _ = GetModpackandLevelLoaders();
-            _ = GetOtherMods();
-        }
-        public override void OnSelectedViewChanged()
-        {
-
+            Dispatcher.UIThread.InvokeAsync(GetModpacks);
+            Dispatcher.UIThread.InvokeAsync(GetLevelLoaders);
+            Dispatcher.UIThread.InvokeAsync(GetModpackandLevelLoaders);
+            Dispatcher.UIThread.InvokeAsync(GetOtherMods);
         }
 
         private async Task Download(Mod mod)
