@@ -1,7 +1,6 @@
-﻿using LeanCloud.Storage;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Reflection.Emit;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -36,11 +35,11 @@ public class LeanCloudQuery<T>
         {
             queryParams.Add("where", JsonSerializer.Serialize(_condition));
         }
-        return $"{_className}{(string.IsNullOrEmpty(_objectId)?string.Empty:"/")}{_objectId}?{await new FormUrlEncodedContent(queryParams).ReadAsStringAsync()}";
+        return $"{_className}{_objectId}?{await new FormUrlEncodedContent(queryParams).ReadAsStringAsync()}";
     }
     public LeanCloudQuery<T> Get(string objectId)
     {
-        _objectId = objectId;
+        _objectId = $"/{objectId}";
         return this;
     }
     public LeanCloudQuery<T> OrderByAscending(string key)
@@ -53,12 +52,12 @@ public class LeanCloudQuery<T>
         _order = $"-{key}";
         return this;
     }
-    public LeanCloudQuery<T> Select(params string[] keys)
+    public LeanCloudQuery<T> Select(params ReadOnlySpan<string> keys)
     {
         _keys.AddRange(keys);
         return this;
     }
-    public LeanCloudQuery<T> Deselect(params string[] keys)
+    public LeanCloudQuery<T> Deselect(params ReadOnlySpan<string> keys)
     {
         foreach (var key in keys)
         {
@@ -66,7 +65,6 @@ public class LeanCloudQuery<T>
         }
         return this;
     }
-
     public LeanCloudQuery<T> Where(string key, object value)
     {
         _condition.Add(key, value);
