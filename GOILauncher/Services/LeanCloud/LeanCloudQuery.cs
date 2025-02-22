@@ -13,6 +13,8 @@ public class LeanCloudQuery<T>
     private string? _order;
     private readonly List<string> _keys = [];
     private readonly Dictionary<string,object> _condition = [];
+    private int _limit = 1000;
+    private bool _count;
 
     public LeanCloudQuery(string className)
     {
@@ -35,6 +37,11 @@ public class LeanCloudQuery<T>
         {
             queryParams.Add("where", JsonSerializer.Serialize(_condition));
         }
+        if (_count)
+        {
+            queryParams.Add("count", "1");
+        }
+        queryParams.Add("limit", _limit.ToString());
         return $"{_className}{_objectId}?{await new FormUrlEncodedContent(queryParams).ReadAsStringAsync()}";
     }
     public LeanCloudQuery<T> Get(string objectId)
@@ -68,6 +75,17 @@ public class LeanCloudQuery<T>
     public LeanCloudQuery<T> Where(string key, object value)
     {
         _condition.Add(key, value);
+        return this;
+    }
+    public LeanCloudQuery<T> Limit(int limit)
+    {
+        _limit = limit;
+        return this;
+    }
+    public LeanCloudQuery<T> Count()
+    {
+        _count = true;
+        _limit = 0;
         return this;
     }
 }
