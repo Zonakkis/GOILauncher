@@ -52,7 +52,7 @@ namespace GOILauncher.ViewModels
 
         private async Task CheckUpdate()
         {
-            var update = await _leanCloudService.Get<Update>(nameof(Update), "67b8c0b2d2c78e5c0084c98e");
+            var update = await _leanCloudService.Get<Update>("67b8c0b2d2c78e5c0084c98e");
             var newVersion = new Version(update.Version);
             if (newVersion > _version)
             {
