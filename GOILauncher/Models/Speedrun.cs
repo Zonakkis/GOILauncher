@@ -1,21 +1,26 @@
-﻿using LeanCloud.Storage;
+﻿using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.Models
 {
-    public class Speedrun() : LCObject(nameof(Speedrun))
+    public class Speedrun() 
     {
-        public int Rank
-        {
-            get => (int)this[nameof(Rank)];
-            set => this[nameof(Rank)] = value;
-        }
-        public string Player => (this[nameof(Player)] as string)!;
-        public string UID => (this[nameof(UID)] as string)!;
-        public string Platform => (this[nameof(Platform)] as string)!;
-        public string Time => (this[nameof(Time)] as string)!;
-        public string VideoPlatform => (this[nameof(VideoPlatform)] as string)!;
-        public string VID => (this[nameof(VID)] as string)!;
+        [Reactive]
+        public int Rank { get;set; }
+        [Reactive]
+        public string Player { get; init; }
+        [Reactive]
+        public string UID { get; init; }
+        [Reactive]
+        public string Platform { get; init; }
+        [Reactive]
+        public string Time { get; init; }
+        [Reactive]
+        public string VideoPlatform { get; init; }
+        [Reactive]
+        public string VID { get; init; }
+        [Reactive]
         public string? VideoURL { get; set; }
+        [Reactive]
         public string? PlayerURL { get; set; }
     }
 }

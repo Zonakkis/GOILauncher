@@ -1,5 +1,6 @@
 ﻿using GOILauncher.Helpers;
 using GOILauncher.Models;
+using GOILauncher.Services.LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI.Fody.Helpers;
 using System.Threading.Tasks;
@@ -8,8 +9,9 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class SubmitSpeedrunPageViewModel : PageViewModelBase
     {
-        public SubmitSpeedrunPageViewModel()
+        public SubmitSpeedrunPageViewModel(LeanCloudService leanCloudService)
         {
+            _leanCloudService = leanCloudService;
             VID = string.Empty;
             Player = string.Empty;
             SelectSpeedrunType = true;
@@ -22,7 +24,7 @@ namespace GOILauncher.ViewModels.Pages
         }
         public override void Init()
         {
-            LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
+
         }
         public void ToggleView(int para)
         {
@@ -77,7 +79,7 @@ namespace GOILauncher.ViewModels.Pages
                         Second = Second,
                         MillionSecond = MillionSecond,
                     };
-                    await run.Save();
+                    await _leanCloudService.Create(run);
                     await NotificationHelper.ShowContentDialog("提示", "提交成功！");
                     break;
                 case 2:
@@ -86,21 +88,15 @@ namespace GOILauncher.ViewModels.Pages
             }
         }
 
-        public async Task<bool> CheckWhetherExisted(string player, string category, string platform)
+        private async Task<bool> CheckWhetherExisted(string player, string category, string platform)
         {
-            LCQuery<PendingRun> query = new(nameof(PendingRun));
-            query.WhereEqualTo("Player", player);
-            query.WhereEqualTo("Category", category);
-            query.WhereEqualTo("Platform", platform);
-            if (await query.Count() > 0)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            var query = new LeanCloudQuery<PendingRun>(nameof(PendingRun))
+                            .Where(nameof(PendingRun.Player), player)
+                            .Where(nameof(PendingRun.Category), category)
+                            .Where(nameof(PendingRun.Platform), platform);
+            return await _leanCloudService.Count(query) > 0;
         }
+        private readonly LeanCloudService _leanCloudService;
         [Reactive]
         public bool SelectSpeedrunType { get; set; }
         [Reactive]

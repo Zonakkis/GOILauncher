@@ -1,4 +1,5 @@
 ﻿using GOILauncher.Models;
+using GOILauncher.Services.LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -6,26 +7,23 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels.Pages
 {
-    public class PendingPageViewModel : PageViewModelBase
+    public class PendingPageViewModel(LeanCloudService leanCloudService) : PageViewModelBase
     {
         public override void Init()
         {
-            LCObject.RegisterSubclass(nameof(PendingRun), () => new PendingRun());
+            _ = GetPendingRuns();
         }
+
         public override void OnSelectedViewChanged()
         {
-            Task.Run(GetPendingRuns);
+
         }
-        public async Task GetPendingRuns()
+
+        private async Task GetPendingRuns()
         {
-            LCQuery<PendingRun> query = new(nameof(PendingRun));
-            if (await query.Count() == PendingRuns.Count)
-            {
-                return;
-            }
-            PendingRuns = [];
-            ReadOnlyCollection<PendingRun> pendingRuns = await query.Find();
-            foreach (PendingRun pendingRun in pendingRuns)
+            PendingRuns.Clear();
+            var pendingRuns = await leanCloudService.GetPendingRuns();
+            foreach (var pendingRun in pendingRuns)
             {
                 if (pendingRun.VideoPlatform == "哔哩哔哩")
                 {
@@ -37,6 +35,6 @@ namespace GOILauncher.ViewModels.Pages
             this.RaisePropertyChanged(nameof(PendingRuns));
         }
 
-        public ObservableCollection<PendingRun> PendingRuns { get; private set; } = [];
+        public ObservableCollection<PendingRun> PendingRuns { get; } = [];
     }
 }

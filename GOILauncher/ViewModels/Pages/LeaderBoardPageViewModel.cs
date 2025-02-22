@@ -1,4 +1,5 @@
 ﻿using GOILauncher.Models;
+using GOILauncher.Services.LeanCloud;
 using LeanCloud.Storage;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -6,21 +7,16 @@ using System.Threading.Tasks;
 
 namespace GOILauncher.ViewModels.Pages
 {
-    public class LeaderBoardPageViewModel : PageViewModelBase
+    public class LeaderBoardPageViewModel(LeanCloudService leanCloudService) : PageViewModelBase
     {
         public override void Init()
         {
-            LCObject.RegisterSubclass(nameof(Speedrun), () => new Speedrun());
             _ = GetSpeedruns();
         }
         public async Task GetSpeedruns()
         {
             Speedruns.Clear();
-            LCQuery<Speedrun> query = new(nameof(Speedrun));
-            query.OrderByAscending("TotalTime");
-            query.WhereEqualTo("Fastest", true);
-            query.WhereEqualTo("Category", "Glitchless");
-            var speedruns = await query.Find();
+            var speedruns = await leanCloudService.GetSpeedruns();
             for (var i = 0; i < speedruns.Count; i++)
             {
                 switch (speedruns[i].VideoPlatform)
@@ -37,9 +33,8 @@ namespace GOILauncher.ViewModels.Pages
                 speedruns[i].Rank = i + 1;
                 Speedruns.Add(speedruns[i]);
             }
-            this.RaisePropertyChanged(nameof(Speedruns));
         }
 
-        public ObservableCollection<Speedrun> Speedruns { get; set; } = [];
+        public ObservableCollection<Speedrun> Speedruns { get; } = [];
     }
 }
