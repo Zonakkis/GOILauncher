@@ -1,13 +1,8 @@
-﻿using GOILauncher.Helpers;
-using LeanCloud.Storage;
-using ReactiveUI;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using GOILauncher.Models;
 using GOILauncher.Services;
 using GOILauncher.Services.LeanCloud;
-using DynamicData.Binding;
 using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.ViewModels.Pages

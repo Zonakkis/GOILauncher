@@ -46,20 +46,6 @@
 
 
   <ItemGroup>
-    <Reference Include="Common">
-      <HintPath>Reference\LeanCloud\Common.dll</HintPath>
-    </Reference>
-    <Reference Include="Storage">
-      <HintPath>Reference\LeanCloud\Storage.dll</HintPath>
-    </Reference>
-    <Reference Include="Storage.Standard">
-      <HintPath>Reference\LeanCloud\Storage.Standard.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-
-
-  <ItemGroup>
     <Compile Update="UI\Views\Pages\AboutPage.axaml.cs">
       <DependentUpon>AboutPage.axaml</DependentUpon>
     </Compile>

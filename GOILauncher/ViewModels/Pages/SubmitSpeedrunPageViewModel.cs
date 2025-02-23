@@ -1,7 +1,6 @@
 ﻿using GOILauncher.Helpers;
 using GOILauncher.Models;
 using GOILauncher.Services.LeanCloud;
-using LeanCloud.Storage;
 using ReactiveUI.Fody.Helpers;
 using System.Threading.Tasks;
 
