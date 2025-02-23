@@ -16,7 +16,8 @@ namespace GOILauncher.Models
                     {
                         "哔哩哔哩" => $"https://www.bilibili.com/video/{VID}",
                         "YouTube" => $"https://www.youtube.com/watch?v={VID}",
-                        _ => VideoURL
+                        "Twitch" => $"https://www.twitch.tv/videos/{VID}",
+                        _ => string.Empty
                     };
                 });
         }

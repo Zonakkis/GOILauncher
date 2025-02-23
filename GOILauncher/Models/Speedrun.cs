@@ -21,6 +21,10 @@ namespace GOILauncher.Models
                             VideoURL = $"https://www.youtube.com/watch?v={VID}";
                             PlayerURL = $"https://www.youtube.com/channel/{UID}";
                             break;
+                        case "Twitch":
+                            VideoURL = $"https://www.twitch.tv/videos/{VID}";
+                            PlayerURL = $"https://www.twitch.tv/{UID}";
+                            break;
                     }
                 });
         }
