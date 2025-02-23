@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reactive.Linq;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 
@@ -8,7 +9,7 @@ namespace GOILauncher.Models
     {
         public Speedrun()
         {
-            this.WhenAnyValue(x => x.VID, x => x.VideoPlatform)
+            this.WhenAnyValue(x => x.VideoPlatform)
                 .Subscribe(_ =>
                 {
                     switch (VideoPlatform)
@@ -27,24 +28,24 @@ namespace GOILauncher.Models
                             break;
                     }
                 });
+            this.WhenAnyValue(x => x.CountryCode)
+                .Where(x => !string.IsNullOrEmpty(x) && x != "无")
+                .Subscribe(x => CountryFlagUrl = $"https://www.speedrun.com/images/flags/{x}.png");
         }
-        [Reactive]
         public int Rank { get;set; }
-        [Reactive]
         public string Player { get; init; }
+        public string Country { get; init; }
         [Reactive]
+        public string CountryCode { get; init; }
         public string UID { get; init; }
-        [Reactive]
         public string Platform { get; init; }
-        [Reactive]
         public string Time { get; init; }
         [Reactive]
         public string VideoPlatform { get; init; }
         [Reactive]
         public string VID { get; init; }
-        [Reactive]
-        public string? VideoURL { get; set; }
-        [Reactive]
-        public string? PlayerURL { get; set; }
+        public string VideoURL { get; set; }
+        public string PlayerURL { get; set; }
+        public string CountryFlagUrl { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using System.Text.Json.Serialization;
+using System.Reactive.Linq;
 
 namespace GOILauncher.Models
 {
@@ -20,33 +21,51 @@ namespace GOILauncher.Models
                         _ => string.Empty
                     };
                 });
+            this.WhenAnyValue(x => x.Minute, x => x.Second, x => x.MillionSecond)
+                .Subscribe(_ =>
+                {
+                    TotalTime = Minute * 60 + Second + MillionSecond / 1000f;
+                    Time = TotalTime switch
+                    {
+                        < 60 => $"{Second:00}.{MillionSecond:000}秒",
+                        < 3600 => $"{Minute}分{Second:00}.{MillionSecond:000}秒",
+                        _ => $"{Minute / 60}小时{Minute % 60}分{Second:00}.{MillionSecond:000}秒",
+                    };
+                });
+            this.WhenAnyValue(x => x.CountryCode)
+                .Where(x => !string.IsNullOrEmpty(x) && x != "无")
+                .Subscribe(x => CountryFlagUrl = $"https://www.speedrun.com/images/flags/{x}.png");
         }
 
         [Reactive]
-        public string Category { get; init; }
+        public string Level { get; set; }
         [Reactive]
-        public string Player { get; init; }
+        public string Category { get; set; }
+        [Reactive]
+        public string Player { get; set; }
+        [Reactive]
+        public string CountryCode { get; init; } = "cn";
         [Reactive]
         public string UID { get; init; }
         [Reactive]
-        public string Platform { get; init; }
+        public string Platform { get; set; }
         [Reactive]
-        public string Time { get; init; }
+        public int Minute { get; set; }
         [Reactive]
-        public int Minute { get; init; }
+        public int Second { get; set; }
         [Reactive]
-        public int Second { get; init; }
+        public int MillionSecond { get; set; }
         [Reactive]
-        public int MillionSecond { get; init; }
+        public string Time { get; set; }
+        [Reactive]
+        public float TotalTime { get; set; }
         [Reactive]
         public string VideoPlatform { get; init; }
         [Reactive]
         public string VID { get; init; }
-        [Reactive]
         [JsonIgnore]
-        public string? VideoURL { get; set; }
-        [Reactive]
+        public string VideoURL { get; set; }
         [JsonIgnore]
-        public string? PlayerURL { get; set; }
+        public string CountryFlagUrl { get; set; }
     }
 }

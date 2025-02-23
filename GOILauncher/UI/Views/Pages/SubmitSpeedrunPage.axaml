@@ -5,65 +5,64 @@
              mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
 			 xmlns:ui="using:FluentAvalonia.UI.Controls"
 			 xmlns:vm="using:GOILauncher.ViewModels.Pages"
-			 xmlns:sys="clr-namespace:System;assembly=mscorlib"
              x:Class="GOILauncher.UI.Views.Pages.SubmitSpeedrunPage"
 			 x:DataType="vm:SubmitSpeedrunPageViewModel"
-             FontSize="20"
-			>
-	<Grid>
-		<Grid IsVisible="{Binding SelectSpeedrunType}">
-			<Button Command="{Binding ToggleView}" Content="提交速通" Width="120" Height="60" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="200,0,0,0">
-				<Button.CommandParameter>
-					1
-				</Button.CommandParameter>
-			</Button>
-			<Button Content="提交分段" IsEnabled="False" Width="120" Height="60" FontSize="22" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,200,0" >
-				<Button.CommandParameter>
-					2
-				</Button.CommandParameter>
-			</Button>
-		</Grid>
-		<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto" IsVisible="{Binding SubmitSpeedrun}">
-			<Button Grid.Row="0" Command="{Binding ToggleView}" Content="返回" FontSize="20" VerticalAlignment="Top" Margin="10">
-				<Button.CommandParameter>
-					3
-				</Button.CommandParameter>
-			</Button>
-			<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="模式："/>
-				<ComboBox ItemsSource="{Binding Categories}" SelectedValue="{Binding Category}" Width="350" FontSize="20" Margin="0,-4,0,5"/>
-			</StackPanel>
-			<StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="游戏平台："/>
-				<ComboBox ItemsSource="{Binding Platforms}" SelectedValue="{Binding Platform}" Width="310" FontSize="20" Margin="0,-4,0,5"/>
-			</StackPanel>
-			<StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="视频平台："/>
-				<ComboBox ItemsSource="{Binding VideoPlatforms}" SelectedValue="{Binding VideoPlatform}" Width="310" FontSize="20" Margin="0,-4,0,5"/>
-			</StackPanel>
-			<StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="BV号："/>
-				<TextBox Text="{Binding VID}" FontSize="20" Width="343" LostFocus="InputBVIDCompleted" Margin="0,-4,0,5"/>
-			</StackPanel>
-			<StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="玩家："/>
-				<TextBox Name="Player" Text="{Binding Player}" Width="348" FontSize="20" IsEnabled="False" Margin="0,-4,0,5"/>
-			</StackPanel>
-			<StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Center">
-				<TextBlock Text="时间："/>
-				<ui:NumberBox Maximum="59" Minimum="0" Width="100" Value="{Binding Minute}" Margin="0,-4,0,5"/>
-				<TextBlock Text="分"/>
-				<ui:NumberBox Maximum="59" Minimum="0" Width="100" Value="{Binding Second}" Margin="0,-4,0,5"/>
-				<TextBlock Text="."/>
-				<ui:NumberBox Maximum="999" Minimum="0" Width="100" Value="{Binding MillionSecond}" Margin="0,-4,0,5"/>
-				<TextBlock Text="秒"/>
-			</StackPanel>
-			<Button Grid.Row="7" Content="提交" Command="{Binding Submit}" HorizontalAlignment="Center" FontSize="20" >
-				<Button.CommandParameter>
-					<sys:Int32>1</sys:Int32>
-				</Button.CommandParameter>
-			</Button>
-		</Grid>
+             FontSize="20">
+	<Grid RowDefinitions="auto,auto,auto,auto,auto,auto,auto,auto" ColumnDefinitions="auto,auto"
+		  HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+			游戏范围：
+		</TextBlock>
+		<ComboBox Grid.Row="0" Grid.Column="1" FontSize="20" HorizontalAlignment="Stretch" Margin="0,5"
+				  ItemsSource="{Binding Levels}" SelectedValue="{Binding PendingRun.Level}"/>
+		<TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+			模式：
+		</TextBlock>
+		<ComboBox Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
+				  IsEnabled="{Binding FullGame}"
+				  ItemsSource="{Binding Categories}" SelectedValue="{Binding PendingRun.Category}"/>
+		<TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center">
+            游戏平台：
+		</TextBlock>
+		<ComboBox Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
+				  ItemsSource="{Binding Platforms}" SelectedValue="{Binding PendingRun.Platform}"/>
+		<TextBlock Grid.Row="3" Grid.Column="0" VerticalAlignment="Center">
+            视频平台：
+		</TextBlock>
+		<ComboBox Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
+				  ItemsSource="{Binding VideoPlatforms}" SelectedValue="{Binding PendingRun.VideoPlatform}"/>
+		<TextBlock Grid.Row="4" Grid.Column="0" VerticalAlignment="Center">
+            BV号：
+		</TextBlock>
+		<TextBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
+				 Text="{Binding PendingRun.VID}" FontSize="20"/>
+		<TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">
+            玩家：
+		</TextBlock>
+		<TextBox Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
+				 Text="{Binding PendingRun.Player}" FontSize="20"/>
+		<TextBlock Grid.Row="6" Grid.Column="0" VerticalAlignment="Center">
+            时间：
+		</TextBlock>
+		<StackPanel Grid.Row="6" Grid.Column="1" Orientation="Horizontal" Spacing="10">
+			<ui:NumberBox Maximum="59" Minimum="0" Width="100" HorizontalAlignment="Stretch" Margin="0,5"
+						  Value="{Binding PendingRun.Minute}"/>
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                分
+			</TextBlock>
+			<ui:NumberBox Maximum="59" Minimum="0" Width="100" HorizontalAlignment="Stretch" Margin="0,5"
+						  Value="{Binding PendingRun.Second}"/>
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+				.
+			</TextBlock>
+			<ui:NumberBox Maximum="999" Minimum="0" Width="100" HorizontalAlignment="Stretch" Margin="0,5"
+						  Value="{Binding PendingRun.MillionSecond}"/>
+			<TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                秒
+			</TextBlock>
+		</StackPanel>
+		<Button Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,5"
+				Content="提交" Command="{Binding SubmitCommand}" HorizontalAlignment="Center" FontSize="20" >
+		</Button>
 	</Grid>
-
 </UserControl>

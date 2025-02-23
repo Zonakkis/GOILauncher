@@ -20,7 +20,8 @@ public class LeanCloudService
     }
     public async Task Create<T>(T obj)
     {
-        var content = new StringContent(JsonSerializer.Serialize(obj), Encoding.UTF8, "application/json");
+        var json = JsonSerializer.Serialize(obj);
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
         var httpResponseMessage = await _httpClient.PostAsync(typeof(T).Name, content);
         httpResponseMessage.EnsureSuccessStatusCode();
     }
@@ -82,7 +83,8 @@ public class LeanCloudService
                         .OrderByAscending("TotalTime")
                         .Where("Fastest", true)
                         .Where("Category", "Glitchless")
-                        .Select(nameof(Speedrun.Player), nameof(Speedrun.UID), nameof(Speedrun.Platform), 
+                        .Select(nameof(Speedrun.Player), nameof(Speedrun.UID), nameof(Speedrun.Country),
+                                nameof(Speedrun.Platform), nameof(Speedrun.CountryCode),
                                 nameof(Speedrun.Time), nameof(Speedrun.VID), nameof(Speedrun.VideoPlatform));
         return await Find(query);
     }

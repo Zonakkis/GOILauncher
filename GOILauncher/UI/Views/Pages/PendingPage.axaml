@@ -5,6 +5,7 @@
              mc:Ignorable="d" d:DesignWidth="1050" d:DesignHeight="500"
              xmlns:vm="using:GOILauncher.ViewModels.Pages"
 			 xmlns:v="clr-namespace:GOILauncher.Models"
+			 xmlns:asyncImageLoader="clr-namespace:AsyncImageLoader;assembly=AsyncImageLoader.Avalonia"
 			 x:Class="GOILauncher.UI.Views.Pages.PendingPage"
 			 x:DataType="vm:PendingPageViewModel"
              FontSize="20"
@@ -15,7 +16,10 @@
 				<DataGridTextColumn Header="模式" Binding="{Binding Category}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
 					<DataTemplate x:DataType="v:PendingRun">
-						<HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
+						<StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+							<Image asyncImageLoader:ImageLoader.Source="{Binding CountryFlagUrl}" Height="20"/>
+							<TextBlock Text="{Binding Player}" FontSize="18" HorizontalAlignment="Center"/>
+						</StackPanel>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 				<DataGridTextColumn Header="平台" Binding="{Binding Platform}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
