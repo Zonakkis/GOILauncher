@@ -12,19 +12,10 @@ namespace GOILauncher.ViewModels.Pages
         public SubmitSpeedrunPageViewModel(LeanCloudService leanCloudService)
         {
             _leanCloudService = leanCloudService;
-            VID = string.Empty;
-            Player = string.Empty;
             SelectSpeedrunType = true;
-            Categories = ["Glitchless", "Snake"];
-            Platforms = ["PC", "Android", "iOS"];
-            VideoPlatforms = ["哔哩哔哩"];
             Category = Categories[0];
             Platform = Platforms[0];
             VideoPlatform = VideoPlatforms[0];
-        }
-        public override void Init()
-        {
-
         }
         public void ToggleView(int para)
         {
@@ -103,12 +94,10 @@ namespace GOILauncher.ViewModels.Pages
         public bool SubmitSpeedrun { get; set; }
         [Reactive]
         public bool SubmitLevel { get; set; }
-        [Reactive]
-        public string[] Categories { get; set; }
+        public string[] Categories { get; } = ["Glitchless", "Snake"];
         [Reactive]
         public string Category { get; set; }
-        [Reactive]
-        public string[] Platforms { get; set; }
+        public string[] Platforms { get; } = ["PC", "Android", "iOS"];
         [Reactive]
         public string Platform { get; set; }
         [Reactive]
@@ -117,13 +106,12 @@ namespace GOILauncher.ViewModels.Pages
         public int Second { get; set; }
         [Reactive]
         public int MillionSecond { get; set; }
-        [Reactive]
-        public string[] VideoPlatforms { get; set; }
+        public string[] VideoPlatforms { get; } = ["哔哩哔哩"];
         [Reactive]
         public string VideoPlatform { get; set; }
         [Reactive]
-        public string VID { get; set; }
+        public string VID { get; set; } = string.Empty;
         [Reactive]
-        public string Player { get; set; }
+        public string Player { get; set; } = string.Empty;
     }
 }

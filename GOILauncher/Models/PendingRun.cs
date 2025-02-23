@@ -1,15 +1,32 @@
-﻿using ReactiveUI.Fody.Helpers;
+﻿using System;
+using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
+using System.Text.Json.Serialization;
 
 namespace GOILauncher.Models
 {
-    public class PendingRun()
+    public class PendingRun : ReactiveObject
     {
+        public PendingRun()
+        {
+            this.WhenAnyValue(x => x.VID, x => x.VideoPlatform)
+                .Subscribe(_ =>
+                {
+                    VideoURL = VideoPlatform switch
+                    {
+                        "哔哩哔哩" => $"https://www.bilibili.com/video/{VID}",
+                        "YouTube" => $"https://www.youtube.com/watch?v={VID}",
+                        _ => VideoURL
+                    };
+                });
+        }
+
         [Reactive]
         public string Category { get; init; }
         [Reactive]
         public string Player { get; init; }
         [Reactive]
-        public string? UID { get; init; }
+        public string UID { get; init; }
         [Reactive]
         public string Platform { get; init; }
         [Reactive]
@@ -25,8 +42,10 @@ namespace GOILauncher.Models
         [Reactive]
         public string VID { get; init; }
         [Reactive]
+        [JsonIgnore]
         public string? VideoURL { get; set; }
         [Reactive]
+        [JsonIgnore]
         public string? PlayerURL { get; set; }
     }
 }

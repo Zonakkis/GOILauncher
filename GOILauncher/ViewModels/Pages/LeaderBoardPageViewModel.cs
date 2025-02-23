@@ -21,17 +21,6 @@ namespace GOILauncher.ViewModels.Pages
             var speedruns = await leanCloudService.GetSpeedruns();
             for (var i = 0; i < speedruns.Count; i++)
             {
-                switch (speedruns[i].VideoPlatform)
-                {
-                    case "哔哩哔哩":
-                        speedruns[i].VideoURL = $"https://www.bilibili.com/video/{speedruns[i].VID}";
-                        speedruns[i].PlayerURL = $"https://space.bilibili.com/{speedruns[i].UID}";
-                        break;
-                    case "YouTube":
-                        speedruns[i].VideoURL = $"https://www.youtube.com/watch?v={speedruns[i].VID}";
-                        speedruns[i].PlayerURL = $"https://www.youtube.com/channel/{speedruns[i].UID}";
-                        break;
-                }
                 speedruns[i].Rank = i + 1;
                 Speedruns.Add(speedruns[i]);
             }

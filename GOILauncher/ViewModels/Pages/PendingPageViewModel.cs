@@ -18,14 +18,8 @@ namespace GOILauncher.ViewModels.Pages
         private async Task GetPendingRuns()
         {
             PendingRuns.Clear();
-            var pendingRuns = await leanCloudService.GetPendingRuns();
-            foreach (var pendingRun in pendingRuns)
+            foreach (var pendingRun in await leanCloudService.GetPendingRuns())
             {
-                if (pendingRun.VideoPlatform == "哔哩哔哩")
-                {
-                    pendingRun.VideoURL = $"https://www.bilibili.com/video/{pendingRun.VID}";
-                    pendingRun.PlayerURL = $"https://space.bilibili.com/{pendingRun.UID}";
-                }
                 PendingRuns.Add(pendingRun);
             }
         }
