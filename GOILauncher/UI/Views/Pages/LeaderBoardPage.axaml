@@ -11,14 +11,17 @@
              FontSize="20"
 			 >
 	<Grid>
-		<DataGrid ItemsSource="{Binding Speedruns}" Focusable="False" IsReadOnly="True" CanUserResizeColumns="True" FontSize="18">
+		<DataGrid ItemsSource="{Binding Speedruns}" Focusable="False" IsReadOnly="True" 
+				  CanUserResizeColumns="True" FontSize="18">
 			<DataGrid.Columns>
 				<DataGridTextColumn Header="排名" Binding="{Binding Rank}"  FontSize="18"  Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="玩家" Width="auto" IsReadOnly="True">
 					<DataTemplate x:DataType="v:Speedrun">
 						<StackPanel Orientation="Horizontal">
-							<Image asyncImageLoader:ImageLoader.Source="{Binding CountryFlagUrl}" Height="20"/>
-							<HyperlinkButton Content="{Binding Player}" FontSize="18" NavigateUri="{Binding PlayerURL}" HorizontalAlignment="Center"/>
+							<Image asyncImageLoader:ImageLoader.Source="{Binding CountryFlagUrl}"
+								   Height="20" ToolTip.Tip="{Binding Country}" ToolTip.Placement="Left"/>
+							<HyperlinkButton Content="{Binding Player}" HorizontalAlignment="Center"
+											 NavigateUri="{Binding PlayerURL}" FontSize="18"/>
 						</StackPanel>
 					</DataTemplate>
 				</DataGridTemplateColumn>
