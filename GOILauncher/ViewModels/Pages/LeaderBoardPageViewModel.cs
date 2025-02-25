@@ -15,8 +15,15 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetSpeedruns()
         {
-            Speedruns.Clear();
-            var speedruns = await leanCloudService.GetSpeedruns();
+            var query = new LeanCloudQuery<Speedrun>(nameof(Speedrun))
+                            .OrderByAscending("TotalTime")
+                            .Where("Fastest", true)
+                            .Where("Category", "Glitchless")
+                            .Select(nameof(Speedrun.Player), nameof(Speedrun.UID), nameof(Speedrun.VID),
+                                    nameof(Speedrun.Platform), nameof(Speedrun.CountryCode),
+                                    nameof(Speedrun.Time), nameof(Speedrun.Country), 
+                                    nameof(Speedrun.VideoPlatform));
+            var speedruns = await leanCloudService.Find(query);
             for (var i = 0; i < speedruns.Count; i++)
             {
                 speedruns[i].Rank = i + 1;

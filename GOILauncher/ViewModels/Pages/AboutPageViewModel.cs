@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using GOILauncher.Models;
 using GOILauncher.Services;
 using GOILauncher.Services.LeanCloud;
@@ -7,30 +9,25 @@ using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.ViewModels.Pages
 {
-    public class AboutPageViewModel : PageViewModelBase
+    public class AboutPageViewModel(AppService appService, LeanCloudService leanCloudService) : PageViewModelBase
     {
-        public AboutPageViewModel(AppService appService,LeanCloudService leanCloudService)
-        {
-            Version = appService.Version;
-            _leanCloudService = leanCloudService;
-        }
         public override void Init()
         {
-            _ = GetCredits();
+            Dispatcher.UIThread.InvokeAsync(GetCredits);
         }
 
         private async Task GetCredits()
         {
-            foreach (var credit in await _leanCloudService.GetCredits())
-            {
-                Players.Add(credit.Player);
-            }
-            Thanks = string.Join(',', Players);
+            var query = new LeanCloudQuery<Credit>(nameof(Credit))
+                            .OrderByAscending(nameof(Credit.Player))
+                            .Select("Player");
+            _players = await leanCloudService.Find(query);
+            Thanks = string.Join(',', _players.Select(x => x.Player));
         }
-        private readonly LeanCloudService _leanCloudService;
-        private ObservableCollection<string> Players { get; } = [];
+
+        private List<Credit> _players = [];
         [Reactive]
-        public string Thanks { get; set; }
-        public Version Version { get; set; }
+        public string Thanks { get; set; } = string.Empty;
+        public Version Version { get; set; } = appService.Version;
     }
 }

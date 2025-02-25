@@ -15,8 +15,12 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetPendingRuns()
         {
-            PendingRuns.Clear();
-            foreach (var pendingRun in await leanCloudService.GetPendingRuns())
+            var query = new LeanCloudQuery<PendingRun>(nameof(PendingRun))
+                            .OrderByAscending("TotalTime")
+                            .Select(nameof(PendingRun.Player), nameof(PendingRun.Category),
+                                nameof(Speedrun.Platform), nameof(PendingRun.Time), 
+                                nameof(Speedrun.VID),nameof(Speedrun.VideoPlatform));
+            foreach (var pendingRun in await leanCloudService.Find(query))
             {
                 PendingRuns.Add(pendingRun);
             }

@@ -52,57 +52,5 @@ public class LeanCloudService
         var results = doc.RootElement.GetProperty("results").ToString();
         return JsonSerializer.Deserialize<List<T>>(results)!;
     }
-    public async Task<ObservableCollection<T>> FindAsObservableCollection<T>(LeanCloudQuery<T> leanCloudQuery)
-    {
-        var httpResponseMessage = await _httpClient.GetAsync(await leanCloudQuery.Build());
-        httpResponseMessage.EnsureSuccessStatusCode();
-        var content = await httpResponseMessage.Content.ReadAsStringAsync();
-        using var doc = JsonDocument.Parse(content);
-        var results = doc.RootElement.GetProperty("results").ToString();
-        return JsonSerializer.Deserialize<ObservableCollection<T>>(results)!;
-    }
-    public async Task<ObservableCollection<Mod>> GetMods(string modName)
-    {
-        var query = new LeanCloudQuery<Mod>(modName)
-                        .OrderByDescending(nameof(Mod.Build))
-                        .Select(nameof(Mod.Name), nameof(Mod.Author), nameof(Mod.Build), 
-                                nameof(Mod.Url), nameof(Mod.TargetGameVersion));
-        return await FindAsObservableCollection(query);
-    }
-    public async Task<List<Map>> GetMaps()
-    {
-        var query = new LeanCloudQuery<Map>(nameof(Map))
-                        .OrderByAscending(nameof(Map.Name))
-                        .Where("Platform", "PC")
-                        .Select("Name", "Author", "Size", "Preview", "Url", "Difficulty", "Form", "Style");
-        return await Find(query);
-    }
-    public async Task<List<Speedrun>> GetSpeedruns()
-    {
-        var query = new LeanCloudQuery<Speedrun>(nameof(Speedrun))
-                        .OrderByAscending("TotalTime")
-                        .Where("Fastest", true)
-                        .Where("Category", "Glitchless")
-                        .Select(nameof(Speedrun.Player), nameof(Speedrun.UID), nameof(Speedrun.Country),
-                                nameof(Speedrun.Platform), nameof(Speedrun.CountryCode),
-                                nameof(Speedrun.Time), nameof(Speedrun.VID), nameof(Speedrun.VideoPlatform));
-        return await Find(query);
-    }
-    public async Task<List<PendingRun>> GetPendingRuns()
-    {
-        var query = new LeanCloudQuery<PendingRun>(nameof(PendingRun))
-                        .OrderByAscending("TotalTime")
-                        .Select(nameof(PendingRun.Player), nameof(PendingRun.Category), 
-                                nameof(Speedrun.Platform),nameof(PendingRun.Time), nameof(Speedrun.VID),
-                                nameof(Speedrun.VideoPlatform));
-        return await Find(query);
-    }
-    public async Task<List<Credit>> GetCredits()
-    {
-        var query = new LeanCloudQuery<Credit>(nameof(Credit))
-                        .OrderByAscending(nameof(Credit.Player))
-                        .Select("Player");
-        return await Find(query);
-    }
     private readonly HttpClient _httpClient;
 }
