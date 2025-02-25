@@ -29,9 +29,6 @@ namespace GOILauncher.ViewModels.Pages
         public override void Init()
         {
         }
-        public override void OnSelectedViewChanged()
-        {
-        }
 
         private void DeleteSelectedMaps(IList maps)
         {

@@ -1,6 +1,5 @@
 ﻿using GOILauncher.UI;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using GOILauncher.ViewModels.Pages;
@@ -45,7 +44,6 @@ namespace GOILauncher.ViewModels
                 new Page("设置", settingPageViewModel),
                 new Page("关于", aboutPageViewModel)
             ];
-            CurrentView = Views[0].View;
             SelectedPage = Views[0];
             Task.Run(CheckUpdate);
         }
@@ -57,7 +55,10 @@ namespace GOILauncher.ViewModels
             if (newVersion > _version)
             {
                 NotificationManager.ShowContentDialog("有新版本！！",
-                    $"{_version} -> {newVersion}\r\n{update.Changelog}",
+                    $"""
+                     {_version} -> {newVersion}
+                     {update.Changelog}
+                     """,
                     "手动更新", "自动更新",
                     ReactiveCommand.Create(() =>
                     {
@@ -71,25 +72,24 @@ namespace GOILauncher.ViewModels
                     }));
             }
         }
-        public void OnSelectedPageChanged(Page value)
+
+        private void OnSelectedPageChanged(Page value)
         {
-            CurrentView = value.View;
-            if(!CurrentView.Initialized)
+            if(!SelectedPage.View.Initialized)
             {
-                CurrentView.Init();
-                CurrentView.Initialized = true;
+                SelectedPage.View.Init();
+                SelectedPage.View.Initialized = true;
             }
-            value.View.OnSelectedViewChanged();
         }
         public NotificationManager NotificationManager { get; }
         private readonly LeanCloudService _leanCloudService;
         private readonly Version _version;
         public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
-        [Reactive]
-        public PageViewModelBase CurrentView { get; set; }
+
+        private Page selectedView;
         public Page SelectedPage
         {
-            get => selectedView!;
+            get => selectedView;
             set
             {
                 this.RaiseAndSetIfChanged(ref selectedView, value);
@@ -98,8 +98,6 @@ namespace GOILauncher.ViewModels
         }
 
         public ObservableCollection<Page> Views { get; }
-
-        private Page? selectedView;
         public ObservableCollection<Page> FooterViews { get; }
     }
 }

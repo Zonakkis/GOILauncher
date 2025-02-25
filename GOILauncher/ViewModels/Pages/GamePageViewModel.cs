@@ -23,10 +23,6 @@ namespace GOILauncher.ViewModels.Pages
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
         }
-        public override void OnSelectedViewChanged()
-        {
-
-        }
         public void Launch(int para)
         {
             switch (para)

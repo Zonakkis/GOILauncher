@@ -22,7 +22,7 @@
 	<Grid>
 		<controls:NavigationView MenuItemsSource="{Binding Views}"
 						   FooterMenuItemsSource="{Binding FooterViews}"
-						   Content="{Binding CurrentView}" SelectedItem="{Binding SelectedPage}"
+						   Content="{Binding SelectedPage.View}" SelectedItem="{Binding SelectedPage}"
 						   OpenPaneLength="200" CompactPaneLength="80" PaneDisplayMode="Auto"
 						   PaneTitle=" GOILauncher" IsSettingsVisible="False">
 			<controls:NavigationView.MenuItemTemplate>
