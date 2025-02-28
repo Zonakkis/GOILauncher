@@ -16,9 +16,9 @@ public class LeanCloudQuery<T>
     private int _limit = 1000;
     private bool _count;
 
-    public LeanCloudQuery(string className)
+    public LeanCloudQuery()
     {
-        _className = className;
+        _className = typeof(T).Name;
         Deselect("createdAt","updatedAt","objectId");
     }
 

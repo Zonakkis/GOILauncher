@@ -27,7 +27,7 @@ public class LeanCloudService
     }
     public async Task<T> Get<T>(string objectId)
     {
-        var query = new LeanCloudQuery<T>(typeof(T).Name)
+        var query = new LeanCloudQuery<T>()
                         .Get(objectId);
         var httpResponseMessage = await _httpClient.GetAsync(await query.Build());
         httpResponseMessage.EnsureSuccessStatusCode();

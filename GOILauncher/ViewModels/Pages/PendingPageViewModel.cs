@@ -15,7 +15,7 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetPendingRuns()
         {
-            var query = new LeanCloudQuery<PendingRun>(nameof(PendingRun))
+            var query = new LeanCloudQuery<PendingRun>()
                             .OrderByAscending("TotalTime")
                             .Select(nameof(PendingRun.Player), nameof(PendingRun.Category),
                                 nameof(Speedrun.Platform), nameof(PendingRun.Time), 

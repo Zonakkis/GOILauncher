@@ -18,7 +18,7 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetCredits()
         {
-            var query = new LeanCloudQuery<Credit>(nameof(Credit))
+            var query = new LeanCloudQuery<Credit>()
                             .OrderByAscending(nameof(Credit.Player))
                             .Select("Player");
             _players = await leanCloudService.Find(query);

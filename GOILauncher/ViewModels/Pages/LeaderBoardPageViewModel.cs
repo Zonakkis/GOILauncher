@@ -15,7 +15,7 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task GetSpeedruns()
         {
-            var query = new LeanCloudQuery<Speedrun>(nameof(Speedrun))
+            var query = new LeanCloudQuery<Speedrun>()
                             .OrderByAscending("TotalTime")
                             .Where("Fastest", true)
                             .Where("Category", "Glitchless")
