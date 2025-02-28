@@ -29,7 +29,7 @@
 			<StackPanel Margin="10,0" IsVisible="{Binding Setting.IsGamePathSelected}">
 				<ui:ModExpander ModName="Modpack" Author="Anjo2" Mods="{Binding Modpacks}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="LevelLoader" Author="Jor02" Mods="{Binding LevelLoaders}" IsOtherMod="False"/>
-                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackandLevelLoaders}" IsOtherMod="False"/>
+                <ui:ModExpander ModName="Modpack and LevelLoader" Author="Nameless＆Jor02" Mods="{Binding ModpackAndLevelLoaders}" IsOtherMod="False"/>
                 <ui:ModExpander ModName="其他Mod" Mods="{Binding OtherMods}" IsOtherMod="True"/>
 			</StackPanel>
 		</Grid>

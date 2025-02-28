@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
+using System.Text.Json.Serialization;
 
 namespace GOILauncher.Models
 {
@@ -35,10 +36,15 @@ namespace GOILauncher.Models
             IsExtracting = true;
             Status = "解压中";
         }
+        [JsonPropertyName("name")]
         public string Name { get; init; }
+        [JsonPropertyName("author")]
         public string Author { get; init; }
+        [JsonPropertyName("build")]
         public string Build { get; init; }
+        [JsonPropertyName("url")]
         public string Url { get; init; }
+        [JsonPropertyName("target_game_version")]
         public List<string> TargetGameVersion { get; init; }
         public string TargetGameVersionString => string.Join("/", TargetGameVersion);
         [Reactive]

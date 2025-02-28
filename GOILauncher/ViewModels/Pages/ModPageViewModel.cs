@@ -65,10 +65,10 @@ namespace GOILauncher.ViewModels.Pages
         }
         private async Task GetModpacks()
         {
-            var query = new LeanCloudQuery<Mod>("Modpack")
-                .OrderByDescending(nameof(Mod.Build))
-                .Select(nameof(Mod.Name), nameof(Mod.Author), nameof(Mod.Build),
-                    nameof(Mod.Url), nameof(Mod.TargetGameVersion));
+            var query = new LeanCloudQuery<Mod>()
+                            .Where("type", "Modpack")
+                            .OrderByDescending("build")
+                            .Select("build", "url", "target_game_version");
             foreach (var modpack in await _leanCloudService.Find(query))
             {
                 modpack.DownloadCommand = DownloadCommand;
@@ -77,10 +77,10 @@ namespace GOILauncher.ViewModels.Pages
         }
         private async Task GetLevelLoaders()
         {
-            var query = new LeanCloudQuery<Mod>("LevelLoader")
-                .OrderByDescending(nameof(Mod.Build))
-                .Select(nameof(Mod.Name), nameof(Mod.Author), nameof(Mod.Build),
-                    nameof(Mod.Url), nameof(Mod.TargetGameVersion));
+            var query = new LeanCloudQuery<Mod>()
+                            .Where("type", "LevelLoader")
+                            .OrderByDescending("build")
+                            .Select("build", "url", "target_game_version");
             foreach (var levelLoader in await _leanCloudService.Find(query))
             {
                 levelLoader.DownloadCommand = DownloadCommand;
@@ -89,22 +89,22 @@ namespace GOILauncher.ViewModels.Pages
         }
         private async Task GetModpackandLevelLoaders()
         {
-            var query = new LeanCloudQuery<Mod>("ModpackandLevelLoader")
-                .OrderByDescending(nameof(Mod.Build))
-                .Select(nameof(Mod.Name), nameof(Mod.Author), nameof(Mod.Build),
-                    nameof(Mod.Url), nameof(Mod.TargetGameVersion));
-            foreach (var modpackandLevelLoader in await _leanCloudService.Find(query))
+            var query = new LeanCloudQuery<Mod>()
+                            .Where("type", "ModpackAndLevelLoader")
+                            .OrderByDescending("build")
+                            .Select("build", "url", "target_game_version");
+            foreach (var modpackAndLevelLoader in await _leanCloudService.Find(query))
             {
-                modpackandLevelLoader.DownloadCommand = DownloadCommand;
-                ModpackandLevelLoaders.Add(modpackandLevelLoader);
+                modpackAndLevelLoader.DownloadCommand = DownloadCommand;
+                ModpackAndLevelLoaders.Add(modpackAndLevelLoader);
             }
         }
         private async Task GetOtherMods()
         {
-            var query = new LeanCloudQuery<Mod>("OtherMod")
-                            .OrderByDescending(nameof(Mod.Build))
-                            .Select(nameof(Mod.Name), nameof(Mod.Author), nameof(Mod.Build),
-                                nameof(Mod.Url), nameof(Mod.TargetGameVersion));
+            var query = new LeanCloudQuery<Mod>()
+                            .Where("type", "Other")
+                            .OrderByDescending("build")
+                            .Select("name", "author", "build", "url", "target_game_version");
             foreach (var otherMod in await _leanCloudService.Find(query))
             {
                 otherMod.DownloadCommand = DownloadCommand;
@@ -118,7 +118,7 @@ namespace GOILauncher.ViewModels.Pages
         private readonly GameService _gameService;
         public ObservableCollection<Mod> Modpacks { get; set; } = [];
         public ObservableCollection<Mod> LevelLoaders { get; set; } = [];
-        public ObservableCollection<Mod> ModpackandLevelLoaders { get; set; } = [];
+        public ObservableCollection<Mod> ModpackAndLevelLoaders { get; set; } = [];
         public ObservableCollection<Mod> OtherMods { get; set; } = [];
         private ReactiveCommand<Mod, Unit> DownloadCommand { get; }
     }
