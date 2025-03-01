@@ -6,6 +6,8 @@ using System.IO;
 using System.Threading.Tasks;
 using GOILauncher.UI;
 using System.Reactive.Linq;
+using Avalonia;
+using Avalonia.Styling;
 
 namespace GOILauncher.ViewModels.Pages
 {
@@ -17,8 +19,17 @@ namespace GOILauncher.ViewModels.Pages
             _fileService = fileService;
             Setting = appService.Setting;
             Setting.WhenAnyValue(x => x.GamePath, x => x.LevelPath, x => x.SteamPath, x => x.DownloadPath, x => x.SaveMapZip, x => x.NightMode, x => x.PreviewQuality)
-                .Skip(1)
-                .Subscribe(_ => appService.SaveSetting());
+                   .Skip(1)
+                   .Subscribe(_ => appService.SaveSetting());
+            Setting.WhenAnyValue(x => x.NightMode)
+                   .Subscribe(x =>
+                   {
+                       Application.Current!.RequestedThemeVariant = x switch
+                       {
+                           false => ThemeVariant.Light,
+                           true => ThemeVariant.Dark
+                       };
+                   });
 
         }
         public async Task SelectGamePath()
