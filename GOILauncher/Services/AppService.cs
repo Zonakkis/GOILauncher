@@ -8,7 +8,6 @@ public class AppService
 {
     private static Setting LoadSetting()
     {
-        var dir = Directory.GetCurrentDirectory();
         if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(),"Settings.json")))
         {
             return FileService.LoadFromJson<Setting>(Directory.GetCurrentDirectory(), "Settings.json");
@@ -25,5 +24,5 @@ public class AppService
         FileService.SaveAsJson(Directory.GetCurrentDirectory(), "Settings.json", Setting);
     }
     public Setting Setting { get; } = LoadSetting();
-    public Version Version { get; } = new("0.2.3");
+    public Version Version { get; } = new("0.2.4");
 }
