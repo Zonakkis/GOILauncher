@@ -22,7 +22,7 @@ namespace GOILauncher.ViewModels.Pages
                 VideoPlatform = VideoPlatforms[0]
             };
             SubmitCommand = ReactiveCommand.CreateFromTask(Submit,
-                this.WhenAnyValue(x => x.PendingRun.VID, x => x.PendingRun.Player,
+                this.WhenAnyValue(x => x.PendingRun.VideoId, x => x.PendingRun.Player,
                 (vid, player) => !string.IsNullOrEmpty(vid) && !string.IsNullOrEmpty(player)));
             this.WhenAnyValue(x => x.PendingRun.Level)
                 .Subscribe(x => FullGame = x == "完整游戏");

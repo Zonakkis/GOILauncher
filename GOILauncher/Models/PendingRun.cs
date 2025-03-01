@@ -10,14 +10,16 @@ namespace GOILauncher.Models
     {
         public PendingRun()
         {
-            this.WhenAnyValue(x => x.VID, x => x.VideoPlatform)
+            this.WhenAnyValue(x => x.VideoId, x => x.VideoPlatform)
+                .Where(x => !string.IsNullOrEmpty(x.Item1) &&
+                            !string.IsNullOrEmpty(x.Item2))
                 .Subscribe(_ =>
                 {
                     VideoURL = VideoPlatform switch
                     {
-                        "哔哩哔哩" => $"https://www.bilibili.com/video/{VID}",
-                        "YouTube" => $"https://www.youtube.com/watch?v={VID}",
-                        "Twitch" => $"https://www.twitch.tv/videos/{VID}",
+                        "哔哩哔哩" => $"https://www.bilibili.com/video/{VideoId}",
+                        "YouTube" => $"https://www.youtube.com/watch?v={VideoId}",
+                        "Twitch" => $"https://www.twitch.tv/videos/{VideoId}",
                         _ => string.Empty
                     };
                 });
@@ -33,21 +35,27 @@ namespace GOILauncher.Models
                     };
                 });
             this.WhenAnyValue(x => x.CountryCode)
-                .Where(x => !string.IsNullOrEmpty(x) && x != "无")
+                .Where(x => !string.IsNullOrEmpty(x))
                 .Subscribe(x => CountryFlagUrl = $"https://www.speedrun.com/images/flags/{x}.png");
         }
 
         [Reactive]
+        [JsonPropertyName("level")]
         public string Level { get; set; }
         [Reactive]
+        [JsonPropertyName("category")]
         public string Category { get; set; }
         [Reactive]
+        [JsonPropertyName("player")]
         public string Player { get; set; }
         [Reactive]
+        [JsonPropertyName("country_code")]
         public string CountryCode { get; init; } = "cn";
         [Reactive]
+        [JsonPropertyName("user_id")]
         public string UID { get; init; }
         [Reactive]
+        [JsonPropertyName("platform")]
         public string Platform { get; set; }
         [Reactive]
         public int Minute { get; set; }
@@ -56,13 +64,16 @@ namespace GOILauncher.Models
         [Reactive]
         public int MillionSecond { get; set; }
         [Reactive]
+        [JsonPropertyName("time")]
         public string Time { get; set; }
         [Reactive]
         public float TotalTime { get; set; }
         [Reactive]
+        [JsonPropertyName("video_platform")]
         public string VideoPlatform { get; init; }
         [Reactive]
-        public string VID { get; init; }
+        [JsonPropertyName("video_id")]
+        public string VideoId { get; init; }
         [JsonIgnore]
         public string VideoURL { get; set; }
         [JsonIgnore]

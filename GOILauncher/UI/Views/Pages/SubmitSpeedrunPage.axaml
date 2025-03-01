@@ -35,7 +35,7 @@
             BV号：
 		</TextBlock>
 		<TextBox Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" Margin="0,5"
-				 Text="{Binding PendingRun.VID}" FontSize="20"/>
+				 Text="{Binding PendingRun.VideoId}" FontSize="20"/>
 		<TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Center">
             玩家：
 		</TextBlock>
