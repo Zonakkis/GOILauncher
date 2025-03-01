@@ -1,6 +1,5 @@
-﻿using GOILauncher.Models;
-using System;
-using System.IO;
+﻿using System.IO;
+using GOILauncher.Models;
 using Version = GOILauncher.Models.Version;
 
 namespace GOILauncher.Services;
@@ -9,20 +8,21 @@ public class AppService
 {
     private static Setting LoadSetting()
     {
-        if (File.Exists($"{AppDomain.CurrentDomain.BaseDirectory}Settings.json"))
+        var dir = Directory.GetCurrentDirectory();
+        if (File.Exists(Path.Combine(Directory.GetCurrentDirectory(),"Settings.json")))
         {
-            return FileService.LoadFromJson<Setting>(AppDomain.CurrentDomain.BaseDirectory, "Settings.json");
+            return FileService.LoadFromJson<Setting>(Directory.GetCurrentDirectory(), "Settings.json");
         }
         return new Setting
         {
-            DownloadPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Download"),
+            DownloadPath = Path.Combine(Directory.GetCurrentDirectory(), "Download"),
             PreviewQuality = 40
         };
     }
 
     public void SaveSetting()
     {
-        FileService.SaveAsJson(AppDomain.CurrentDomain.BaseDirectory, "Settings.json", Setting);
+        FileService.SaveAsJson(Directory.GetCurrentDirectory(), "Settings.json", Setting);
     }
     public Setting Setting { get; } = LoadSetting();
     public Version Version { get; } = new("0.2.3");

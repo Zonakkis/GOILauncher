@@ -36,9 +36,9 @@ namespace GOILauncher.ViewModels.Pages
         }
         public override void Init()
         {
-            if (!Directory.Exists(Path.Combine(BaseDirectory, nameof(Download))))
+            if (!Directory.Exists(Path.Combine(Directory.GetCurrentDirectory(), nameof(Download))))
             {
-                Directory.CreateDirectory(Path.Combine(BaseDirectory, nameof(Download)));
+                Directory.CreateDirectory(Path.Combine(Directory.GetCurrentDirectory(), nameof(Download)));
             }
             Dispatcher.UIThread.InvokeAsync(GetMaps);
         }
@@ -118,7 +118,6 @@ namespace GOILauncher.ViewModels.Pages
         private readonly NotificationManager _notificationManager;
         private readonly DownloadConfiguration _downloadConfiguration;
         public Setting Setting { get; }
-        private static string BaseDirectory => AppDomain.CurrentDomain.BaseDirectory;
         private readonly Dictionary<Map, DownloadService> downloadServices = [];
         public ObservableCollection<Map> Maps { get; } = [];
         public ObservableCollection<Map> FilteredMaps { get; } = [];
