@@ -45,10 +45,10 @@ namespace GOILauncher.ViewModels.Pages
         private async Task GetMaps()
         {
             var query = new LeanCloudQuery<Map>()
-                .OrderByAscending(nameof(Map.Name))
-                .Where("Platform", "PC")
-                .Select(nameof(Map.Name), nameof(Map.Author), nameof(Map.Size), nameof(Map.Preview),
-                        nameof(Map.Url), nameof(Map.Difficulty), nameof(Map.Form), nameof(Map.Style));
+                            .OrderByAscending("name")
+                            .Where("platform", "PC")
+                            .Select("name", "author", "size", "preview",
+                                    "url", "difficulty", "form", "style");
             foreach (var map in await _leanCloudService.Find(query))
             {
                 if(!string.IsNullOrEmpty(map.Preview))

@@ -6,6 +6,7 @@ using ReactiveUI.Fody.Helpers;
 using System;
 using System.ComponentModel;
 using System.Reactive;
+using System.Text.Json.Serialization;
 
 namespace GOILauncher.Models
 {
@@ -34,13 +35,21 @@ namespace GOILauncher.Models
             IsExtracting = true;
             Status = "解压中";
         }
+        [JsonPropertyName("name")]
         public string Name { get;init; }
+        [JsonPropertyName("author")]
         public string Author { get; init; }
+        [JsonPropertyName("size")]
         public string Size { get; init; }
-        public string Preview { get; set; } 
+        [JsonPropertyName("preview")]
+        public string Preview { get; set; }
+        [JsonPropertyName("url")]
         public string Url { get; init; }
+        [JsonPropertyName("form")]
         public string Form { get; init; }
+        [JsonPropertyName("style")]
         public string Style { get; init; }
+        [JsonPropertyName("difficulty")]
         public string Difficulty { get; init; }
         [Reactive]
         public bool IsDownloading { get; set; }
