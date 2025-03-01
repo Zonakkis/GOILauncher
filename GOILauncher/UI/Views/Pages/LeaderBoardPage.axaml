@@ -21,7 +21,7 @@
 							<Image asyncImageLoader:ImageLoader.Source="{Binding CountryFlagUrl}"
 								   Height="20" ToolTip.Tip="{Binding Country}" ToolTip.Placement="Left"/>
 							<HyperlinkButton Content="{Binding Player}" HorizontalAlignment="Center"
-											 NavigateUri="{Binding PlayerURL}" FontSize="18"/>
+											 NavigateUri="{Binding PlayerUrl}" FontSize="18"/>
 						</StackPanel>
 					</DataTemplate>
 				</DataGridTemplateColumn>
@@ -29,7 +29,7 @@
 				<DataGridTextColumn Header="时间" Binding="{Binding Time}" FontSize="18" CanUserSort="False" Width="auto" IsReadOnly="True"/>
 				<DataGridTemplateColumn Header="视频地址" Width="auto" IsReadOnly="True">
 					<DataTemplate x:DataType="v:Speedrun">
-						<HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoURL}" HorizontalAlignment="Center"/>
+						<HyperlinkButton Content="{Binding VideoPlatform}" FontSize="18" NavigateUri="{Binding VideoUrl}" HorizontalAlignment="Center"/>
 					</DataTemplate>
 				</DataGridTemplateColumn>
 			</DataGrid.Columns>

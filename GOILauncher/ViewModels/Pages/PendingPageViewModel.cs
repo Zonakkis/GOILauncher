@@ -19,7 +19,7 @@ namespace GOILauncher.ViewModels.Pages
                             .OrderByAscending("TotalTime")
                             .Select(nameof(PendingRun.Player), nameof(PendingRun.Category),
                                 nameof(Speedrun.Platform), nameof(PendingRun.Time), 
-                                nameof(Speedrun.VID),nameof(Speedrun.VideoPlatform));
+                                nameof(Speedrun.VideoId),nameof(Speedrun.VideoPlatform));
             foreach (var pendingRun in await leanCloudService.Find(query))
             {
                 PendingRuns.Add(pendingRun);
