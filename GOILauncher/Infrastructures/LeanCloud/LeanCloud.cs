@@ -1,21 +1,21 @@
 ﻿using System;
-using GOILauncher.Models;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Text.Json;
-using System.Collections.ObjectModel;
 using System.Text;
+using GOILauncher.Infrastructures.Interfaces;
 
-namespace GOILauncher.Services.LeanCloud;
+namespace GOILauncher.Infrastructures.LeanCloud;
 
-public class LeanCloudService
+public class LeanCloud : ILeanCloud
 {
-    public LeanCloudService(HttpClient httpClient)
+    private readonly HttpClient _httpClient;
+    public LeanCloud(string url, string appId, string appKey, HttpClient httpClient)
     {
-        httpClient.BaseAddress = new Uri("https://3dec7zyj.lc-cn-n1-shared.com/1.1/classes/");
-        httpClient.DefaultRequestHeaders.Add("X-LC-Id", "3Dec7Zyj4zLNDU0XukGcAYEk-gzGzoHsz");
-        httpClient.DefaultRequestHeaders.Add("X-LC-Key", "uHF3AdKD4i3RqZB7w1APiFRF");
+        httpClient.BaseAddress = new Uri(url);
+        httpClient.DefaultRequestHeaders.Add("X-LC-Id", appId);
+        httpClient.DefaultRequestHeaders.Add("X-LC-Key", appKey);
         _httpClient = httpClient;
     }
     public async Task Create<T>(T obj)
@@ -52,5 +52,4 @@ public class LeanCloudService
         var results = doc.RootElement.GetProperty("results").ToString();
         return JsonSerializer.Deserialize<List<T>>(results)!;
     }
-    private readonly HttpClient _httpClient;
 }

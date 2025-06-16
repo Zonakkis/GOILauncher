@@ -3,13 +3,14 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Net.Http;
 using GOILauncher.ViewModels.Pages;
-using GOILauncher.Services.LeanCloud;
 using System.Diagnostics;
 using System;
 using System.Threading.Tasks;
 using GOILauncher.Models;
 using Version = GOILauncher.Models.Version;
 using GOILauncher.Services;
+using GOILauncher.Infrastructures.LeanCloud;
+using GOILauncher.Infrastructures.Interfaces;
 
 namespace GOILauncher.ViewModels
 {
@@ -20,10 +21,10 @@ namespace GOILauncher.ViewModels
             MapManagePageViewModel mapManagePageViewModel,LeaderBoardPageViewModel leaderBoardPageViewModel,
             SubmitSpeedrunPageViewModel submitSpeedrunPageViewModel,PendingPageViewModel pendingPageViewModel,
             SettingPageViewModel settingPageViewModel,AboutPageViewModel aboutPageViewModel,
-            NotificationManager notificationManager,LeanCloudService leanCloudService,AppService appService)
+            NotificationManager notificationManager,ILeanCloud LeanCloud,AppService appService)
         {
             NotificationManager = notificationManager;
-            _leanCloudService = leanCloudService;
+            _leanCloud = LeanCloud;
             _version = appService.Version;
             Views = [
                 new Page("游戏", gamePageViewModel),
@@ -50,7 +51,7 @@ namespace GOILauncher.ViewModels
 
         private async Task CheckUpdate()
         {
-            var update = await _leanCloudService.Get<Update>("67b8c0b2d2c78e5c0084c98e");
+            var update = await _leanCloud.Get<Update>("67b8c0b2d2c78e5c0084c98e");
             var newVersion = new Version(update.Version);
             if (newVersion > _version)
             {
@@ -82,7 +83,7 @@ namespace GOILauncher.ViewModels
             }
         }
         public NotificationManager NotificationManager { get; }
-        private readonly LeanCloudService _leanCloudService;
+        private readonly ILeanCloud _leanCloud;
         private readonly Version _version;
         public static HttpClient HttpClient { get; } = new(new HttpClientHandler() { AllowAutoRedirect = false });
 
