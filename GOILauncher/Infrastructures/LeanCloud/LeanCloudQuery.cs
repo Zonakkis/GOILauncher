@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GOILauncher.Services.LeanCloud;
+namespace GOILauncher.Infrastructures.LeanCloud;
 
 public class LeanCloudQuery<T>
 {

@@ -1,19 +1,20 @@
 ﻿using GOILauncher.Helpers;
 using GOILauncher.Models;
-using GOILauncher.Services.LeanCloud;
 using ReactiveUI;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI.Fody.Helpers;
 using System;
+using GOILauncher.Infrastructures.LeanCloud;
+using GOILauncher.Infrastructures.Interfaces;
 
 namespace GOILauncher.ViewModels.Pages
 {
     public class SubmitSpeedrunPageViewModel : PageViewModelBase
     {
-        public SubmitSpeedrunPageViewModel(LeanCloudService leanCloudService)
+        public SubmitSpeedrunPageViewModel(ILeanCloud LeanCloud)
         {
-            _leanCloudService = leanCloudService;
+            _leanCloud = LeanCloud;
             PendingRun = new PendingRun
             {
                 Level = Levels[0],
@@ -30,10 +31,10 @@ namespace GOILauncher.ViewModels.Pages
 
         private async Task Submit()
         {
-            await _leanCloudService.Create(PendingRun);
+            await _leanCloud.Create(PendingRun);
             await NotificationHelper.ShowContentDialog("提示", "提交成功！");
         }
-        private readonly LeanCloudService _leanCloudService;
+        private readonly ILeanCloud _leanCloud;
 
         public PendingRun PendingRun { get; }
         public string[] Levels { get; } = ["完整游戏", "Tutorial","Devil's Chimney","Slide Skip",

@@ -77,4 +77,10 @@
       <DependentUpon>SubmitSpeedrunPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Folder Include="Repositories\" />
+  </ItemGroup>
 </Project>

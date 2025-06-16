@@ -2,14 +2,15 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia.Threading;
+using GOILauncher.Infrastructures.Interfaces;
+using GOILauncher.Infrastructures.LeanCloud;
 using GOILauncher.Models;
 using GOILauncher.Services;
-using GOILauncher.Services.LeanCloud;
 using ReactiveUI.Fody.Helpers;
 
 namespace GOILauncher.ViewModels.Pages
 {
-    public class AboutPageViewModel(AppService appService, LeanCloudService leanCloudService) : PageViewModelBase
+    public class AboutPageViewModel(AppService appService, ILeanCloud leanCloud) : PageViewModelBase
     {
         public override void Init()
         {
@@ -21,7 +22,7 @@ namespace GOILauncher.ViewModels.Pages
             var query = new LeanCloudQuery<Credit>()
                             .OrderByAscending("player")
                             .Select("player");
-            _players = await leanCloudService.Find(query);
+            _players = await leanCloud.Find(query);
             Thanks = string.Join(',', _players.Select(x => x.Player));
         }
 

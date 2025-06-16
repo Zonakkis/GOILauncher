@@ -14,7 +14,9 @@ using GOILauncher.Services;
 using GOILauncher.UI.Views.Pages;
 using GOILauncher.ViewModels.Pages;
 using System.Net.Http;
-using GOILauncher.Services.LeanCloud;
+using GOILauncher.Infrastructures.LeanCloud;
+using GOILauncher.Infrastructures.Interfaces;
+using GOILauncher.Constants;
 
 namespace GOILauncher
 {
@@ -39,6 +41,12 @@ namespace GOILauncher
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            services.AddSingleton<ILeanCloud, LeanCloud>(serviceProvider =>
+            {
+                return new LeanCloud(LeanCloudConnection.Url,
+                    LeanCloudConnection.AppId, LeanCloudConnection.AppKey,
+                    serviceProvider.GetRequiredService<HttpClient>());
+            });
             services.AddSingleton<MainWindow>(serviceProvider => new MainWindow
             {
                 DataContext = serviceProvider.GetRequiredService<MainWindowViewModel>()
@@ -63,11 +71,10 @@ namespace GOILauncher
             services.AddSingleton<AboutPageViewModel>();
             services.AddSingleton<SettingPageViewModel>();
             services.AddSingleton<NotificationManager>();
-            services.AddSingleton<LeanCloudService>();
             services.AddSingleton<GameService>();
             services.AddSingleton<AppService>();
             services.AddSingleton<FileService>(serviceProvider => new FileService(new Lazy<TopLevel>(serviceProvider.GetRequiredService<MainWindow>)));
-            services.AddSingleton<HttpClient>(_ =>  new HttpClient());
+            services.AddSingleton<HttpClient>(_ => new HttpClient());
             services.AddSingleton<DownloadConfiguration>(new DownloadConfiguration()
             {
                 ChunkCount = 16,

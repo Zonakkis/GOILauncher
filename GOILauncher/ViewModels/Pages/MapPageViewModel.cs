@@ -1,9 +1,10 @@
 ﻿using Avalonia.Threading;
 using Downloader;
 using FluentAvalonia.UI.Controls;
+using GOILauncher.Infrastructures.Interfaces;
+using GOILauncher.Infrastructures.LeanCloud;
 using GOILauncher.Models;
 using GOILauncher.Services;
-using GOILauncher.Services.LeanCloud;
 using GOILauncher.UI;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
@@ -19,12 +20,12 @@ namespace GOILauncher.ViewModels.Pages
 {
     public class MapPageViewModel : PageViewModelBase
     {
-        public MapPageViewModel(GameService gameService, LeanCloudService leanCloudService,
+        public MapPageViewModel(GameService gameService, ILeanCloud LeanCloud,
             AppService appService, DownloadConfiguration downloadConfiguration,
             NotificationManager notificationManager)
         {
             _gameService = gameService;
-            _leanCloudService = leanCloudService;
+            _leanCloud = LeanCloud;
             _downloadConfiguration = downloadConfiguration;
             _notificationManager = notificationManager;
             Setting = appService.Setting;
@@ -49,7 +50,7 @@ namespace GOILauncher.ViewModels.Pages
                             .Where("platform", "PC")
                             .Select("name", "author", "size", "preview",
                                     "url", "difficulty", "form", "style");
-            foreach (var map in await _leanCloudService.Find(query))
+            foreach (var map in await _leanCloud.Find(query))
             {
                 if(!string.IsNullOrEmpty(map.Preview))
                 {
@@ -114,7 +115,7 @@ namespace GOILauncher.ViewModels.Pages
             }
         }
         private readonly GameService _gameService;
-        private readonly LeanCloudService _leanCloudService;
+        private readonly ILeanCloud _leanCloud;
         private readonly NotificationManager _notificationManager;
         private readonly DownloadConfiguration _downloadConfiguration;
         public Setting Setting { get; }
