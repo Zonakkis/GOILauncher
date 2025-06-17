@@ -57,6 +57,7 @@ namespace GOILauncher
             services.AddTransient<MapManagePage>();
             services.AddTransient<LeaderBoardPage>();
             services.AddSingleton<SubmitSpeedrunPage>();
+            services.AddTransient<SpeedrunHistoryPage>();
             services.AddTransient<PendingPage>();
             services.AddTransient<AboutPage>();
             services.AddTransient<SettingPage>();
@@ -69,6 +70,7 @@ namespace GOILauncher
             services.AddSingleton<SubmitSpeedrunPageViewModel>();
             services.AddSingleton<PendingPageViewModel>();
             services.AddSingleton<AboutPageViewModel>();
+            services.AddSingleton<SpeedrunHistoryPageViewModel>();
             services.AddSingleton<SettingPageViewModel>();
             services.AddSingleton<NotificationManager>();
             services.AddSingleton<GameService>();

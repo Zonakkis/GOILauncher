@@ -21,6 +21,7 @@ namespace GOILauncher.ViewModels
             MapManagePageViewModel mapManagePageViewModel,LeaderBoardPageViewModel leaderBoardPageViewModel,
             SubmitSpeedrunPageViewModel submitSpeedrunPageViewModel,PendingPageViewModel pendingPageViewModel,
             SettingPageViewModel settingPageViewModel,AboutPageViewModel aboutPageViewModel,
+            SpeedrunHistoryPageViewModel speedrunHistoryPageViewModel,
             NotificationManager notificationManager,ILeanCloud LeanCloud,AppService appService)
         {
             NotificationManager = notificationManager;
@@ -39,7 +40,8 @@ namespace GOILauncher.ViewModels
                 new Page("排行榜", leaderBoardPageViewModel, [
                     new Page("提交速通", submitSpeedrunPageViewModel),
                     new Page("待审核", pendingPageViewModel),
-                ])
+                ]),
+                new Page("速通历史", speedrunHistoryPageViewModel)
             ];
             FooterViews = [
                 new Page("设置", settingPageViewModel),
